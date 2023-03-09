@@ -229,3 +229,713 @@ write.csv(ldat_alb4, "Data/albi_reps.csv")
 write.csv(ldat_prop4, "Data/prop_reps.csv")
 write.csv(ldat_hap4, "Data/hapa_reps.csv")
 ```
+
+```{r Get covariate data together}
+library(tidyverse); library(unmarked); library(ubms)
+
+#####ALLOCEBUS#####
+#read in data 
+buffer_allo <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/buffer_Allocebus_trichotis.csv")
+elevation_allo <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/elev_transAllocebus_trichotis.csv")
+forest_loss_sum_allo_FL <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/sumFL_transAllocebus_trichotis.csv")
+forest_loss_sum_allo_FL$SUM_loss <- forest_loss_sum_allo_FL$SUM
+forest_loss_sum_allo_F <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/sumF_transAllocebus_trichotis.csv")
+forest_loss_sum_allo_F$SUM_forest <- forest_loss_sum_allo_F$SUM
+rug_allo <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/TRI_transAllocebus_trichotis.csv")
+height_allo <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/forestht_transAllocebus_trichotis.csv")
+
+buffer_allo7 <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/buffer_Allocebus_trichotis.csv")
+buffer_allo7$OID_ <- c("21", "22", "23")
+elevation_allo7 <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/elev_transAllocebus_trichotis.csv")
+elevation_allo7$OID_ <- c("21", "22", "23")
+forest_loss_sum_allo7_FL <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/sumFL_transAllocebus_trichotis.csv")
+forest_loss_sum_allo7_FL$OID_ <- c("21", "22", "23")
+forest_loss_sum_allo7_FL$SUM_loss <- forest_loss_sum_allo7_FL$SUM
+forest_loss_sum_allo7_F$SUM_forest <- forest_loss_sum_allo7_F$SUM
+forest_loss_sum_allo7_F <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/sumF_transAllocebus_trichotis.csv")
+forest_loss_sum_allo7_F$OID_ <- c("21", "22", "23")
+rug_allo7 <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/TRI_transAllocebus_trichotis.csv")
+rug_allo7$OID_ <- c("21", "22", "23")
+height_allo7 <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/forestht_transAllocebus_trichotis.csv")
+height_allo7$OID_ <- c("21", "22", "23")
+
+buffer_allo <- rbind(buffer_allo, buffer_allo7)
+elevation_allo <- rbind(elevation_allo, elevation_allo7)
+forest_loss_sum_allo <- cbind(forest_loss_sum_allo_FL, forest_loss_sum_allo_F) 
+forest_loss_sum_allo <- forest_loss_sum_allo[,c(1,6,12)]
+forest_loss_sum_allo7_F$SUM_forest <- forest_loss_sum_allo7_F$SUM
+forest_loss_sum_allo7 <- cbind(forest_loss_sum_allo7_FL, forest_loss_sum_allo7_F) 
+forest_loss_sum_allo7 <- forest_loss_sum_allo7[,c(1,6,12)]
+forest_loss_sum_allo <- rbind(forest_loss_sum_allo, forest_loss_sum_allo7)
+rug_allo <- rbind(rug_allo, rug_allo7)
+height_allo <- rbind(height_allo, height_allo7)
+
+#combine covariate data
+elevation2_allo <- elevation_allo %>% dplyr::select(OID_, MEAN) %>% rename(elevation = MEAN)
+forest_loss_sum2_allo <- forest_loss_sum_allo %>% dplyr::select(OID_, SUM_forest, SUM_loss) %>% mutate(forest_loss_prop=SUM_loss/SUM_forest)
+rug2_allo <- rug_allo %>% dplyr::select(OID_, MEAN) %>% rename(rug = MEAN)
+height2_allo <- height_allo %>% dplyr::select(OID_,MEAN) %>% rename(height=MEAN)
+buffer2_allo <- buffer_allo %>% dplyr::select(Site, Transect, OID_)
+
+covs_allo <- left_join(elevation2_allo, forest_loss_sum2_allo, by="OID_")
+covs_allo <- left_join(rug2_allo, covs_allo, by="OID_")
+covs_allo <- left_join(height2_allo, covs_allo, by="OID_")
+covs_allo <- left_join(buffer2_allo, covs_allo, by="OID_")
+covs_allo$Site_Transect <- paste(covs_allo$Site, covs$Transect, sep = "_")
+covs_allo$forest_loss_prop <- log(covs_allo$forest_loss_prop+1)
+
+####MICROCEBUS####
+#read in data 
+buffer_micro <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/buffer_Microcebus_mittermeiri.csv")
+elevation_micro <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/elev_transMicrocebus_mittermeiri.csv")
+forest_loss_sum_micro_FL <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/sumFL_transMicrocebus_mittermeiri.csv")
+forest_loss_sum_micro_FL$SUM_loss <- forest_loss_sum_micro_FL$SUM
+forest_loss_sum_micro_F <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/sumF_transMicrocebus_mittermeiri.csv")
+forest_loss_sum_micro_F$SUM_forest <- forest_loss_sum_micro_F$SUM
+rug_micro <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/TRI_transMicrocebus_mittermeiri.csv")
+height_micro <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/forestht_transMicrocebus_mittermeiri.csv")
+
+buffer_micro7 <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/buffer_Microcebus_mittermeiri.csv")
+buffer_micro7$OID_ <- c("21", "22", "23")
+elevation_micro7 <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/elev_transMicrocebus_mittermeiri.csv")
+elevation_micro7$OID_ <- c("21", "22", "23")
+forest_loss_sum_micro7_FL <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/sumFL_transMicrocebus_mittermeiri.csv")
+forest_loss_sum_micro7_FL$OID_ <- c("21", "22", "23")
+forest_loss_sum_micro7_FL$SUM_loss <- forest_loss_sum_micro7_FL$SUM
+forest_loss_sum_micro7_F <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/sumF_transMicrocebus_mittermeiri.csv")
+forest_loss_sum_micro7_F$OID_ <- c("21", "22", "23")
+rug_micro7 <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/TRI_transMicrocebus_mittermeiri.csv")
+rug_micro7$OID_ <- c("21", "22", "23")
+height_micro7 <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/forestht_transMicrocebus_mittermeiri.csv")
+height_micro7$OID_ <- c("21", "22", "23")
+
+buffer_micro <- rbind(buffer_micro, buffer_micro7)
+elevation_micro <- rbind(elevation_micro, elevation_micro7)
+forest_loss_sum_micro <- cbind(forest_loss_sum_micro_FL, forest_loss_sum_micro_F) 
+forest_loss_sum_micro <- forest_loss_sum_micro[,c(1,6,12)]
+forest_loss_sum_micro7_F$SUM_forest <- forest_loss_sum_micro7_F$SUM
+forest_loss_sum_micro7 <- cbind(forest_loss_sum_micro7_FL, forest_loss_sum_micro7_F) 
+forest_loss_sum_micro7 <- forest_loss_sum_micro7[,c(1,6,12)]
+forest_loss_sum_micro <- rbind(forest_loss_sum_micro, forest_loss_sum_micro7)
+rug_micro <- rbind(rug_micro, rug_micro7)
+height_micro <- rbind(height_micro, height_micro7)
+
+#combine covariate data
+elevation2_micro <- elevation_micro %>% dplyr::select(OID_, MEAN) %>% rename(elevation = MEAN)
+forest_loss_sum2_micro <- forest_loss_sum_micro %>% dplyr::select(OID_, SUM_forest, SUM_loss) %>% mutate(forest_loss_prop=SUM_loss/SUM_forest)
+rug2_micro <- rug_micro %>% dplyr::select(OID_, MEAN) %>% rename(rug = MEAN)
+height2_micro <- height_micro %>% dplyr::select(OID_,MEAN) %>% rename(height=MEAN)
+buffer2_micro <- buffer_micro %>% dplyr::select(Site, Transect, OID_)
+
+covs_micro <- left_join(elevation2_micro, forest_loss_sum2_micro, by="OID_")
+covs_micro <- left_join(rug2_micro, covs_micro, by="OID_")
+covs_micro <- left_join(height2_micro, covs_micro, by="OID_")
+covs_micro <- left_join(buffer2_micro, covs_micro, by="OID_")
+covs_micro$Site_Transect <- paste(covs_micro$Site, covs_micro$Transect, sep = "_")
+covs_micro$forest_loss_prop <- log(covs_micro$forest_loss_prop+1)
+
+####CHEIROGALEUS####
+
+buffer_cheiro <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/buffer_Cheirogaleus_crossleyi.csv")
+elevation_cheiro <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/elev_transCheirogaleus_crossleyi.csv")
+forest_loss_sum_cheiro_FL <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/sumFL_transCheirogaleus_crossleyi.csv")
+forest_loss_sum_cheiro_FL$SUM_loss <- forest_loss_sum_cheiro_FL$SUM
+forest_loss_sum_cheiro_F <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/sumF_transCheirogaleus_crossleyi.csv")
+forest_loss_sum_cheiro_F$SUM_forest <- forest_loss_sum_cheiro_F$SUM
+rug_cheiro <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/TRI_transCheirogaleus_crossleyi.csv")
+height_cheiro <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/forestht_transCheirogaleus_crossleyi.csv")
+
+buffer_cheiro7 <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/buffer_Cheirogaleus_crossleyi.csv")
+buffer_cheiro7$OID_ <- c("21", "22", "23")
+elevation_cheiro7 <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/elev_transCheirogaleus_crossleyi.csv")
+elevation_cheiro7$OID_ <- c("21", "22", "23")
+forest_loss_sum_cheiro7_FL <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/sumFL_transCheirogaleus_crossleyi.csv")
+forest_loss_sum_cheiro7_FL$OID_ <- c("21", "22", "23")
+forest_loss_sum_cheiro7_FL$SUM_loss <- forest_loss_sum_cheiro7_FL$SUM
+forest_loss_sum_cheiro7_F <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/sumF_transCheirogaleus_crossleyi.csv")
+forest_loss_sum_cheiro7_F$OID_ <- c("21", "22", "23")
+rug_cheiro7 <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/TRI_transCheirogaleus_crossleyi.csv")
+rug_cheiro7$OID_ <- c("21", "22", "23")
+height_cheiro7 <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/forestht_transCheirogaleus_crossleyi.csv")
+height_cheiro7$OID_ <- c("21", "22", "23")
+
+buffer_cheiro <- rbind(buffer_cheiro, buffer_cheiro7)
+elevation_cheiro <- rbind(elevation_cheiro, elevation_cheiro7)
+forest_loss_sum_cheiro <- cbind(forest_loss_sum_cheiro_FL, forest_loss_sum_cheiro_F) 
+forest_loss_sum_cheiro <- forest_loss_sum_cheiro[,c(1,6,12)]
+forest_loss_sum_cheiro7_F$SUM_forest <- forest_loss_sum_cheiro7_F$SUM
+forest_loss_sum_cheiro7 <- cbind(forest_loss_sum_cheiro7_FL, forest_loss_sum_cheiro7_F) 
+forest_loss_sum_cheiro7 <- forest_loss_sum_cheiro7[,c(1,6,12)]
+forest_loss_sum_cheiro <- rbind(forest_loss_sum_cheiro, forest_loss_sum_cheiro7)
+rug_cheiro <- rbind(rug_cheiro, rug_cheiro7)
+height_cheiro <- rbind(height_cheiro, height_cheiro7)
+
+#combine covariate data
+elevation2_cheiro <- elevation_cheiro %>% dplyr::select(OID_, MEAN) %>% rename(elevation = MEAN)
+forest_loss_sum2_cheiro <- forest_loss_sum_cheiro %>% dplyr::select(OID_, SUM_forest, SUM_loss) %>% mutate(forest_loss_prop=SUM_loss/SUM_forest)
+rug2_cheiro <- rug_cheiro %>% dplyr::select(OID_, MEAN) %>% rename(rug = MEAN)
+height2_cheiro <- height_cheiro %>% dplyr::select(OID_,MEAN) %>% rename(height=MEAN)
+buffer2_cheiro <- buffer_cheiro %>% dplyr::select(Site, Transect, OID_)
+
+covs_cheiro <- left_join(elevation2_cheiro, forest_loss_sum2_cheiro, by="OID_")
+covs_cheiro <- left_join(rug2_cheiro, covs_cheiro, by="OID_")
+covs_cheiro <- left_join(height2_cheiro, covs_cheiro, by="OID_")
+covs_cheiro <- left_join(buffer2_cheiro, covs_cheiro, by="OID_")
+covs_cheiro$Site_Transect <- paste(covs_cheiro$Site, covs_cheiro$Transect, sep = "_")
+covs_cheiro$forest_loss_prop <- log(covs_cheiro$forest_loss_prop+1)
+
+####AVAHI####
+
+buffer_avahi <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/buffer_Avahi_laniger.csv")
+elevation_avahi <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/elev_transAvahi_laniger.csv")
+forest_loss_sum_avahi_FL <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/sumFL_transAvahi_laniger.csv")
+forest_loss_sum_avahi_FL$SUM_loss <- forest_loss_sum_avahi_FL$SUM
+forest_loss_sum_avahi_F <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/sumF_transAvahi_laniger.csv")
+forest_loss_sum_avahi_F$SUM_forest <- forest_loss_sum_avahi_F$SUM
+rug_avahi <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/TRI_transAvahi_laniger.csv")
+height_avahi <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/forestht_transAvahi_laniger.csv")
+
+buffer_avahi7 <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/buffer_Avahi_laniger.csv")
+buffer_avahi7$OID_ <- c("21", "22", "23")
+elevation_avahi7 <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/elev_transAvahi_laniger.csv")
+elevation_avahi7$OID_ <- c("21", "22", "23")
+forest_loss_sum_avahi7_FL <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/sumFL_transAvahi_laniger.csv")
+forest_loss_sum_avahi7_FL$OID_ <- c("21", "22", "23")
+forest_loss_sum_avahi7_FL$SUM_loss <- forest_loss_sum_avahi7_FL$SUM
+forest_loss_sum_avahi7_F <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/sumF_transAvahi_laniger.csv")
+forest_loss_sum_avahi7_F$OID_ <- c("21", "22", "23")
+rug_avahi7 <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/TRI_transAvahi_laniger.csv")
+rug_avahi7$OID_ <- c("21", "22", "23")
+height_avahi7 <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/forestht_transAvahi_laniger.csv")
+height_avahi7$OID_ <- c("21", "22", "23")
+
+buffer_avahi <- rbind(buffer_avahi, buffer_avahi7)
+elevation_avahi <- rbind(elevation_avahi, elevation_avahi7)
+forest_loss_sum_avahi <- cbind(forest_loss_sum_avahi_FL, forest_loss_sum_avahi_F) 
+forest_loss_sum_avahi <- forest_loss_sum_avahi[,c(1,6,12)]
+forest_loss_sum_avahi7_F$SUM_forest <- forest_loss_sum_avahi7_F$SUM
+forest_loss_sum_avahi7 <- cbind(forest_loss_sum_avahi7_FL, forest_loss_sum_avahi7_F) 
+forest_loss_sum_avahi7 <- forest_loss_sum_avahi7[,c(1,6,12)]
+forest_loss_sum_avahi <- rbind(forest_loss_sum_avahi, forest_loss_sum_avahi7)
+rug_avahi <- rbind(rug_avahi, rug_avahi7)
+height_avahi <- rbind(height_avahi, height_avahi7)
+
+#combine covariate data
+elevation2_avahi <- elevation_avahi %>% dplyr::select(OID_, MEAN) %>% rename(elevation = MEAN)
+forest_loss_sum2_avahi <- forest_loss_sum_avahi %>% dplyr::select(OID_, SUM_forest, SUM_loss) %>% mutate(forest_loss_prop=SUM_loss/SUM_forest)
+rug2_avahi <- rug_avahi %>% dplyr::select(OID_, MEAN) %>% rename(rug = MEAN)
+height2_avahi <- height_avahi %>% dplyr::select(OID_,MEAN) %>% rename(height=MEAN)
+buffer2_avahi <- buffer_avahi %>% dplyr::select(Site, Transect, OID_)
+
+covs_avahi <- left_join(elevation2_avahi, forest_loss_sum2_avahi, by="OID_")
+covs_avahi <- left_join(rug2_avahi, covs_avahi, by="OID_")
+covs_avahi <- left_join(height2_avahi, covs_avahi, by="OID_")
+covs_avahi <- left_join(buffer2_avahi, covs_avahi, by="OID_")
+covs_avahi$Site_Transect <- paste(covs_avahi$Site, covs_avahi$Transect, sep = "_")
+covs_avahi$forest_loss_prop <- log(covs_avahi$forest_loss_prop+1)
+
+####LEPILEMUR####
+buffer_lepi <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/buffer_Lepilemur_saeli.csv")
+elevation_lepi <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/elev_transLepilemur_saeli.csv")
+forest_loss_sum_lepi_FL <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/sumFL_transLepilemur_saeli.csv")
+forest_loss_sum_lepi_FL$SUM_loss <- forest_loss_sum_lepi_FL$SUM
+forest_loss_sum_lepi_F <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/sumF_transLepilemur_saeli.csv")
+forest_loss_sum_lepi_F$SUM_forest <- forest_loss_sum_lepi_F$SUM
+rug_lepi <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/TRI_transLepilemur_saeli.csv")
+height_lepi <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/forestht_transLepilemur_saeli.csv")
+
+buffer_lepi7 <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/buffer_Lepilemur_saeli.csv")
+buffer_lepi7$OID_ <- c("21", "22", "23")
+elevation_lepi7 <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/elev_transLepilemur_saeli.csv")
+elevation_lepi7$OID_ <- c("21", "22", "23")
+forest_loss_sum_lepi7_FL <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/sumFL_transLepilemur_saeli.csv")
+forest_loss_sum_lepi7_FL$OID_ <- c("21", "22", "23")
+forest_loss_sum_lepi7_FL$SUM_loss <- forest_loss_sum_lepi7_FL$SUM
+forest_loss_sum_lepi7_F <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/sumF_transLepilemur_saeli.csv")
+forest_loss_sum_lepi7_F$OID_ <- c("21", "22", "23")
+rug_lepi7 <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/TRI_transLepilemur_saeli.csv")
+rug_lepi7$OID_ <- c("21", "22", "23")
+height_lepi7 <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/forestht_transLepilemur_saeli.csv")
+height_lepi7$OID_ <- c("21", "22", "23")
+
+buffer_lepi <- rbind(buffer_lepi, buffer_lepi7)
+elevation_lepi <- rbind(elevation_lepi, elevation_lepi7)
+forest_loss_sum_lepi <- cbind(forest_loss_sum_lepi_FL, forest_loss_sum_lepi_F) 
+forest_loss_sum_lepi <- forest_loss_sum_lepi[,c(1,6,12)]
+forest_loss_sum_lepi7_F$SUM_forest <- forest_loss_sum_lepi7_F$SUM
+forest_loss_sum_lepi7 <- cbind(forest_loss_sum_lepi7_FL, forest_loss_sum_lepi7_F) 
+forest_loss_sum_lepi7 <- forest_loss_sum_lepi7[,c(1,6,12)]
+forest_loss_sum_lepi <- rbind(forest_loss_sum_lepi, forest_loss_sum_lepi7)
+rug_lepi <- rbind(rug_lepi, rug_lepi7)
+height_lepi <- rbind(height_lepi, height_lepi7)
+
+#combine covariate data
+elevation2_lepi <- elevation_lepi %>% dplyr::select(OID_, MEAN) %>% rename(elevation = MEAN)
+forest_loss_sum2_lepi <- forest_loss_sum_lepi %>% dplyr::select(OID_, SUM_forest, SUM_loss) %>% mutate(forest_loss_prop=SUM_loss/SUM_forest)
+rug2_lepi <- rug_lepi %>% dplyr::select(OID_, MEAN) %>% rename(rug = MEAN)
+height2_lepi <- height_lepi %>% dplyr::select(OID_,MEAN) %>% rename(height=MEAN)
+buffer2_lepi <- buffer_lepi %>% dplyr::select(Site, Transect, OID_)
+
+covs_lepi <- left_join(elevation2_lepi, forest_loss_sum2_lepi, by="OID_")
+covs_lepi <- left_join(rug2_lepi, covs_lepi, by="OID_")
+covs_lepi <- left_join(height2_lepi, covs_lepi, by="OID_")
+covs_lepi <- left_join(buffer2_lepi, covs_lepi, by="OID_")
+covs_lepi$Site_Transect <- paste(covs_lepi$Site, covs_lepi$Transect, sep = "_")
+covs_lepi$forest_loss_prop <- log(covs_lepi$forest_loss_prop+1)
+
+####EULEMUR_RUBRI####
+buffer_rubri <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/buffer_Eulemur_rubriventer.csv")
+elevation_rubri <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/elev_transEulemur_rubriventer.csv")
+forest_loss_sum_rubri_FL <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/sumFL_transEulemur_rubriventer.csv")
+forest_loss_sum_rubri_FL$SUM_loss <- forest_loss_sum_rubri_FL$SUM
+forest_loss_sum_rubri_F <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/sumF_transEulemur_rubriventer.csv")
+forest_loss_sum_rubri_F$SUM_forest <- forest_loss_sum_rubri_F$SUM
+rug_rubri <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/TRI_transEulemur_rubriventer.csv")
+height_rubri <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/forestht_transEulemur_rubriventer.csv")
+
+buffer_rubri7 <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/buffer_Eulemur_rubriventer.csv")
+buffer_rubri7$OID_ <- c("21", "22", "23")
+elevation_rubri7 <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/elev_transEulemur_rubriventer.csv")
+elevation_rubri7$OID_ <- c("21", "22", "23")
+forest_loss_sum_rubri7_FL <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/sumFL_transEulemur_rubriventer.csv")
+forest_loss_sum_rubri7_FL$OID_ <- c("21", "22", "23")
+forest_loss_sum_rubri7_FL$SUM_loss <- forest_loss_sum_rubri7_FL$SUM
+forest_loss_sum_rubri7_F <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/sumF_transEulemur_rubriventer.csv")
+forest_loss_sum_rubri7_F$OID_ <- c("21", "22", "23")
+rug_rubri7 <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/TRI_transEulemur_rubriventer.csv")
+rug_rubri7$OID_ <- c("21", "22", "23")
+height_rubri7 <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/forestht_transEulemur_rubriventer.csv")
+height_rubri7$OID_ <- c("21", "22", "23")
+
+buffer_rubri <- rbind(buffer_rubri, buffer_rubri7)
+elevation_rubri <- rbind(elevation_rubri, elevation_rubri7)
+forest_loss_sum_rubri <- cbind(forest_loss_sum_rubri_FL, forest_loss_sum_rubri_F) 
+forest_loss_sum_rubri <- forest_loss_sum_rubri[,c(1,6,12)]
+forest_loss_sum_rubri7_F$SUM_forest <- forest_loss_sum_rubri7_F$SUM
+forest_loss_sum_rubri7 <- cbind(forest_loss_sum_rubri7_FL, forest_loss_sum_rubri7_F) 
+forest_loss_sum_rubri7 <- forest_loss_sum_rubri7[,c(1,6,12)]
+forest_loss_sum_rubri <- rbind(forest_loss_sum_rubri, forest_loss_sum_rubri7)
+rug_rubri <- rbind(rug_rubri, rug_rubri7)
+height_rubri <- rbind(height_rubri, height_rubri7)
+
+#combine covariate data
+elevation2_rubri <- elevation_rubri %>% dplyr::select(OID_, MEAN) %>% rename(elevation = MEAN)
+forest_loss_sum2_rubri <- forest_loss_sum_rubri %>% dplyr::select(OID_, SUM_forest, SUM_loss) %>% mutate(forest_loss_prop=SUM_loss/SUM_forest)
+rug2_rubri <- rug_rubri %>% dplyr::select(OID_, MEAN) %>% rename(rug = MEAN)
+height2_rubri <- height_rubri %>% dplyr::select(OID_,MEAN) %>% rename(height=MEAN)
+buffer2_rubri <- buffer_rubri %>% dplyr::select(Site, Transect, OID_)
+
+covs_rubri <- left_join(elevation2_rubri, forest_loss_sum2_rubri, by="OID_")
+covs_rubri <- left_join(rug2_rubri, covs_rubri, by="OID_")
+covs_rubri <- left_join(height2_rubri, covs_rubri, by="OID_")
+covs_rubri <- left_join(buffer2_rubri, covs_rubri, by="OID_")
+covs_rubri$Site_Transect <- paste(covs_rubri$Site, covs_rubri$Transect, sep = "_")
+covs_rubri$forest_loss_prop <- log(covs_rubri$forest_loss_prop+1)
+
+####EULEMUR_ALBIFRONS####
+buffer_albi <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/buffer_Eulemur_albifrons.csv")
+elevation_albi <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/elev_transEulemur_albifrons.csv")
+forest_loss_sum_albi_FL <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/sumFL_transEulemur_albifrons.csv")
+forest_loss_sum_albi_FL$SUM_loss <- forest_loss_sum_albi_FL$SUM
+forest_loss_sum_albi_F <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/sumF_transEulemur_albifrons.csv")
+forest_loss_sum_albi_F$SUM_forest <- forest_loss_sum_albi_F$SUM
+rug_albi <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/TRI_transEulemur_albifrons.csv")
+height_albi <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/forestht_transEulemur_albifrons.csv")
+
+buffer_albi7 <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/buffer_Eulemur_albifrons.csv")
+buffer_albi7$OID_ <- c("21", "22", "23")
+elevation_albi7 <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/elev_transEulemur_albifrons.csv")
+elevation_albi7$OID_ <- c("21", "22", "23")
+forest_loss_sum_albi7_FL <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/sumFL_transEulemur_albifrons.csv")
+forest_loss_sum_albi7_FL$OID_ <- c("21", "22", "23")
+forest_loss_sum_albi7_FL$SUM_loss <- forest_loss_sum_albi7_FL$SUM
+forest_loss_sum_albi7_F <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/sumF_transEulemur_albifrons.csv")
+forest_loss_sum_albi7_F$OID_ <- c("21", "22", "23")
+rug_albi7 <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/TRI_transEulemur_albifrons.csv")
+rug_albi7$OID_ <- c("21", "22", "23")
+height_albi7 <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/forestht_transEulemur_albifrons.csv")
+height_albi7$OID_ <- c("21", "22", "23")
+
+buffer_albi <- rbind(buffer_albi, buffer_albi7)
+elevation_albi <- rbind(elevation_albi, elevation_albi7)
+forest_loss_sum_albi <- cbind(forest_loss_sum_albi_FL, forest_loss_sum_albi_F) 
+forest_loss_sum_albi <- forest_loss_sum_albi[,c(1,6,12)]
+forest_loss_sum_albi7_F$SUM_forest <- forest_loss_sum_albi7_F$SUM
+forest_loss_sum_albi7 <- cbind(forest_loss_sum_albi7_FL, forest_loss_sum_albi7_F) 
+forest_loss_sum_albi7 <- forest_loss_sum_albi7[,c(1,6,12)]
+forest_loss_sum_albi <- rbind(forest_loss_sum_albi, forest_loss_sum_albi7)
+rug_albi <- rbind(rug_albi, rug_albi7)
+height_albi <- rbind(height_albi, height_albi7)
+
+#combine covariate data
+elevation2_albi <- elevation_albi %>% dplyr::select(OID_, MEAN) %>% rename(elevation = MEAN)
+forest_loss_sum2_albi <- forest_loss_sum_albi %>% dplyr::select(OID_, SUM_forest, SUM_loss) %>% mutate(forest_loss_prop=SUM_loss/SUM_forest)
+rug2_albi <- rug_albi %>% dplyr::select(OID_, MEAN) %>% rename(rug = MEAN)
+height2_albi <- height_albi %>% dplyr::select(OID_,MEAN) %>% rename(height=MEAN)
+buffer2_albi <- buffer_albi %>% dplyr::select(Site, Transect, OID_)
+
+covs_albi <- left_join(elevation2_albi, forest_loss_sum2_albi, by="OID_")
+covs_albi <- left_join(rug2_albi, covs_albi, by="OID_")
+covs_albi <- left_join(height2_albi, covs_albi, by="OID_")
+covs_albi <- left_join(buffer2_albi, covs_albi, by="OID_")
+covs_albi$Site_Transect <- paste(covs_albi$Site, covs_albi$Transect, sep = "_")
+covs_albi$forest_loss_prop <- log(covs_albi$forest_loss_prop+1)
+
+####PROPITHECUS####
+buffer_prop <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/buffer_Propithecus_candidus.csv")
+elevation_prop <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/elev_transPropithecus_candidus.csv")
+forest_loss_sum_prop_FL <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/sumFL_transPropithecus_candidus.csv")
+forest_loss_sum_prop_FL$SUM_loss <- forest_loss_sum_prop_FL$SUM
+forest_loss_sum_prop_F <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/sumF_transPropithecus_candidus.csv")
+forest_loss_sum_prop_F$SUM_forest <- forest_loss_sum_prop_F$SUM
+rug_prop <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/TRI_transPropithecus_candidus.csv")
+height_prop <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/forestht_transPropithecus_candidus.csv")
+
+buffer_prop7 <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/buffer_Propithecus_candidus.csv")
+buffer_prop7$OID_ <- c("21", "22", "23")
+elevation_prop7 <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/elev_transPropithecus_candidus.csv")
+elevation_prop7$OID_ <- c("21", "22", "23")
+forest_loss_sum_prop7_FL <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/sumFL_transPropithecus_candidus.csv")
+forest_loss_sum_prop7_FL$OID_ <- c("21", "22", "23")
+forest_loss_sum_prop7_FL$SUM_loss <- forest_loss_sum_prop7_FL$SUM
+forest_loss_sum_prop7_F <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/sumF_transPropithecus_candidus.csv")
+forest_loss_sum_prop7_F$OID_ <- c("21", "22", "23")
+rug_prop7 <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/TRI_transPropithecus_candidus.csv")
+rug_prop7$OID_ <- c("21", "22", "23")
+height_prop7 <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/forestht_transPropithecus_candidus.csv")
+height_prop7$OID_ <- c("21", "22", "23")
+
+buffer_prop <- rbind(buffer_prop, buffer_prop7)
+elevation_prop <- rbind(elevation_prop, elevation_prop7)
+forest_loss_sum_prop <- cbind(forest_loss_sum_prop_FL, forest_loss_sum_prop_F) 
+forest_loss_sum_prop <- forest_loss_sum_prop[,c(1,6,12)]
+forest_loss_sum_prop7_F$SUM_forest <- forest_loss_sum_prop7_F$SUM
+forest_loss_sum_prop7 <- cbind(forest_loss_sum_prop7_FL, forest_loss_sum_prop7_F) 
+forest_loss_sum_prop7 <- forest_loss_sum_prop7[,c(1,6,12)]
+forest_loss_sum_prop <- rbind(forest_loss_sum_prop, forest_loss_sum_prop7)
+rug_prop <- rbind(rug_prop, rug_prop7)
+height_prop <- rbind(height_prop, height_prop7)
+
+#combine covariate data
+elevation2_prop <- elevation_prop %>% dplyr::select(OID_, MEAN) %>% rename(elevation = MEAN)
+forest_loss_sum2_prop <- forest_loss_sum_prop %>% dplyr::select(OID_, SUM_forest, SUM_loss) %>% mutate(forest_loss_prop=SUM_loss/SUM_forest)
+rug2_prop <- rug_prop %>% dplyr::select(OID_, MEAN) %>% rename(rug = MEAN)
+rug2_prop <- distinct(rug2_prop)
+height2_prop <- height_prop %>% dplyr::select(OID_,MEAN) %>% rename(height=MEAN)
+height2_prop <- distinct(height2_prop)
+buffer2_prop <- buffer_prop %>% dplyr::select(Site, Transect, OID_)
+
+covs_prop <- left_join(elevation2_prop, forest_loss_sum2_prop, by="OID_")
+covs_prop <- left_join(rug2_prop, covs_prop, by="OID_")
+covs_prop <- left_join(height2_prop, covs_prop, by="OID_")
+covs_prop <- left_join(buffer2_prop, covs_prop, by="OID_")
+covs_prop$Site_Transect <- paste(covs_prop$Site, covs_prop$Transect, sep = "_")
+covs_prop$forest_loss_prop <- log(covs_prop$forest_loss_prop+1)
+
+####HAPALEMUR####
+buffer_hapa <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/buffer_Hapalemur_griseus.csv")
+elevation_hapa <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/elev_transHapalemur_griseus.csv")
+forest_loss_sum_hapa_FL <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/sumFL_transHapalemur_griseus.csv")
+forest_loss_sum_hapa_FL$SUM_loss <- forest_loss_sum_hapa_FL$SUM
+forest_loss_sum_hapa_F <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/sumF_transHapalemur_griseus.csv")
+forest_loss_sum_hapa_F$SUM_forest <- forest_loss_sum_hapa_F$SUM
+rug_hapa <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/TRI_transHapalemur_griseus.csv")
+height_hapa <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2/forestht_transHapalemur_griseus.csv")
+
+buffer_hapa7 <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/buffer_Hapalemur_griseus.csv")
+buffer_hapa7$OID_ <- c("21", "22", "23")
+elevation_hapa7 <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/elev_transHapalemur_griseus.csv")
+elevation_hapa7$OID_ <- c("21", "22", "23")
+forest_loss_sum_hapa7_FL <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/sumFL_transHapalemur_griseus.csv")
+forest_loss_sum_hapa7_FL$OID_ <- c("21", "22", "23")
+forest_loss_sum_hapa7_FL$SUM_loss <- forest_loss_sum_hapa7_FL$SUM
+forest_loss_sum_hapa7_F <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/sumF_transHapalemur_griseus.csv")
+forest_loss_sum_hapa7_F$OID_ <- c("21", "22", "23")
+rug_hapa7 <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/TRI_transHapalemur_griseus.csv")
+rug_hapa7$OID_ <- c("21", "22", "23")
+height_hapa7 <- read.csv("~/Documents/MadaResearch/COMATSA/outputfeb2_7th/forestht_transHapalemur_griseus.csv")
+height_hapa7$OID_ <- c("21", "22", "23")
+
+
+buffer_hapa <- rbind(buffer_hapa, buffer_hapa7)
+elevation_hapa <- rbind(elevation_hapa, elevation_hapa7)
+forest_loss_sum_hapa <- cbind(forest_loss_sum_hapa_FL, forest_loss_sum_hapa_F) 
+forest_loss_sum_hapa <- forest_loss_sum_hapa[,c(1,6,12)]
+forest_loss_sum_hapa7_F$SUM_forest <- forest_loss_sum_hapa7_F$SUM
+forest_loss_sum_hapa7 <- cbind(forest_loss_sum_hapa7_FL, forest_loss_sum_hapa7_F) 
+forest_loss_sum_hapa7 <- forest_loss_sum_hapa7[,c(1,6,12)]
+forest_loss_sum_hapa <- rbind(forest_loss_sum_hapa, forest_loss_sum_hapa7)
+rug_hapa <- rbind(rug_hapa, rug_hapa7)
+height_hapa <- rbind(height_hapa, height_hapa7)
+
+#combine covariate data
+elevation2_hapa <- elevation_hapa %>% dplyr::select(OID_, MEAN) %>% rename(elevation = MEAN)
+forest_loss_sum2_hapa <- forest_loss_sum_hapa %>% dplyr::select(OID_, SUM_forest, SUM_loss) %>% mutate(forest_loss_prop=SUM_loss/SUM_forest)
+rug2_hapa <- rug_hapa %>% dplyr::select(OID_, MEAN) %>% rename(rug = MEAN)
+rug2_hapa <- distinct(rug2_hapa)
+height2_hapa <- height_hapa %>% dplyr::select(OID_,MEAN) %>% rename(height=MEAN)
+height2_hapa <- distinct(height2_hapa)
+buffer2_hapa <- buffer_hapa %>% dplyr::select(Site, Transect, OID_)
+
+covs_hapa <- left_join(elevation2_hapa, forest_loss_sum2_hapa, by="OID_")
+covs_hapa <- left_join(rug2_hapa, covs_hapa, by="OID_")
+covs_hapa <- left_join(height2_hapa, covs_hapa, by="OID_")
+covs_hapa <- left_join(buffer2_hapa, covs_hapa, by="OID_")
+covs_hapa$Site_Transect <- paste(covs_hapa$Site, covs_hapa$Transect, sep = "_")
+covs_hapa$forest_loss_prop <- log(covs_hapa$forest_loss_prop+1)
+```
+
+```{r Create unmarked frames}
+
+####ALLOCEBUS####
+allo_dat <- read.csv("Data/allo_reps.csv")
+allo_dat2 <- allo_dat[,-c(1:2)]
+rownames(allo_dat2) <- allo_dat$Site_Transect
+covs2_allo <- covs_allo[order(covs_allo$Site_Transect), ]
+
+umf_allo <- unmarkedFrameOccu(y=allo_dat2, #Observation data must be named 'y'
+                         siteCovs=data.frame(covars=covs2_allo))
+
+####MICROCEBUS####
+micro_dat <- read.csv("Data/micro_reps.csv")
+micro_dat2 <- micro_dat[,-c(1:2)]
+rownames(micro_dat2) <- micro_dat$Site_Transect
+covs2_micro <- covs_micro[order(covs_micro$Site_Transect), ]
+
+umf_micro <- unmarkedFrameOccu(y=micro_dat2, #Observation data must be named 'y'
+                         siteCovs=data.frame(covars=covs2_micro))
+
+####CHEIROGALEUS####
+cheiro_dat <- read.csv("Data/cheiro_reps.csv")
+cheiro_dat2 <- cheiro_dat[,-c(1:2)]
+rownames(cheiro_dat2) <- cheiro_dat$Site_Transect
+covs2_cheiro <- covs_cheiro[order(covs_cheiro$Site_Transect), ]
+
+umf_cheiro <- unmarkedFrameOccu(y=cheiro_dat2, #Observation data must be named 'y'
+                         siteCovs=data.frame(covars=covs2_cheiro))
+
+
+####LEPILEMUR####
+lepi_dat <- read.csv("Data/lepi_reps.csv")
+lepi_dat2 <- lepi_dat[,-c(1:2)]
+rownames(lepi_dat2) <- lepi_dat$Site_Transect
+covs2_lepi <- covs_lepi[order(covs_lepi$Site_Transect), ]
+
+umf_lepi <- unmarkedFrameOccu(y=lepi_dat2, #Observation data must be named 'y'
+                         siteCovs=data.frame(covars=covs2_lepi))
+
+####AVAHI####
+avahi_dat <- read.csv("Data/avahi_reps.csv")
+avahi_dat2 <- avahi_dat[,-c(1:2)]
+rownames(avahi_dat2) <- avahi_dat$Site_Transect
+covs2_avahi <- covs_avahi[order(covs_avahi$Site_Transect), ]
+
+umf_avahi <- unmarkedFrameOccu(y=avahi_dat2, #Observation data must be named 'y'
+                         siteCovs=data.frame(covars=covs2_avahi))
+
+####EULEMUR RUBRI####
+rubri_dat <- read.csv("Data/rubri_reps.csv")
+rubri_dat2 <- rubri_dat[,-c(1:2)]
+rownames(rubri_dat2) <- rubri_dat$Site_Transect
+covs2_rubri <- covs_rubri[order(covs_rubri$Site_Transect), ]
+
+umf_rubri <- unmarkedFrameOccu(y=rubri_dat2, #Observation data must be named 'y'
+                         siteCovs=data.frame(covars=covs2_rubri))
+
+####EULEMUR ALBI####
+albi_dat <- read.csv("Data/albi_reps.csv")
+albi_dat2 <- albi_dat[,-c(1:2)]
+rownames(albi_dat2) <- albi_dat$Site_Transect
+covs2_albi <- covs_albi[order(covs_albi$Site_Transect), ]
+
+umf_albi <- unmarkedFrameOccu(y=albi_dat2, #Observation data must be named 'y'
+                         siteCovs=data.frame(covars=covs2_albi))
+
+####PROPITHECUS####
+prop_dat <- read.csv("Data/prop_reps.csv")
+prop_dat2 <- prop_dat[,-c(1:2)]
+rownames(prop_dat2) <- prop_dat$Site_Transect
+covs2_prop <- covs_prop[order(covs_prop$Site_Transect), ]
+
+umf_prop <- unmarkedFrameOccu(y=prop_dat2, #Observation data must be named 'y'
+                         siteCovs=data.frame(covars=covs2_prop))
+
+####HAPALEMUR####
+hapa_dat <- read.csv("Data/hapa_reps.csv")
+hapa_dat2 <- hapa_dat[,-c(1:2)]
+rownames(hapa_dat2) <- hapa_dat$Site_Transect
+covs2_hapa <- covs_hapa[order(covs_hapa$Site_Transect), ]
+
+hapa_dat3 <- as.matrix(hapa_dat2)
+
+umf_hapa <- unmarkedFrameOccu(y=hapa_dat3, #Observation data must be named 'y'
+                         siteCovs=data.frame(covars=covs2_hapa))
+
+```
+
+```{r allocebus occupancy model}
+allo_elev <-  occu(~1~scale(covars.elevation), data=umf_allo)
+allo_rug <-  occu(~1~scale(covars.rug), data=umf_allo)
+allo_height <-  occu(~1~scale(covars.height), data=umf_allo)
+allo_loss <- occu(~1~scale(covars.forest_loss_prop), data=umf_allo)
+
+allo_full <-  occu(~1~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height), data=umf_allo) # did not converge
+
+allo_elev_detection <- occu(~scale(covars.elevation)~1, data=umf_allo)#significant! Allocebus detection negative with elevation, lowest AIC with model convergence
+allo_rug_detection <- occu(~scale(covars.rug)~1, data=umf_allo)
+allo_height_detection <- occu(~scale(covars.height)~1, data=umf_allo)
+allo_loss_detection <- occu(~scale(covars.forest_loss_prop)~1, data=umf_allo)
+
+allo_full_detection <- occu(~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height)~1, data=umf_allo)
+
+allo_occupancy_model <- allo_elev_detection 
+```
+
+```{r microcebus occupancy model}
+micro_elev <-  occu(~1~scale(covars.elevation), data=umf_micro)
+micro_rug <-  occu(~1~scale(covars.rug), data=umf_micro)
+micro_height <-  occu(~1~scale(covars.height), data=umf_micro) #model does not converge
+micro_loss <- occu(~1~scale(covars.forest_loss_prop), data=umf_micro)
+
+micro_full <-  occu(~1~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height), data=umf_micro)
+
+micro_elev_detection <- occu(~scale(covars.elevation)~1, data=umf_micro)
+micro_rug_detection <- occu(~scale(covars.rug)~1, data=umf_micro)
+micro_height_detection <- occu(~scale(covars.height)~1, data=umf_micro)
+micro_loss_detection <- occu(~scale(covars.forest_loss_prop)~1, data=umf_micro)
+
+micro_full_detection <- occu(~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height)~1, data=umf_micro)
+
+micro_occupancy_model <- micro_loss_detection
+
+```
+
+```{r cheiro occupancy model}
+cheiro_elev <-  occu(~1~scale(covars.elevation), data=umf_cheiro)
+cheiro_rug <-  occu(~1~scale(covars.rug), data=umf_cheiro)
+cheiro_height <-  occu(~1~scale(covars.height), data=umf_cheiro) 
+cheiro_loss <- occu(~1~scale(covars.forest_loss_prop), data=umf_cheiro)
+
+cheiro_full <-  occu(~1~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height), data=umf_cheiro)
+
+cheiro_elev_detection <- occu(~scale(covars.elevation)~1, data=umf_cheiro) #marginally significant, elevation positively related to detection (marginally)
+cheiro_rug_detection <- occu(~scale(covars.rug)~1, data=umf_cheiro)
+cheiro_height_detection <- occu(~scale(covars.height)~1, data=umf_cheiro)
+cheiro_loss_detection <- occu(~scale(covars.forest_loss_prop)~1, data=umf_cheiro)
+
+cheiro_full_detection <- occu(~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height)~1, data=umf_cheiro)
+
+cheiro_occupancy_model <- cheiro_elev_detection
+
+```
+
+```{r avahi occupancy model}
+avahi_elev <-  occu(~1~scale(covars.elevation), data=umf_avahi)
+avahi_rug <-  occu(~1~scale(covars.rug), data=umf_avahi)
+avahi_height <-  occu(~1~scale(covars.height), data=umf_avahi) 
+avahi_loss <- occu(~1~scale(covars.forest_loss_prop), data=umf_avahi)
+
+avahi_full <-  occu(~1~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height), data=umf_avahi) #model does not converge
+
+avahi_elev_detection <- occu(~scale(covars.elevation)~1, data=umf_avahi) 
+avahi_rug_detection <- occu(~scale(covars.rug)~1, data=umf_avahi)
+avahi_height_detection <- occu(~scale(covars.height)~1, data=umf_avahi)
+avahi_loss_detection <- occu(~scale(covars.forest_loss_prop)~1, data=umf_avahi)
+
+avahi_full_detection <- occu(~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height)~1, data=umf_avahi)
+
+avahi_occupancy_model <- avahi_height
+
+```
+
+```{r lepi occupancy model}
+lepi_elev <-  occu(~1~scale(covars.elevation), data=umf_lepi)
+lepi_rug <-  occu(~1~scale(covars.rug), data=umf_lepi)
+lepi_height <-  occu(~1~scale(covars.height), data=umf_lepi) 
+lepi_loss <- occu(~1~scale(covars.forest_loss_prop), data=umf_lepi)
+
+lepi_full <-  occu(~1~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height), data=umf_lepi)#model does not converge
+
+lepi_elev_detection <- occu(~scale(covars.elevation)~1, data=umf_lepi) 
+lepi_rug_detection <- occu(~scale(covars.rug)~1, data=umf_lepi)
+lepi_height_detection <- occu(~scale(covars.height)~1, data=umf_lepi)
+lepi_loss_detection <- occu(~scale(covars.forest_loss_prop)~1, data=umf_lepi)
+
+lepi_full_detection <- occu(~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height)~1, data=umf_lepi) #elevation significant and negative
+
+lepi_occupancy_model <- lepi_full_detection
+```
+
+```{r rubri occupancy model}
+rubri_elev <-  occu(~1~scale(covars.elevation), data=umf_rubri)
+rubri_rug <-  occu(~1~scale(covars.rug), data=umf_rubri)
+rubri_height <-  occu(~1~scale(covars.height), data=umf_rubri)
+rubri_loss <- occu(~1~scale(covars.forest_loss_prop), data=umf_rubri)
+
+rubri_full <-  occu(~1~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height), data=umf_rubri)
+
+rubri_elev_detection <- occu(~scale(covars.elevation)~1, data=umf_rubri) 
+rubri_rug_detection <- occu(~scale(covars.rug)~1, data=umf_rubri)
+rubri_height_detection <- occu(~scale(covars.height)~1, data=umf_rubri)
+rubri_loss_detection <- occu(~scale(covars.forest_loss_prop)~1, data=umf_rubri)
+
+rubri_full_detection <- occu(~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height)~1, data=umf_rubri)
+
+rubri_occupancy_model <- rubri_height
+```
+
+```{r albi occupancy model}
+albi_elev <-  occu(~1~scale(covars.elevation), data=umf_albi)
+albi_rug <-  occu(~1~scale(covars.rug), data=umf_albi)#does not converge
+albi_height <-  occu(~1~scale(covars.height), data=umf_albi) 
+albi_loss <- occu(~1~scale(covars.forest_loss_prop), data=umf_albi)
+
+albi_full <-  occu(~1~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height), data=umf_albi)
+
+albi_elev_detection <- occu(~scale(covars.elevation)~1, data=umf_albi) 
+albi_rug_detection <- occu(~scale(covars.rug)~1, data=umf_albi)
+albi_height_detection <- occu(~scale(covars.height)~1, data=umf_albi)
+albi_loss_detection <- occu(~scale(covars.forest_loss_prop)~1, data=umf_albi)
+
+albi_full_detection <- occu(~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height)~1, data=umf_albi)
+
+albi_occupancy_model <- albi_full 
+```
+
+```{r prop occupancy model}
+prop_elev <-  occu(~1~scale(covars.elevation), data=umf_prop)
+prop_rug <-  occu(~1~scale(covars.rug), data=umf_prop)
+prop_height <-  occu(~1~scale(covars.height), data=umf_prop) 
+prop_loss <- occu(~1~scale(covars.forest_loss_prop), data=umf_prop)#marginally significant! Positive occupancy with forest loss proportion
+
+prop_full <-  occu(~1~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height), data=umf_prop)
+
+prop_elev_detection <- occu(~scale(covars.elevation)~1, data=umf_prop) 
+prop_rug_detection <- occu(~scale(covars.rug)~1, data=umf_prop)#significant! 
+prop_height_detection <- occu(~scale(covars.height)~1, data=umf_prop)
+prop_loss_detection <- occu(~scale(covars.forest_loss_prop)~1, data=umf_prop)
+
+prop_full_detection <- occu(~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height)~1, data=umf_prop)
+
+prop_occupancy_model <- prop_rug_detection
+```
+
+```{r hapa occupancy model}
+hapa_elev <-  occu(~1~scale(covars.elevation), data=umf_hapa)
+hapa_rug <-  occu(~1~scale(covars.rug), data=umf_hapa)
+hapa_height <-  occu(~1~scale(covars.height), data=umf_hapa) #did not converge
+hapa_loss <- occu(~1~scale(covars.forest_loss_prop), data=umf_hapa)
+
+hapa_full <-  occu(~1~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height), data=umf_hapa)#does not converge
+
+hapa_elev_detection <- occu(~scale(covars.elevation)~1, data=umf_hapa)
+hapa_rug_detection <- occu(~scale(covars.rug)~1, data=umf_hapa)
+hapa_height_detection <- occu(~scale(covars.height)~1, data=umf_hapa)
+hapa_loss_detection <- occu(~scale(covars.forest_loss_prop)~1, data=umf_hapa)
+
+hapa_full_detection <- occu(~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height)~1, data=umf_hapa)
+
+hapa_occupancy_model <-hapa_full
+
+```
+
