@@ -774,6 +774,8 @@ umf_hapa <- unmarkedFrameOccu(y=hapa_dat3, #Observation data must be named 'y'
 ```
 
 ```{r allocebus occupancy model}
+allo_null <-  occu(~1~1, data=umf_allo)
+
 allo_elev <-  occu(~1~scale(covars.elevation), data=umf_allo)
 allo_rug <-  occu(~1~scale(covars.rug), data=umf_allo)
 allo_height <-  occu(~1~scale(covars.height), data=umf_allo)
@@ -792,6 +794,7 @@ allo_occupancy_model <- allo_elev_detection
 ```
 
 ```{r microcebus occupancy model}
+micro_null <-  occu(~1~1, data=umf_micro)
 micro_elev <-  occu(~1~scale(covars.elevation), data=umf_micro)
 micro_rug <-  occu(~1~scale(covars.rug), data=umf_micro)
 micro_height <-  occu(~1~scale(covars.height), data=umf_micro) #model does not converge
@@ -806,11 +809,13 @@ micro_loss_detection <- occu(~scale(covars.forest_loss_prop)~1, data=umf_micro)
 
 micro_full_detection <- occu(~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height)~1, data=umf_micro)
 
-micro_occupancy_model <- micro_loss_detection
+micro_occupancy_model <- micro_null
 
 ```
 
 ```{r cheiro occupancy model}
+cheiro_null <-  occu(~1~1, data=umf_cheiro)
+
 cheiro_elev <-  occu(~1~scale(covars.elevation), data=umf_cheiro)
 cheiro_rug <-  occu(~1~scale(covars.rug), data=umf_cheiro)
 cheiro_height <-  occu(~1~scale(covars.height), data=umf_cheiro) 
@@ -830,6 +835,8 @@ cheiro_occupancy_model <- cheiro_elev_detection
 ```
 
 ```{r avahi occupancy model}
+avahi_null <-  occu(~1~1, data=umf_avahi)
+
 avahi_elev <-  occu(~1~scale(covars.elevation), data=umf_avahi)
 avahi_rug <-  occu(~1~scale(covars.rug), data=umf_avahi)
 avahi_height <-  occu(~1~scale(covars.height), data=umf_avahi) 
@@ -844,11 +851,13 @@ avahi_loss_detection <- occu(~scale(covars.forest_loss_prop)~1, data=umf_avahi)
 
 avahi_full_detection <- occu(~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height)~1, data=umf_avahi)
 
-avahi_occupancy_model <- avahi_height
+avahi_occupancy_model <- avahi_full
 
 ```
 
 ```{r lepi occupancy model}
+lepi_null <-  occu(~1~1, data=umf_lepi)
+
 lepi_elev <-  occu(~1~scale(covars.elevation), data=umf_lepi)
 lepi_rug <-  occu(~1~scale(covars.rug), data=umf_lepi)
 lepi_height <-  occu(~1~scale(covars.height), data=umf_lepi) 
@@ -856,7 +865,7 @@ lepi_loss <- occu(~1~scale(covars.forest_loss_prop), data=umf_lepi)
 
 lepi_full <-  occu(~1~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height), data=umf_lepi)#model does not converge
 
-lepi_elev_detection <- occu(~scale(covars.elevation)~1, data=umf_lepi) 
+lepi_elev_detection <- occu(~scale(covars.elevation)~1, data=umf_lepi)  #elevation significant and negative
 lepi_rug_detection <- occu(~scale(covars.rug)~1, data=umf_lepi)
 lepi_height_detection <- occu(~scale(covars.height)~1, data=umf_lepi)
 lepi_loss_detection <- occu(~scale(covars.forest_loss_prop)~1, data=umf_lepi)
@@ -867,6 +876,8 @@ lepi_occupancy_model <- lepi_full_detection
 ```
 
 ```{r rubri occupancy model}
+rubri_null <-  occu(~1~1, data=umf_rubri)
+
 rubri_elev <-  occu(~1~scale(covars.elevation), data=umf_rubri)
 rubri_rug <-  occu(~1~scale(covars.rug), data=umf_rubri)
 rubri_height <-  occu(~1~scale(covars.height), data=umf_rubri)
@@ -885,6 +896,8 @@ rubri_occupancy_model <- rubri_height
 ```
 
 ```{r albi occupancy model}
+albi_null <-  occu(~1~1, data=umf_albi)
+
 albi_elev <-  occu(~1~scale(covars.elevation), data=umf_albi)
 albi_rug <-  occu(~1~scale(covars.rug), data=umf_albi)#does not converge
 albi_height <-  occu(~1~scale(covars.height), data=umf_albi) 
@@ -899,10 +912,12 @@ albi_loss_detection <- occu(~scale(covars.forest_loss_prop)~1, data=umf_albi)
 
 albi_full_detection <- occu(~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height)~1, data=umf_albi)
 
-albi_occupancy_model <- albi_full 
+albi_occupancy_model <- albi_null
 ```
 
 ```{r prop occupancy model}
+prop_null <-  occu(~1~1, data=umf_prop)
+
 prop_elev <-  occu(~1~scale(covars.elevation), data=umf_prop)
 prop_rug <-  occu(~1~scale(covars.rug), data=umf_prop)
 prop_height <-  occu(~1~scale(covars.height), data=umf_prop) 
@@ -921,6 +936,9 @@ prop_occupancy_model <- prop_rug_detection
 ```
 
 ```{r hapa occupancy model}
+
+hapa_null <-  occu(~1~1, data=umf_hapa)
+
 hapa_elev <-  occu(~1~scale(covars.elevation), data=umf_hapa)
 hapa_rug <-  occu(~1~scale(covars.rug), data=umf_hapa)
 hapa_height <-  occu(~1~scale(covars.height), data=umf_hapa) #did not converge
@@ -935,7 +953,35 @@ hapa_loss_detection <- occu(~scale(covars.forest_loss_prop)~1, data=umf_hapa)
 
 hapa_full_detection <- occu(~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height)~1, data=umf_hapa)
 
-hapa_occupancy_model <-hapa_full
+hapa_occupancy_model <-hapa_null
+
+
 
 ```
+
+```{r Back transform to get occupancy and detection probabilities}
+
+occu_allo <- backTransform(allo_null, type="state")
+occu_micro <- backTransform(micro_null, type="state")
+occu_cheiro <- backTransform(cheiro_null, type="state")
+occu_avahi <- backTransform(avahi_null, type="state")
+occu_lepi <- backTransform(lepi_null, type="state")
+occu_rubri <- backTransform(rubri_null, type="state")
+occu_albi <- backTransform(albi_null, type="state")
+occu_prop <- backTransform(prop_null, type="state")
+occu_hapa <- backTransform(hapa_null, type="state")
+
+detection_allo <- backTransform(allo_null, type="det")
+detection_micro <- backTransform(micro_null, type="det")
+detection_cheiro <- backTransform(cheiro_null, type="det")
+detection_avahi <- backTransform(avahi_null, type="det")
+detection_lepi <- backTransform(lepi_null, type="det")
+detection_rubri <- backTransform(rubri_null, type="det")
+detection_albi <- backTransform(albi_null, type="det")
+detection_prop <- backTransform(prop_null, type="det")
+detection_hapa <- backTransform(hapa_null, type="det")
+
+
+```
+
 
