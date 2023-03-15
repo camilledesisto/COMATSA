@@ -1128,6 +1128,32 @@ lmer_hapalemur_best <- summary(lmer_hapalemur6)
 
 ```
 
+```{r Co-occurence}
+library(cooccur)
+data(finches)
+finches
+
+cooccur_dat <- survey_all %>% select(Site, Transect, Nom_sientifique) %>% unite("Site_Transect", Site:Transect)%>% distinct()
+cooccur_dat$occur <- 1
+cooccur_dat$occur[is.na(cooccur_dat$Nom_sientifique)] <- 0
+cooccur_dat <- cooccur_dat[-44,]
+cooccur_dat <- cooccur_dat[!is.na(cooccur_dat$Nom_sientifique),]
+cooccur_dat <- cooccur_dat %>% pivot_wider(names_from = "Site_Transect", values_from= "occur")
+cooccur_dat[is.na(cooccur_dat)] <- 0
+cooccur_dat <- as.data.frame(cooccur_dat)
+rownames(cooccur_dat) <- cooccur_dat$Nom_sientifique
+cooccur_dat <- cooccur_dat[,-1]
+
+cooccur_lemurs <- cooccur(mat=cooccur_dat, thresh = FALSE, type="spp_site", spp_names = TRUE)
+summary(cooccur_lemurs)
+plot(cooccur_lemurs, plotrand = TRUE)
+
+class(cooccur.finches)
+
+```
+
+
+
 ```{r Figures}
 
 #heatmap figure
