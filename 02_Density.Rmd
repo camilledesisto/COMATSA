@@ -164,7 +164,7 @@ lmer_allocebus_rsq13 <- rsq.lmm(lmer_allocebus13)[[1]]
 lmer_allocebus_rsq14 <- rsq.lmm(lmer_allocebus14)[[1]]
 max(lmer_allocebus_rsq, lmer_allocebus_rsq1 , lmer_allocebus_rsq2 , lmer_allocebus_rsq3 , lmer_allocebus_rsq4 , lmer_allocebus_rsq5 , lmer_allocebus_rsq6, lmer_allocebus_rsq7 , lmer_allocebus_rsq8 , lmer_allocebus_rsq9 , lmer_allocebus_rsq10, lmer_allocebus_rsq11 , lmer_allocebus_rsq12 , lmer_allocebus_rsq13 , lmer_allocebus_rsq14 )
 
-lmer_allocebus_best <- summary(lmer_allocebus9)
+lmer_allocebus_best <- lmer_allocebus9
 
 ```
 
@@ -284,7 +284,7 @@ lmer_microcebus_rsq13 <- rsq.lmm(lmer_microcebus13)[[1]]
 lmer_microcebus_rsq14 <- rsq.lmm(lmer_microcebus14)[[1]]
 max(lmer_microcebus_rsq, lmer_microcebus_rsq1 , lmer_microcebus_rsq2 , lmer_microcebus_rsq3 , lmer_microcebus_rsq4 , lmer_microcebus_rsq5 , lmer_microcebus_rsq6, lmer_microcebus_rsq7 , lmer_microcebus_rsq8 , lmer_microcebus_rsq9 , lmer_microcebus_rsq10, lmer_microcebus_rsq11 , lmer_microcebus_rsq12 , lmer_microcebus_rsq13 , lmer_microcebus_rsq14 )
 
-lmer_microcebus_best <- summary(lmer_microcebus13)
+lmer_microcebus_best <- lmer_microcebus13
 
 ```
 
@@ -404,7 +404,7 @@ lmer_cheirogaleus_rsq13 <- rsq.lmm(lmer_cheirogaleus13)[[1]]
 lmer_cheirogaleus_rsq14 <- rsq.lmm(lmer_cheirogaleus14)[[1]]
 max(lmer_cheirogaleus_rsq, lmer_cheirogaleus_rsq1 , lmer_cheirogaleus_rsq2 , lmer_cheirogaleus_rsq3 , lmer_cheirogaleus_rsq4 , lmer_cheirogaleus_rsq5 , lmer_cheirogaleus_rsq6, lmer_cheirogaleus_rsq7 , lmer_cheirogaleus_rsq8 , lmer_cheirogaleus_rsq9 , lmer_cheirogaleus_rsq10, lmer_cheirogaleus_rsq11 , lmer_cheirogaleus_rsq12 , lmer_cheirogaleus_rsq13 , lmer_cheirogaleus_rsq14 )
 
-lmer_cheirogaleus_best <- summary(lmer_cheirogaleus11) #forest loss proportion has a signifcantly positive relationship with Cheirogaleus density
+lmer_cheirogaleus_best <- lmer_cheirogaleus11 #forest loss proportion has a signifcantly positive relationship with Cheirogaleus density
 
 ```
 
@@ -524,7 +524,7 @@ lmer_lepilemur_rsq13 <- rsq.lmm(lmer_lepilemur13)[[1]]
 lmer_lepilemur_rsq14 <- rsq.lmm(lmer_lepilemur14)[[1]]
 max(lmer_lepilemur_rsq, lmer_lepilemur_rsq1 , lmer_lepilemur_rsq2 , lmer_lepilemur_rsq3 , lmer_lepilemur_rsq4 , lmer_lepilemur_rsq5 , lmer_lepilemur_rsq6, lmer_lepilemur_rsq7 , lmer_lepilemur_rsq8 , lmer_lepilemur_rsq9 , lmer_lepilemur_rsq10, lmer_lepilemur_rsq11 , lmer_lepilemur_rsq12 , lmer_lepilemur_rsq13 , lmer_lepilemur_rsq14 )
 
-lmer_lepilemur_best <- summary(lmer_lepilemur9) #rugedness has a significantly negative relationship with lepilemur density
+lmer_lepilemur_best <- lmer_lepilemur9 #rugedness has a significantly negative relationship with lepilemur density
 
 ```
 
@@ -644,7 +644,7 @@ lmer_avahi_rsq13 <- rsq.lmm(lmer_avahi13)[[1]]
 lmer_avahi_rsq14 <- rsq.lmm(lmer_avahi14)[[1]]
 max(lmer_avahi_rsq, lmer_avahi_rsq1 , lmer_avahi_rsq2 , lmer_avahi_rsq3 , lmer_avahi_rsq4 , lmer_avahi_rsq5 , lmer_avahi_rsq6, lmer_avahi_rsq7 , lmer_avahi_rsq8 , lmer_avahi_rsq9 , lmer_avahi_rsq10, lmer_avahi_rsq11 , lmer_avahi_rsq12 , lmer_avahi_rsq13 , lmer_avahi_rsq14 )
 
-lmer_avahi_best <- summary(lmer_avahi13) #rugedness has a significantly negative relationship with avahi density, height is significantly positive, and forest loss proportion is marginally significantly positive
+lmer_avahi_best <- lmer_avahi13 #rugedness has a significantly negative relationship with avahi density, height is significantly positive, and forest loss proportion is marginally significantly positive
 
 ```
 
@@ -765,7 +765,8 @@ lmer_rubriventer_rsq13 <- rsq.lmm(lmer_rubriventer13)[[1]]
 lmer_rubriventer_rsq14 <- rsq.lmm(lmer_rubriventer14)[[1]]
 max(lmer_rubriventer_rsq, lmer_rubriventer_rsq1 , lmer_rubriventer_rsq2 , lmer_rubriventer_rsq3 , lmer_rubriventer_rsq4 , lmer_rubriventer_rsq5 , lmer_rubriventer_rsq6, lmer_rubriventer_rsq7 , lmer_rubriventer_rsq8 , lmer_rubriventer_rsq9 , lmer_rubriventer_rsq10, lmer_rubriventer_rsq11 , lmer_rubriventer_rsq12 , lmer_rubriventer_rsq13 , lmer_rubriventer_rsq14 )
 
-lmer_rubriventer_best <- summary(lmer_rubriventer) #Forest loss proportion is positively, significantly related to Eulemur rubriventer density 
+lmer_rubriventer_best <- lmer_rubriventer #Forest loss proportion is positively, significantly related to Eulemur rubriventer density 
+
 
 ```
 
@@ -885,7 +886,7 @@ lmer_albifrons_rsq13 <- rsq.lmm(lmer_albifrons13)[[1]]
 lmer_albifrons_rsq14 <- rsq.lmm(lmer_albifrons14)[[1]]
 max(lmer_albifrons_rsq, lmer_albifrons_rsq1 , lmer_albifrons_rsq2 , lmer_albifrons_rsq3 , lmer_albifrons_rsq4 , lmer_albifrons_rsq5 , lmer_albifrons_rsq6, lmer_albifrons_rsq7 , lmer_albifrons_rsq8 , lmer_albifrons_rsq9 , lmer_albifrons_rsq10, lmer_albifrons_rsq11 , lmer_albifrons_rsq12 , lmer_albifrons_rsq13 , lmer_albifrons_rsq14 )
 
-lmer_albifrons_best <- summary(lmer_albifrons)
+lmer_albifrons_best <-lmer_albifrons
 
 ```
 
@@ -1005,7 +1006,7 @@ lmer_propithecus_rsq13 <- rsq.lmm(lmer_propithecus13)[[1]]
 lmer_propithecus_rsq14 <- rsq.lmm(lmer_propithecus14)[[1]]
 max(lmer_propithecus_rsq, lmer_propithecus_rsq1 , lmer_propithecus_rsq2 , lmer_propithecus_rsq3 , lmer_propithecus_rsq4 , lmer_propithecus_rsq5 , lmer_propithecus_rsq6, lmer_propithecus_rsq7 , lmer_propithecus_rsq8 , lmer_propithecus_rsq9 , lmer_propithecus_rsq10, lmer_propithecus_rsq11 , lmer_propithecus_rsq12 , lmer_propithecus_rsq13 , lmer_propithecus_rsq14 )
 
-lmer_propithecus_best <- summary(lmer_propithecus10)
+lmer_propithecus_best <- lmer_propithecus10
 
 ```
 
@@ -1124,7 +1125,7 @@ lmer_hapalemur_rsq13 <- rsq.lmm(lmer_hapalemur13)[[1]]
 lmer_hapalemur_rsq14 <- rsq.lmm(lmer_hapalemur14)[[1]]
 max(lmer_hapalemur_rsq, lmer_hapalemur_rsq1 , lmer_hapalemur_rsq2 , lmer_hapalemur_rsq3 , lmer_hapalemur_rsq4 , lmer_hapalemur_rsq5 , lmer_hapalemur_rsq6, lmer_hapalemur_rsq7 , lmer_hapalemur_rsq8 , lmer_hapalemur_rsq9 , lmer_hapalemur_rsq10, lmer_hapalemur_rsq11 , lmer_hapalemur_rsq12 , lmer_hapalemur_rsq13 , lmer_hapalemur_rsq14 )
 
-lmer_hapalemur_best <- summary(lmer_hapalemur6)
+lmer_hapalemur_best <- lmer_hapalemur6
 
 ```
 
