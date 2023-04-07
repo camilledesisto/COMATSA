@@ -15,6 +15,8 @@ library(Distance); library(tidyverse); library(lme4); library(lmerTest); library
 
 #Import relevant data 
 survey_all <- read.csv("~/Documents/MadaResearch/COMATSA/lemur_surveys/seven_sites_lemurs2.csv")
+survey_all <- read.csv("./Data/seven_sites_lemurs2.csv")
+
 #Make separate data frames for dirunal and nocturnal lemurs
 survey_diurnal <- survey_all %>% filter(Type=="Diurnal"&Site =="Ambodivoara"|Site=="Ambodivohitra_Kobahina")
 survey_nocturnal <- survey_all %>% filter(Type=="Nocturnal"&Site =="Ambodivoara"|Site=="Ambodivohitra_Kobahina")
@@ -106,7 +108,7 @@ allocebus_detection_prob <- predict(model8_allocebus)$fitted[[1]]
 allocebus_strip_width <- max(allocebus_df3$distance) * 2
 
 #Upload covariate data 
-allocebus_dat <- read.csv("~/Documents/GitHub/COMATSA_GitHub/Data/allo_reps.csv")
+allocebus_dat <- read.csv("./Data/allo_reps.csv")
 #Manually fix some covariate data 
 allocebus_dat$NRep <- 3
 allocebus_dat$NRep[allocebus_dat$Site_Transect=="Befamatra_2"] <- 4
@@ -166,6 +168,7 @@ max(lmer_allocebus_rsq, lmer_allocebus_rsq1 , lmer_allocebus_rsq2 , lmer_alloceb
 
 lmer_allocebus_best <- lmer_allocebus9
 
+lmer_allocebus_best
 ```
 
 ```{r Microcebus density calculations}
@@ -226,7 +229,7 @@ microcebus_detection_prob <- predict(model4_microcebus)$fitted[[1]]
 microcebus_strip_width <- max(microcebus_df3$distance) * 2
 
 #Upload covariate data 
-microcebus_dat <- read.csv("~/Documents/GitHub/COMATSA_GitHub/Data/micro_reps.csv")
+microcebus_dat <- read.csv("./Data/micro_reps.csv")
 #Manually fix some covariate data 
 microcebus_dat$NRep <- 3
 microcebus_dat$NRep[microcebus_dat$Site_Transect=="Befamatra_2"] <- 4

@@ -11,6 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r Data and packages}
 lemur_combined_total <- read.csv("~/Documents/GitHub/COMATSA_GitHub/Data/seven_sites_lemurs2.csv")
+lemur_combined_total <- read.csv("./Data/seven_sites_lemurs2.csv")
 
 library(tidyverse); library(unmarked)
 
