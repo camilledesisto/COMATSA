@@ -15,6 +15,7 @@ library(Distance); library(tidyverse); library(lme4); library(lmerTest); library
 
 #Import relevant data 
 survey_all <- read.csv("~/Documents/MadaResearch/COMATSA/lemur_surveys/eight_sites_lemurs.csv")
+
 #Make separate data frames for dirunal and nocturnal lemurs
 survey_diurnal <- survey_all %>% filter(Type=="Diurnal"&Site =="Ambodivoara"|Site=="Ambodivohitra_Kobahina"& Site=="Antanambe")
 survey_nocturnal <- survey_all %>% filter(Type=="Nocturnal"&Site =="Ambodivoara"|Site=="Ambodivohitra_Kobahina"& Site=="Antanambe")
@@ -37,7 +38,15 @@ survey_nocturnal$Effort[survey_nocturnal$Transect=="3"& survey_nocturnal$Site=="
 survey_nocturnal$Effort[survey_nocturnal$Transect=="1"& survey_nocturnal$Site=="Antanambe"] <- 1000 * 3
 survey_nocturnal$Effort[survey_nocturnal$Transect=="2"& survey_nocturnal$Site=="Antanambe"] <-1000 * 3
 survey_nocturnal$Effort[survey_nocturnal$Transect=="3"& survey_nocturnal$Site=="Antanambe"] <- 1000 * 3
-
+survey_nocturnal$Effort[survey_nocturnal$Transect=="1"& survey_nocturnal$Site=="Befamatra"] <- 625 * 3
+survey_nocturnal$Effort[survey_nocturnal$Transect=="2"& survey_nocturnal$Site=="Befamatra"] <-1075 * 4
+survey_nocturnal$Effort[survey_nocturnal$Transect=="3"& survey_nocturnal$Site=="Befamatra"] <- 780 * 3
+survey_nocturnal$Effort[survey_nocturnal$Transect=="1"& survey_nocturnal$Site=="Betaholana"] <- 1275 * 3
+survey_nocturnal$Effort[survey_nocturnal$Transect=="2"& survey_nocturnal$Site=="Betaholana"] <-1000 * 3
+survey_nocturnal$Effort[survey_nocturnal$Transect=="3"& survey_nocturnal$Site=="Betaholana"] <- 1200 * 3
+survey_nocturnal$Effort[survey_nocturnal$Transect=="1"& survey_nocturnal$Site=="Androfiabe"] <- 1175 * 3
+survey_nocturnal$Effort[survey_nocturnal$Transect=="2"& survey_nocturnal$Site=="Androfiabe"] <-1250 * 3
+survey_nocturnal$Effort[survey_nocturnal$Transect=="3"& survey_nocturnal$Site=="Androfiabe"] <- 1100 * 3
 
 #Diurnal
 survey_diurnal$Effort[survey_diurnal$Transect=="1"& survey_diurnal$Site=="Ambodivoara"] <- 860 * 13
@@ -51,6 +60,15 @@ survey_diurnal$Effort[survey_diurnal$Transect=="3"& survey_diurnal$Site=="Ambodi
 survey_diurnal$Effort[survey_diurnal$Transect=="1"& survey_diurnal$Site=="Antanambe"] <- 1000 * 3
 survey_diurnal$Effort[survey_diurnal$Transect=="2"& survey_diurnal$Site=="Antanambe"] <-1000 * 3
 survey_diurnal$Effort[survey_diurnal$Transect=="3"& survey_diurnal$Site=="Antanambe"] <- 1000 * 3
+survey_diurnal$Effort[survey_diurnal$Transect=="1"& survey_diurnal$Site=="Befamatra"] <- 625 * 3
+survey_diurnal$Effort[survey_diurnal$Transect=="2"& survey_diurnal$Site=="Befamatra"] <-1075 * 2
+survey_diurnal$Effort[survey_diurnal$Transect=="3"& survey_diurnal$Site=="Befamatra"] <- 780 * 3
+survey_diurnal$Effort[survey_diurnal$Transect=="1"& survey_diurnal$Site=="Betaholana"] <- 1275 * 3
+survey_diurnal$Effort[survey_diurnal$Transect=="2"& survey_diurnal$Site=="Betaholana"] <-1000 * 3
+survey_diurnal$Effort[survey_diurnal$Transect=="3"& survey_diurnal$Site=="Betaholana"] <- 1200 * 3
+survey_diurnal$Effort[survey_diurnal$Transect=="1"& survey_diurnal$Site=="Androfiabe"] <- 1175 * 3
+survey_diurnal$Effort[survey_diurnal$Transect=="2"& survey_diurnal$Site=="Androfiabe"] <-1250 * 3
+survey_diurnal$Effort[survey_diurnal$Transect=="3"& survey_diurnal$Site=="Androfiabe"] <- 1100 * 3
 
 
 ```
