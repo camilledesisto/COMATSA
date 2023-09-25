@@ -10,14 +10,13 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r Data and packages}
-lemur_combined_total <- read.csv("~/Documents/GitHub/COMATSA_GitHub/Data/eight_sites_lemurs.csv")
+lemur_combined_total <- read.csv("~/Documents/MadaResearch/COMATSA/lemur_surveys/lemurs_all_sept1.csv")
 
 library(tidyverse); library(unmarked)
 
 ```
 
 ```{r Organize Occupancy Dataframes By Lemur Species}
-
 #Edit transect name for seventh site
 lemur_combined_total$Site[lemur_combined_total$Site=="Ambodivohitra_Kobahina"] <- "AmbodivohitraKobahina"
 
@@ -46,6 +45,7 @@ ldat_rub <- lemur_combined_total %>% filter(Nom_sientifique=='Eulemur_rubrivente
  dplyr:: select(Site_Transect, Repetition)
 ldat_rub$obs <- 1
 ldat_rub2 <- ldat_rub %>% group_by(Site_Transect, Repetition)%>% summarise(obs_total = sum(obs))
+ldat_rub2<-ldat_rub2[order(ldat_rub2$Repetition),]
 ldat_rub3 <- rbind(ldat_rub2, site_trans_base)
 sort(unique(ldat_rub3$Site_Transect))
 ldat_rub3$Site_Transect[ldat_rub3$Site_Transect=="_NA"]<- NA
@@ -64,7 +64,8 @@ ldat_rub3c$obs_total[is.na(ldat_rub3c$obs_total)]<- 0
 
 ldat_rub4 <- ldat_rub3c %>% group_by(Site_Transect, Repetition)%>% summarise(obs_total = sum(obs_total)) %>%
   pivot_wider(names_from = Repetition, values_from= obs_total)
-ldat_rub4[nrow(ldat_rub4)+1,]<-list("AmbodivohitraKobahina_2", 0, 0, 0, 0, NA, NA,NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA)
+
+ldat_rub4[nrow(ldat_rub4)+1,]<-list("AmbodivohitraKobahina_2", 0, 0, 0, 0, NA, NA,NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA)
 ldat_rub4$`1`[ldat_rub4$Site_Transect=="AmbodivohitraKobahina_1"]<-0
 ldat_rub4$`2`[ldat_rub4$Site_Transect=="AmbodivohitraKobahina_1"]<-0
 ldat_rub4$`3`[ldat_rub4$Site_Transect=="AmbodivohitraKobahina_1"]<-0
@@ -73,7 +74,10 @@ ldat_rub4$`1`[ldat_rub4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
 ldat_rub4$`2`[ldat_rub4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
 ldat_rub4$`3`[ldat_rub4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
 ldat_rub4$`4`[ldat_rub4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
+```
 
+
+```{r Organize Occupancy Dataframes By Lemur Species}
 #EULEMUR ALBIFRONS
 ldat_alb <- lemur_combined_total %>% filter(Nom_sientifique=='Eulemur_albifrons'& Type!="Nocturnal")%>%
   dplyr::select(Site, Date, Transect, Repetition, N_ind, Elevation_obs) %>% mutate(Site_Transect = paste(Site, Transect, sep = '_'))%>%
@@ -89,7 +93,7 @@ ldat_alb4 <- ldat_alb3 %>% group_by(Site_Transect, Repetition)%>% summarise(obs_
   pivot_wider(names_from = Repetition, values_from= obs_total)
 ldat_alb4[8,14] <- 0
 ldat_alb4[14,2]<- 0
-ldat_alb4[nrow(ldat_alb4)+1,]<-list("AmbodivohitraKobahina_2", 0, 0, 0, 0, NA, NA,NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA)
+ldat_alb4[nrow(ldat_alb4)+1,]<-list("AmbodivohitraKobahina_2", 0, 0, 0, 0, NA, NA,NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA)
 ldat_alb4$`1`[ldat_alb4$Site_Transect=="AmbodivohitraKobahina_1"]<-0
 ldat_alb4$`2`[ldat_alb4$Site_Transect=="AmbodivohitraKobahina_1"]<-0
 ldat_alb4$`3`[ldat_alb4$Site_Transect=="AmbodivohitraKobahina_1"]<-0
@@ -98,7 +102,10 @@ ldat_alb4$`1`[ldat_alb4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
 ldat_alb4$`2`[ldat_alb4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
 ldat_alb4$`3`[ldat_alb4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
 ldat_alb4$`4`[ldat_alb4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
+```
 
+
+```{r Organize Occupancy Dataframes By Lemur Species}
 #PROPITHECUS CANDIDUS
 ldat_prop <- lemur_combined_total %>% filter(Nom_sientifique=='Propithecus_candidus'& Type!="Nocturnal")%>%
   dplyr::select(Site, Date, Transect, Repetition, N_ind, Elevation_obs) %>% mutate(Site_Transect = paste(Site, Transect, sep = '_'))%>%
@@ -113,7 +120,7 @@ ldat_prop3 <- ldat_prop3[!is.na(ldat_prop3$Site_Transect),]
 ldat_prop4 <- ldat_prop3 %>% group_by(Site_Transect, Repetition)%>% summarise(obs_total = sum(obs_total)) %>%
   pivot_wider(names_from = Repetition, values_from= obs_total)
 ldat_prop4[8,14]<-0
-ldat_prop4[nrow(ldat_prop4)+1,]<-list("AmbodivohitraKobahina_2", 0, 0, 0, 0, NA, NA,NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA)
+ldat_prop4[nrow(ldat_prop4)+1,]<-list("AmbodivohitraKobahina_2", 0, 0, 0, 0, NA, NA,NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA)
 ldat_prop4$`1`[ldat_prop4$Site_Transect=="AmbodivohitraKobahina_1"]<-0
 ldat_prop4$`2`[ldat_prop4$Site_Transect=="AmbodivohitraKobahina_1"]<-0
 ldat_prop4$`3`[ldat_prop4$Site_Transect=="AmbodivohitraKobahina_1"]<-0
@@ -122,7 +129,10 @@ ldat_prop4$`1`[ldat_prop4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
 ldat_prop4$`2`[ldat_prop4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
 ldat_prop4$`3`[ldat_prop4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
 ldat_prop4$`4`[ldat_prop4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
+```
 
+
+```{r Organize Occupancy Dataframes By Lemur Species}
 #HAPALEMUS OCCIDENTALIS
 ldat_hap <- lemur_combined_total %>% filter(Nom_sientifique=='Hapalemur_occidentalis'& Type!="Nocturnal")%>%
   dplyr::select(Site, Date, Transect, Repetition, N_ind, Elevation_obs) %>% mutate(Site_Transect = paste(Site, Transect, sep = '_'))%>%
@@ -137,7 +147,7 @@ ldat_hap3 <- ldat_hap3[!is.na(ldat_hap3$Site_Transect),]
 ldat_hap4 <- ldat_hap3 %>% group_by(Site_Transect, Repetition)%>% summarise(obs_total = sum(obs_total)) %>%
   pivot_wider(names_from = Repetition, values_from= obs_total)
 ldat_hap4[8,14]<- 0
-ldat_hap4[nrow(ldat_hap4)+1,]<-list("AmbodivohitraKobahina_2", 0, 0, 0, 0, NA, NA,NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA)
+ldat_hap4[nrow(ldat_hap4)+1,]<-list("AmbodivohitraKobahina_2", 0, 0, 0, 0, NA, NA,NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA)
 ldat_hap4$`1`[ldat_hap4$Site_Transect=="AmbodivohitraKobahina_1"]<-0
 ldat_hap4$`2`[ldat_hap4$Site_Transect=="AmbodivohitraKobahina_1"]<-0
 ldat_hap4$`3`[ldat_hap4$Site_Transect=="AmbodivohitraKobahina_1"]<-0
@@ -147,7 +157,10 @@ ldat_hap4$`2`[ldat_hap4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
 ldat_hap4$`3`[ldat_hap4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
 ldat_hap4$`4`[ldat_hap4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
 ldat_hap4 <- ldat_hap4[-27,]
+```
 
+
+```{r Organize Occupancy Dataframes By Lemur Species}
 #ALLOCEBUS TRICHOTIS
 ldat_allo <- lemur_combined_total %>% filter(Nom_sientifique=='Allocebus_trichotis'& Type!="Diurnal")%>%
   dplyr::select(Site, Date, Transect, Repetition, N_ind, Elevation_obs) %>% mutate(Site_Transect = paste(Site, Transect, sep = '_'))%>%
@@ -162,9 +175,12 @@ ldat_allo3 <- ldat_allo3[!is.na(ldat_allo3$Site_Transect),]
 ldat_allo4 <- ldat_allo3 %>% group_by(Site_Transect, Repetition)%>% summarise(obs_total = sum(obs_total)) %>%
   pivot_wider(names_from = Repetition, values_from= obs_total)
 
+```
 
+
+```{r Organize Occupancy Dataframes By Lemur Species}
 #MICROCEBUS
-ldat_micro <- lemur_combined_total %>% filter(Nom_sientifique=='Microcebus_mittermeieri'& Type!="Diurnal")%>%
+ldat_micro <- lemur_combined_total %>% filter(Nom_sientifique=='Microcebus_lehilahytsara'& Type!="Diurnal")%>%
   dplyr::select(Site, Date, Transect, Repetition, N_ind, Elevation_obs) %>% mutate(Site_Transect = paste(Site, Transect, sep = '_'))%>%
  dplyr:: select(Site_Transect, Repetition)
 ldat_micro$obs <- 1
