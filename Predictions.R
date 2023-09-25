@@ -28,7 +28,8 @@ ef <- data.frame(coordinates(blop),
 
 ef <- ef %>% na.omit
 
-ef <- ef %>% mutate(pred = 3.5*(TRI) -2.1*(DEM) + 2*(ForestHeight) + 3*((ForestLoss+.01)/(ForestTot+0.01)))
+ef <- ef %>% mutate(pred = -2.7*(TRI) +0*(DEM) + 0*(ForestHeight) + 162*(log(ForestLoss+1/ForestTot))
+                    + 125)
 
 pred <- rasterFromXYZ(ef)
 
