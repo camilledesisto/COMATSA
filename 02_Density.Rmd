@@ -13,11 +13,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r Import data and libraries}
 #Import relevant libraries
-library(Distance); library(tidyverse); library(lme4); library(lmerTest); library(rsq); library(ggplot2)
+library(Distance); library(tidyverse); library(lme4); library(lmerTest); library(rsq); library(ggplot2);library(REdaS)
 
 #Import relevant data 
 survey_all <- read.csv("~/Documents/MadaResearch/COMATSA/lemur_surveys/lemurs_all_sept1.csv")
-
+survey_all$Angle <- deg2rad(survey_all$Angle)
 #Make separate data frames for dirunal and nocturnal lemurs
 survey_diurnal <- survey_all %>% filter(Type=="Diurnal"&Site =="Ambodivoara"|Site=="Ambodivohitra_Kobahina"& Site=="Antanambe")
 survey_nocturnal <- survey_all %>% filter(Type=="Nocturnal"&Site =="Ambodivoara"|Site=="Ambodivohitra_Kobahina"& Site=="Antanambe")
@@ -49,6 +49,12 @@ survey_nocturnal$Effort[survey_nocturnal$Transect=="3"& survey_nocturnal$Site=="
 survey_nocturnal$Effort[survey_nocturnal$Transect=="1"& survey_nocturnal$Site=="Androfiabe"] <- 1175 * 3
 survey_nocturnal$Effort[survey_nocturnal$Transect=="2"& survey_nocturnal$Site=="Androfiabe"] <-1250 * 3
 survey_nocturnal$Effort[survey_nocturnal$Transect=="3"& survey_nocturnal$Site=="Androfiabe"] <- 1100 * 3
+survey_nocturnal$Effort[survey_nocturnal$Transect=="1"& survey_nocturnal$Site=="Ambohihasina"] <- 1000 * 3
+survey_nocturnal$Effort[survey_nocturnal$Transect=="2"& survey_nocturnal$Site=="Ambohihasina"] <-1000 * 3
+survey_nocturnal$Effort[survey_nocturnal$Transect=="3"& survey_nocturnal$Site=="Ambohihasina"] <- 1000 * 3
+survey_nocturnal$Effort[survey_nocturnal$Transect=="1"& survey_nocturnal$Site=="Ambodimandresy"] <- 1000 * 3
+survey_nocturnal$Effort[survey_nocturnal$Transect=="2"& survey_nocturnal$Site=="Ambodimandresy"] <-1000 * 3
+survey_nocturnal$Effort[survey_nocturnal$Transect=="3"& survey_nocturnal$Site=="Ambodimandresy"] <- 1000 * 3
 
 #Diurnal
 survey_diurnal$Effort[survey_diurnal$Transect=="1"& survey_diurnal$Site=="Ambodivoara"] <- 860 * 48
@@ -71,7 +77,12 @@ survey_diurnal$Effort[survey_diurnal$Transect=="3"& survey_diurnal$Site=="Betaho
 survey_diurnal$Effort[survey_diurnal$Transect=="1"& survey_diurnal$Site=="Androfiabe"] <- 1175 * 3
 survey_diurnal$Effort[survey_diurnal$Transect=="2"& survey_diurnal$Site=="Androfiabe"] <-1250 * 3
 survey_diurnal$Effort[survey_diurnal$Transect=="3"& survey_diurnal$Site=="Androfiabe"] <- 1100 * 3
-
+survey_diurnal$Effort[survey_diurnal$Transect=="1"& survey_diurnal$Site=="Ambodhihasina"] <- 1000 * 3
+survey_diurnal$Effort[survey_diurnal$Transect=="2"& survey_diurnal$Site=="Ambodhihasina"] <-1000 * 3
+survey_diurnal$Effort[survey_diurnal$Transect=="3"& survey_diurnal$Site=="Ambodhihasina"] <- 1000 * 3
+survey_diurnal$Effort[survey_diurnal$Transect=="1"& survey_diurnal$Site=="Ambodimandresy"] <- 1000 * 3
+survey_diurnal$Effort[survey_diurnal$Transect=="2"& survey_diurnal$Site=="Ambodimandresy"] <-1000 * 3
+survey_diurnal$Effort[survey_diurnal$Transect=="3"& survey_diurnal$Site=="Ambodimandresy"] <- 1000 * 3
 
 ```
 
@@ -115,16 +126,16 @@ gof_ds(model2_allocebus)
 gof_ds(model3_allocebus)#significant, poor fit
 gof_ds(model4_allocebus)#significant, poor fit
 gof_ds(model5_allocebus)#significant, poor fit
-gof_ds(model6_allocebus)#significant, poor fit
+#gof_ds(model6_allocebus)#significant, poor fit
 gof_ds(model7_allocebus)#significant, poor fit
 gof_ds(model8_allocebus)#significant, poor fit
 gof_ds(model9_allocebus)#significant, poor fit
 
 #Of the models without poor fit, compare AIC calues
-AIC(model2_allocebus, model4_allocebus, model5_allocebus,  model7_allocebus, model8_allocebus,model9_allocebus)
+AIC(model1_allocebus, model2_allocebus,model3_allocebus,  model4_allocebus, model5_allocebus, model6_allocebus,  model7_allocebus, model8_allocebus,model9_allocebus)
 
 #Plot the best-fitting model 
-plot(model2_allocebus, nc=6)
+plot(model4_allocebus, nc=6)
 
 #Get detection probability
 allocebus_detection_prob <- predict(model2_allocebus)$fitted[[1]]
