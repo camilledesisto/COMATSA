@@ -108,7 +108,6 @@ ldat_alb4 <- ldat_alb4[-30,]
 
 ```
 
-
 ```{r Organize Occupancy Dataframes By Lemur Species}
 #PROPITHECUS CANDIDUS
 ldat_prop <- lemur_combined_total %>% filter(Nom_sientifique=='Propithecus_candidus'& Type!="Nocturnal")%>%
@@ -138,7 +137,6 @@ ldat_prop4 <- ldat_prop4[-30,]
 
 ```
 
-
 ```{r Organize Occupancy Dataframes By Lemur Species}
 #HAPALEMUS OCCIDENTALIS
 ldat_hap <- lemur_combined_total %>% filter(Nom_sientifique=='Hapalemur_occidentalis'& Type!="Nocturnal")%>%
@@ -167,7 +165,6 @@ ldat_hap4 <- ldat_hap4[-30,]
 
 ```
 
-
 ```{r Organize Occupancy Dataframes By Lemur Species}
 #ALLOCEBUS TRICHOTIS
 ldat_allo <- lemur_combined_total %>% filter(Nom_sientifique=='Allocebus_trichotis'& Type!="Diurnal")%>%
@@ -184,7 +181,6 @@ ldat_allo4 <- ldat_allo3 %>% group_by(Site_Transect, Repetition)%>% summarise(ob
   pivot_wider(names_from = Repetition, values_from= obs_total)
 
 ```
-
 
 ```{r Organize Occupancy Dataframes By Lemur Species}
 #MICROCEBUS
