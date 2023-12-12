@@ -208,16 +208,16 @@
 207,NA,NA,Antanambe,Diurnal,3/1/23,1,3,2023,3,3,14:07,15:10,NA,NA,NA,,NA,0,0,NA,0,0,NA,NA,NA,NA,NA,NA,NA,,NA
 208,NA,NA,Antanambe,Diurnal,3/2/23,2,3,2023,1,4,7:00,8:05,NA,NA,NA,,NA,0,0,NA,0,0,NA,NA,NA,NA,NA,NA,NA,,NA
 209,NA,NA,Antanambe,Diurnal,3/2/23,2,3,2023,3,4,14:20,15:30,NA,NA,NA,,NA,0,0,NA,0,0,NA,NA,NA,NA,NA,NA,NA,,NA
-210,NA,NA,Ambodivohitra_Kobahina,Diurnal,11/4/22,4,11,2022,1,1,11H 42M 00S,11H 20M 00S,NA,NA,NA,NA,NA,0,0,0,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
-211,NA,NA,Ambodivohitra_Kobahina,Diurnal,11/4/22,4,11,2022,2,1,9H 40M 00S,10H 35M 00S,NA,NA,NA,NA,NA,0,0,0,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
-212,NA,NA,Ambodivohitra_Kobahina,Diurnal,11/5/22,5,11,2022,2,2,7H 24M 00S,8H 20M 00S,NA,NA,NA,NA,NA,0,0,0,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
-213,NA,NA,Ambodivohitra_Kobahina,Diurnal,11/6/22,6,11,2022,1,2,7H 21M 00S,8H 27M 00S,NA,NA,NA,NA,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-214,NA,NA,Ambodivohitra_Kobahina,Diurnal,11/7/22,7,11,2022,3,2,7H 12M 00S,8H 13M 00S,NA,NA,NA,NA,NA,0,0,0,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
-215,NA,NA,Ambodivohitra_Kobahina,Diurnal,11/7/22,7,11,2022,1,3,14H 55M 00S,15H 29M 00S,NA,NA,NA,NA,NA,0,0,0,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
-216,NA,NA,Ambodivohitra_Kobahina,Diurnal,11/8/22,8,11,2022,3,3,7H 24M 00S,8h 00M 00S,NA,NA,NA,NA,NA,0,0,0,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
-217,NA,NA,Ambodivohitra_Kobahina,Diurnal,11/8/22,8,11,2022,2,3,14H 19M 00S,15H 22M 00S,NA,NA,NA,NA,NA,0,0,0,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
-218,NA,NA,Ambodivohitra_Kobahina,Diurnal,11/9/22,9,11,2022,3,4,7H 30M 00S,8H 13M 00S,NA,NA,NA,NA,NA,0,0,0,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
-219,NA,NA,Ambodivohitra_Kobahina,Diurnal,11/10/22,10,11,2022,2,4,7H 12M 00S,7H 56M 00S,NA,NA,NA,NA,NA,0,0,0,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+210,NA,NA,AmbodivohitraKobahina,Diurnal,11/4/22,4,11,2022,1,1,11H 42M 00S,11H 20M 00S,NA,NA,NA,NA,NA,0,0,0,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+211,NA,NA,AmbodivohitraKobahina,Diurnal,11/4/22,4,11,2022,2,1,9H 40M 00S,10H 35M 00S,NA,NA,NA,NA,NA,0,0,0,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+212,NA,NA,AmbodivohitraKobahina,Diurnal,11/5/22,5,11,2022,2,2,7H 24M 00S,8H 20M 00S,NA,NA,NA,NA,NA,0,0,0,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+213,NA,NA,AmbodivohitraKobahina,Diurnal,11/6/22,6,11,2022,1,2,7H 21M 00S,8H 27M 00S,NA,NA,NA,NA,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+214,NA,NA,AmbodivohitraKobahina,Diurnal,11/7/22,7,11,2022,3,2,7H 12M 00S,8H 13M 00S,NA,NA,NA,NA,NA,0,0,0,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+215,NA,NA,AmbodivohitraKobahina,Diurnal,11/7/22,7,11,2022,1,3,14H 55M 00S,15H 29M 00S,NA,NA,NA,NA,NA,0,0,0,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+216,NA,NA,AmbodivohitraKobahina,Diurnal,11/8/22,8,11,2022,3,3,7H 24M 00S,8h 00M 00S,NA,NA,NA,NA,NA,0,0,0,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+217,NA,NA,AmbodivohitraKobahina,Diurnal,11/8/22,8,11,2022,2,3,14H 19M 00S,15H 22M 00S,NA,NA,NA,NA,NA,0,0,0,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+218,NA,NA,AmbodivohitraKobahina,Diurnal,11/9/22,9,11,2022,3,4,7H 30M 00S,8H 13M 00S,NA,NA,NA,NA,NA,0,0,0,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+219,NA,NA,AmbodivohitraKobahina,Diurnal,11/10/22,10,11,2022,2,4,7H 12M 00S,7H 56M 00S,NA,NA,NA,NA,NA,0,0,0,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
 220,NA,NA,Antanambe,Diurnal,2/25/23,25,2,2023,1,1,7:19,8:45,NA,NA,NA,,NA,0,0,NA,0,0,NA,NA,NA,NA,NA,NA,NA,,NA
 221,NA,NA,Antanambe,Diurnal,2/25/23,25,2,2023,2,1,14:00,15:00,NA,NA,NA,,NA,0,0,NA,0,0,NA,NA,NA,NA,NA,NA,NA,,NA
 222,-14.519587,49.484695,Antanambe,Diurnal,2/26/23,26,2,2023,3,2,7:05,8:00,7:26,Eulemur_albifrons,Eulemur,albifrons,Akomba fotsiloha,NA,NA,NA,NA,NA,1083,NA,NA,NA,Deplacement,NA,NA,Voice,NA
@@ -955,82 +955,82 @@
 954,-14.515558,49.482282,Antanambe,Nocturnal,3/7/23,7,3,2023,1,3,18:35,20:30,19:23,Avahi_laniger,Avahi,laniger,Fotsife,1,NA,NA,NA,NA,NA,90,6,NA,deplacement,NA,NA,,NA
 955,-14.515469,49.482282,Antanambe,Nocturnal,3/7/23,7,3,2023,1,3,18:35,20:30,19:25,Microcebus_lehilahytsara,Microcebus,mittermeieri,Tsidy,2,NA,NA,NA,NA,NA,90,7,NA,Repos,NA,NA,,NA
 956,-14.514843,49.482301,Antanambe,Nocturnal,3/7/23,7,3,2023,1,3,18:35,20:30,19:35,Microcebus_lehilahytsara,Microcebus,mittermeieri,Tsidy,1,NA,NA,NA,NA,NA,90,2,NA,Repos,NA,NA,,NA
-957,-14.481897,49.528548,Ambodivohitra_Kobahina,Nocturnal,11/4/22,4,11,2022,1,1,18H 16M 00S,19H 38M 00S,18H 22M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1001,310,5,NA,Repos,NA,NA,NA,NA
-958,-14.48027,49.526921,Ambodivohitra_Kobahina,Nocturnal,11/4/22,4,11,2022,1,1,18H 16M 00S,19H 38M 00S,18H 52M 00S,Microcebus_lehilahytsara,Microcebus,mittermieiri,Tsidy,1,0,NA,NA,NA,1053,90,6,NA,Repos,NA,NA,NA,NA
-959,-14.470458,49.519776,Ambodivohitra_Kobahina,Nocturnal,11/4/22,4,11,2022,1,1,18H 16M 00S,19H 38M 00S,18H 59M 00S,Microcebus_lehilahytsara,Microcebus,mittermieiri,Tsidy,1,0,NA,NA,NA,NA,90,7,NA,Deplacement,NA,NA,NA,NA
-960,-14.479844,49.525747,Ambodivohitra_Kobahina,Nocturnal,11/4/22,4,11,2022,1,1,18H 16M 00S,19H 38M 00S,19H 17M 00S,Lepilemur_seali,Lepilemur,seali,Fitsidika,1,0,1,0,1,NA,90,2,NA,Repos,NA,NA,NA,NA
-961,-14.477678,49.529187,Ambodivohitra_Kobahina,Nocturnal,11/5/22,5,11,2022,3,1,18H 13M 00S,20H 21M 00S,18H 40M 00S,Lepilemur_seali,Lepilemur,seali,Fitsidika,1,0,NA,NA,NA,1096,120,13,NA,Toilettage,NA,NA,NA,NA
-962,-14.477712,49.52923,Ambodivohitra_Kobahina,Nocturnal,11/5/22,5,11,2022,3,1,18H 13M 00S,20H 21M 00S,18H 46M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1096,90,10,NA,Repos,NA,NA,NA,NA
-963,-14.478038,49.529392,Ambodivohitra_Kobahina,Nocturnal,11/5/22,5,11,2022,3,1,18H 13M 00S,20H 21M 00S,18H 55M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1093,90,8,NA,Repos,NA,NA,NA,NA
-964,-14.478107,49.529594,Ambodivohitra_Kobahina,Nocturnal,11/5/22,5,11,2022,3,1,18H 13M 00S,20H 21M 00S,19H 02M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1089,0,0,NA,Repos,NA,NA,NA,NA
-965,-14.478284,49.529965,Ambodivohitra_Kobahina,Nocturnal,11/5/22,5,11,2022,3,1,18H 13M 00S,20H 21M 00S,19H 15M 00S,Avahi_laniger,Avahi,laniger,Fotsife,3,1,1,1,1,1084,0,0,NA,Repos,NA,NA,Female carried a baby (juvenile),NA
-966,-14.479042,49.530476,Ambodivohitra_Kobahina,Nocturnal,11/5/22,5,11,2022,3,1,18H 13M 00S,20H 21M 00S,19H 31M 00S,Avahi_laniger,Avahi,laniger,Fotsife,1,0,NA,NA,NA,1077,90,5,NA,Repos,NA,NA,NA,NA
-967,-14.481062,49.53079,Ambodivohitra_Kobahina,Nocturnal,11/5/22,5,11,2022,3,1,18H 13M 00S,20H 21M 00S,19H 49M 00S,Microcebus_lehilahytsara,Microcebus,mittermieiri,Tsidy,1,0,NA,NA,NA,1099,70,5,NA, Deplacement,NA,NA,NA,NA
-968,-14.482058,49.530636,Ambodivohitra_Kobahina,Nocturnal,11/5/22,5,11,2022,3,1,18H 13M 00S,20H 21M 00S,19H 57M 00S,Microcebus_lehilahytsara,Microcebus,mittermieiri,Tsidy,1,0,NA,NA,NA,1004,90,8,NA,Deplacement rapide,NA,NA,NA,NA
-969,-14.48237,49.530573,Ambodivohitra_Kobahina,Nocturnal,11/5/22,5,11,2022,3,1,18H 13M 00S,20H 21M 00S,20H 01M 00S,Avahi_laniger,Avahi,laniger,Fotsife,2,0,1,1,1,1008,0,0,NA,Repos,NA,NA,NA,NA
-970,-14.482117,49.530006,Ambodivohitra_Kobahina,Nocturnal,11/5/22,5,11,2022,3,1,18H 13M 00S,20H 21M 00S,20H 08M 00S,Lepilemur_seali,Lepilemur,seali,Fitsidika,2,0,1,1,1,990,60,10,NA,Repos,NA,NA,NA,NA
-971,-14.482334,49.52949,Ambodivohitra_Kobahina,Nocturnal,11/5/22,5,11,2022,3,1,18H 13M 00S,20H 21M 00S,20H 18M 00S,Microcebus_lehilahytsara,Microcebus,mittermieiri,Tsidy,1,0,NA,NA,NA,996,130,7,NA,Deplcement rapide,NA,NA,NA,NA
-972,-14.480867,49.528197,Ambodivohitra_Kobahina,Nocturnal,11/6/22,6,11,2022,2,1,18H 44M 00S,20H 12M 00S,18H 57M 00S,Lepilemur_seali,Lepilemur,seali,Fitsidika,1,0,1,0,1,998,90,2,NA,Repos,NA,NA,NA,NA
-973,-14.479671,49.527734,Ambodivohitra_Kobahina,Nocturnal,11/6/22,6,11,2022,2,1,18H 44M 00S,20H 12M 00S,19H 14M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1045,0,0,NA,Deplacement rapide,NA,NA,NA,NA
-974,-14.477927,49.528064,Ambodivohitra_Kobahina,Nocturnal,11/6/22,6,11,2022,2,1,18H 44M 00S,20H 12M 00S,19H 32M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1080,90,12,NA,Deplacement rapide,NA,NA,NA,NA
-975,-14.477419,49.527747,Ambodivohitra_Kobahina,Nocturnal,11/6/22,6,11,2022,2,1,18H 44M 00S,20H 12M 00S,19H 44M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1094,90,12,NA,Deplacement rapide,NA,NA,NA,NA
-976,-14.476909,49.527534,Ambodivohitra_Kobahina,Nocturnal,11/6/22,6,11,2022,2,1,18H 44M 00S,20H 12M 00S,19H 51M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1103,90,15,NA,Deplacement,NA,NA,NA,NA
-977,-14.480327,49.526504,Ambodivohitra_Kobahina,Nocturnal,11/7/22,7,11,2022,1,2,18H 20M 00S,19H 27M 00S,18H 49M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1047,0,0,NA,Deplacement,NA,NA,NA,NA
-978,-14.480997,49.527476,Ambodivohitra_Kobahina,Nocturnal,11/7/22,7,11,2022,1,2,18H 20M 00S,19H 27M 00S,19H 05M 00S,Lepilemur_seali,Lepilemur,seali,Fitsidika,1,0,0,1,0,1101,90,10,NA,Repos,NA,NA,NA,NA
-979,-14.481184,49.527628,Ambodivohitra_Kobahina,Nocturnal,11/7/22,7,11,2022,1,2,18H 20M 00S,19H 27M 00S,19H 10M 00S,Lepilemur_seali,Lepilemur,seali,Fitsidika,1,0,NA,NA,NA,1004,320,13,NA,Deplacement,NA,NA,NA,NA
-980,-14.481918,49.528434,Ambodivohitra_Kobahina,Nocturnal,11/7/22,7,11,2022,1,2,18H 20M 00S,19H 27M 00S,19H 23M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,979,0,0,NA,Deplacement,NA,NA,NA,NA
-981,-14.475328,49.527474,Ambodivohitra_Kobahina,Nocturnal,11/8/22,8,11,2022,2,2,18H 15M 00S,20H 33M 00S,18H 28M 00S,Microcebus_lehilahytsara,Microcebus,mittermieiri,Tsidy,1,0,NA,NA,NA,1184,100,5,NA,Deplacement rapide,NA,NA,NA,NA
-982,-14.476692,49.527479,Ambodivohitra_Kobahina,Nocturnal,11/8/22,8,11,2022,2,2,18H 15M 00S,20H 33M 00S,18H 52M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1141,120,7,NA,Deplacement rapide,NA,NA,NA,NA
-983,-14.477555,49.527911,Ambodivohitra_Kobahina,Nocturnal,11/8/22,8,11,2022,2,2,18H 15M 00S,20H 33M 00S,19H 4M 00S,Microcebus_lehilahytsara,Microcebus,mittermieiri,Tsidy,1,0,NA,NA,NA,1119,60,4,NA,Deplacement rapide,NA,NA,NA,NA
-984,-14.477676,49.527909,Ambodivohitra_Kobahina,Nocturnal,11/8/22,8,11,2022,2,2,18H 15M 00S,20H 33M 00S,19H 7M 00S,Microcebus_lehilahytsara,Microcebus,mittermieiri,Tsidy,1,0,NA,NA,NA,1115,90,9,NA,Deplacement rapide,NA,NA,NA,NA
-985,-14.478081,49.528011,Ambodivohitra_Kobahina,Nocturnal,11/8/22,8,11,2022,2,2,18H 15M 00S,20H 33M 00S,19H 16M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1099,90,10,NA,Deplacement,NA,NA,NA,NA
-986,-14.47894,49.52805,Ambodivohitra_Kobahina,Nocturnal,11/8/22,8,11,2022,2,2,18H 15M 00S,20H 33M 00S,19H 31M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1093,0,0,NA,Deplacement rapide,NA,NA,NA,NA
-987,-14.478969,49.528025,Ambodivohitra_Kobahina,Nocturnal,11/8/22,8,11,2022,2,2,18H 15M 00S,20H 33M 00S,19H 32M 00S,Microcebus_lehilahytsara,Microcebus,mittermieiri,Tsidy,1,0,NA,NA,NA,1090,35,3,NA,Deplacement rapide,NA,NA,NA,NA
-988,-14.479255,49.527849,Ambodivohitra_Kobahina,Nocturnal,11/8/22,8,11,2022,2,2,18H 15M 00S,20H 33M 00S,19H 37M 00S,Lepilemur_seali,Lepilemur,seali,Fitsidika,1,0,NA,NA,NA,1082,110,20,NA,Repos,NA,NA,NA,NA
-989,-14.479397,49.527748,Ambodivohitra_Kobahina,Nocturnal,11/8/22,8,11,2022,2,2,18H 15M 00S,20H 33M 00S,19H 41M 00S,Lepilemur_seali,Lepilemur,seali,Fitsidika,1,0,NA,NA,NA,1076,15,5,NA,Repos,NA,NA,NA,NA
-990,-14.47991,49.5277,Ambodivohitra_Kobahina,Nocturnal,11/8/22,8,11,2022,2,2,18H 15M 00S,20H 33M 00S,19H 49M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1047,90,12,NA,Deplacement,NA,NA,NA,NA
-991,-14.480399,49.527874,Ambodivohitra_Kobahina,Nocturnal,11/8/22,8,11,2022,2,2,18H 15M 00S,20H 33M 00S,19H 56M 00S,Allocebus_trichotis,Allocebus,trichotis,Kandrandra,1,0,NA,NA,NA,1031,100,18,NA,Deplacement rapide,NA,NA,NA,NA
-992,-14.480885,49.528174,Ambodivohitra_Kobahina,Nocturnal,11/8/22,8,11,2022,2,2,18H 15M 00S,20H 33M 00S,20H 25M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1013,45,25,NA,Deplacement,NA,NA,NA,NA
-993,-14.4822,49.529494,Ambodivohitra_Kobahina,Nocturnal,11/9/22,9,11,2022,3,2,18H 25M 00S,19H 50M 00S,18H 28M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,999,90,2,NA,Repos,NA,NA,NA,NA
-994,-14.480644,49.530628,Ambodivohitra_Kobahina,Nocturnal,11/9/22,9,11,2022,3,2,18H 25M 00S,19H 50M 00S,18H 56M 00S,Microcebus_lehilahytsara,Microcebus,mittermieiri,Tsidy,1,0,NA,NA,NA,1056,90,10,NA,Deplacement rapide,NA,NA,NA,NA
-995,-14.478956,49.530484,Ambodivohitra_Kobahina,Nocturnal,11/9/22,9,11,2022,3,2,18H 25M 00S,19H 50M 00S,19H 13M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1090,90,2,NA,Repos,NA,NA,NA,NA
-996,-14.478546,49.530103,Ambodivohitra_Kobahina,Nocturnal,11/9/22,9,11,2022,3,2,18H 25M 00S,19H 50M 00S,19H 18M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1106,90,11,NA,Repos,NA,NA,NA,NA
-997,-14.478203,49.529728,Ambodivohitra_Kobahina,Nocturnal,11/9/22,9,11,2022,3,2,18H 25M 00S,19H 50M 00S,19H 24M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1108,90,1,NA,Repos,NA,NA,NA,NA
-998,-14.481937,49.528452,Ambodivohitra_Kobahina,Nocturnal,11/10/22,10,11,2022,1,3,18H 19M 00S,20H 19M 00S,18H 24M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,3,0,NA,NA,NA,1019,0,0,NA,Repos,NA,NA,NA,NA
-999,-14.481877,49.528284,Ambodivohitra_Kobahina,Nocturnal,11/10/22,10,11,2022,1,3,18H 19M 00S,20H 19M 00S,18H 31M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1023,0,1,NA, Deplacement,NA,NA,NA,NA
-1000,-14.48034,49.527036,Ambodivohitra_Kobahina,Nocturnal,11/10/22,10,11,2022,1,3,18H 19M 00S,20H 19M 00S,19H 19M 00S,Lepilemur_seali,Lepilemur,seali,Fitsidika,1,0,NA,NA,NA,1069,90,3,NA,Repos,NA,NA,NA,NA
-1001,-14.480356,49.526548,Ambodivohitra_Kobahina,Nocturnal,11/10/22,10,11,2022,1,3,18H 19M 00S,20H 19M 00S,19H 27M 00S,Microcebus_lehilahytsara,Microcebus,mittermieiri,Tsidy,1,0,NA,NA,NA,1081,90,3,NA,Deplacement rapide,NA,NA,NA,NA
-1002,-14.479933,49.525795,Ambodivohitra_Kobahina,Nocturnal,11/10/22,10,11,2022,1,3,18H 19M 00S,20H 19M 00S,19H 46M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1120,90,12,NA,Repos,NA,NA,NA,NA
-1003,-14.480238,49.524766,Ambodivohitra_Kobahina,Nocturnal,11/10/22,10,11,2022,1,3,18H 19M 00S,20H 19M 00S,20H 08M 00S,Microcebus_lehilahytsara,Microcebus,mittermieiri,Tsidy,1,0,NA,NA,NA,1182,90,5,NA,Deplacement,NA,NA,NA,NA
-1004,-14.481014,49.528432,Ambodivohitra_Kobahina,Nocturnal,11/11/22,11,11,2022,2,3,18H 30M 00S,19H 52M 00S,18H 42M 00S,Allocebus_trichotis,Allocebus,trichotis,Kandrandra,1,0,NA,NA,NA,1051,20,13,NA,Repos,NA,NA,NA,NA
-1005,-14.481014,49.528432,Ambodivohitra_Kobahina,Nocturnal,11/11/22,11,11,2022,2,3,18H 30M 00S,19H 52M 00S,18H 42M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1051,90,5,NA,Repos,NA,NA,NA,NA
-1006,-14.47849,49.528102,Ambodivohitra_Kobahina,Nocturnal,11/11/22,11,11,2022,2,3,18H 30M 00S,19H 52M 00S,19H 05M 00S,Microcebus_lehilahytsara,Microcebus,mittermieiri,Tsidy,1,0,NA,NA,NA,1118,0,0,NA,Deplacement,NA,NA,NA,NA
-1007,-14.480913,49.528811,Ambodivohitra_Kobahina,Nocturnal,11/11/22,11,11,2022,2,3,18H 30M 00S,19H 52M 00S,19H 07M 00S,Allocebus_trichotis,Allocebus,trichotis,Kandrandra,1,0,NA,NA,NA,1118,90,5,NA,Repos,NA,NA,NA,NA
-1008,-14.478334,49.528044,Ambodivohitra_Kobahina,Nocturnal,11/11/22,11,11,2022,2,3,18H 30M 00S,19H 52M 00S,19H 10M 00S,Avahi_laniger,Avahi,laniger,Fotsife,2,1,1,0,1,1114,90,7,NA,Repos,NA,NA,Female carried a baby (juvenile),NA
-1009,-14.478126,49.527995,Ambodivohitra_Kobahina,Nocturnal,11/11/22,11,11,2022,2,3,18H 30M 00S,19H 52M 00S,19H 19M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1117,90,6,NA,Deplacement,NA,NA,NA,NA
-1010,-14.478126,49.527995,Ambodivohitra_Kobahina,Nocturnal,11/11/22,11,11,2022,2,3,18H 30M 00S,19H 52M 00S,19H 19M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1117,90,12,NA,Deplacement,NA,NA,NA,NA
-1011,-14.476904,49.527532,Ambodivohitra_Kobahina,Nocturnal,11/11/22,11,11,2022,2,3,18H 30M 00S,19H 52M 00S,19H 30M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1154,90,12,NA,Repos,NA,NA,NA,NA
-1012,-14.476504,49.527427,Ambodivohitra_Kobahina,Nocturnal,11/11/22,11,11,2022,2,3,18H 30M 00S,19H 52M 00S,19H 36M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1171,90,8,NA,Deplacement,NA,NA,NA,NA
-1013,-14.476107,49.527448,Ambodivohitra_Kobahina,Nocturnal,11/11/22,11,11,2022,2,3,18H 30M 00S,19H 52M 00S,19H 42M 00S,Lepilemur_seali,Lepilemur,seali,Fitsidika,1,0,1,NA,1,1149,90,2,NA,Deplacement,NA,NA,NA,NA
-1014,-14.48254,49.529834,Ambodivohitra_Kobahina,Nocturnal,11/12/22,12,11,2022,3,3,18H 33M 00S,20H 27M 00S,18H 36M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,988,0,0,NA,Repos,NA,NA,NA,NA
-1015,-14.482264,49.52959,Ambodivohitra_Kobahina,Nocturnal,11/12/22,12,11,2022,3,3,18H 33M 00S,20H 27M 00S,18H 37M 00S,Microcebus_lehilahytsara,Microcebus,mittermieiri,Tsidy,1,0,NA,NA,NA,988,0,0,NA,Repos,NA,NA,NA,NA
-1016,-14.482234,49.530181,Ambodivohitra_Kobahina,Nocturnal,11/12/22,12,11,2022,3,3,18H 33M 00S,20H 27M 00S,18H 46M 00S,Lepilemur_seali,Lepilemur,seali,Fitsidika,3,1,1,1,1,1021,0,0,NA,Repos,NA,NA,Female carried a baby(juvenile),NA
-1017,-14.482344,49.530418,Ambodivohitra_Kobahina,Nocturnal,11/12/22,12,11,2022,3,3,18H 33M 00S,20H 27M 00S,18H 55M 00S,Avahi_laniger,Avahi,laniger,Fotsife,3,1,1,1,1,1024,90,6,NA,Repos,NA,NA,NA,NA
-1018,-14.482291,49.530619,Ambodivohitra_Kobahina,Nocturnal,11/12/22,12,11,2022,3,3,18H 33M 00S,20H 27M 00S,19H 00M 00S,Lepilemur_seali,Lepilemur,seali,Fitsidika,1,0,NA,NA,NA,1025,90,8,NA,Repos,NA,NA,NA,NA
-1019,-14.482291,49.530619,Ambodivohitra_Kobahina,Nocturnal,11/12/22,12,11,2022,3,3,18H 33M 00S,20H 27M 00S,19H 00M 00S,Allocebus_trichotis,Allocebus,trichotis,Kandrandra,1,0,NA,NA,NA,1025,80,6,NA,Repos,NA,NA,NA,NA
-1020,-14.481624,49.530587,Ambodivohitra_Kobahina,Nocturnal,11/12/22,12,11,2022,3,3,18H 33M 00S,20H 27M 00S,19H 12M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1024,80,7,NA, Repos,NA,NA,NA,NA
-1021,-14.480564,49.530664,Ambodivohitra_Kobahina,Nocturnal,11/12/22,12,11,2022,3,3,18H 33M 00S,20H 27M 00S,19H 27M 00S,Microcebus_lehilahytsara,Microcebus,mittermieiri,Tsidy,1,0,NA,NA,NA,1041,90,5,NA,Deplacement rapide,NA,NA,NA,NA
-1022,-14.47997,49.530788,Ambodivohitra_Kobahina,Nocturnal,11/12/22,12,11,2022,3,3,18H 33M 00S,20H 27M 00S,19H 33M 00S,Lepilemur_seali,Lepilemur,seali,Fitsidika,1,0,NA,NA,NA,1057,0,0,NA,Repos,NA,NA,NA,NA
-1023,-14.479674,49.530733,Ambodivohitra_Kobahina,Nocturnal,11/12/22,12,11,2022,3,3,18H 33M 00S,20H 27M 00S,19H 37M 00S,Microcebus_lehilahytsara,Microcebus,mittermieiri,Tsidy,1,0,NA,NA,NA,1067,0,0,NA,Repos,NA,NA,NA,NA
-1024,-14.479007,49.530467,Ambodivohitra_Kobahina,Nocturnal,11/12/22,12,11,2022,3,3,18H 33M 00S,20H 27M 00S,19H 45M 00S,Avahi_laniger,Avahi,laniger,Fotsife,1,0,NA,NA,NA,1084,0,0,NA,Repos,NA,NA,NA,NA
-1025,-14.478902,49.530456,Ambodivohitra_Kobahina,Nocturnal,11/12/22,12,11,2022,3,3,18H 33M 00S,20H 27M 00S,19H 47M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1083,90,12,NA,Repos,NA,NA,NA,NA
-1026,-14.478406,49.530043,Ambodivohitra_Kobahina,Nocturnal,11/12/22,12,11,2022,3,3,18H 33M 00S,20H 27M 00S,19H 53M 00S,Lepilemur_seali,Lepilemur,seali,Fitsidika,1,0,NA,NA,NA,1091,120,10,NA,Repos,NA,NA,NA,NA
-1027,-14.47826,49.529785,Ambodivohitra_Kobahina,Nocturnal,11/12/22,12,11,2022,3,3,18H 33M 00S,20H 27M 00S,19H 56M 00S,Avahi_laniger,Avahi,laniger,Fotsife,2,1,1,0,1,1091,0,0,NA,Repos,NA,NA,NA,NA
-1028,-14.478173,49.529672,Ambodivohitra_Kobahina,Nocturnal,11/12/22,12,11,2022,3,3,18H 33M 00S,20H 27M 00S,19H 59M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,1,NA,NA,NA,1094,90,13,NA,Deplacement rapide,NA,NA,NA,NA
-1029,-14.478107,49.529515,Ambodivohitra_Kobahina,Nocturnal,11/12/22,12,11,2022,3,3,18H 33M 00S,20H 27M 00S,20H 04M 00S,Lepilemur_seali,Lepilemur,seali,Fitsidika,1,0,NA,NA,NA,1096,80,4,NA,Repos,NA,NA,NA,NA
-1030,-14.477939,49.529292,Ambodivohitra_Kobahina,Nocturnal,11/12/22,12,11,2022,3,3,18H 33M 00S,20H 27M 00S,20H 08M 00S,Microcebus_lehilahytsara,Microcebus,mittermieiri,Tsidy,1,0,NA,NA,NA,1101,90,7,NA,Repos,NA,NA,NA,NA
-1031,-14.477534,49.529098,Ambodivohitra_Kobahina,Nocturnal,11/12/22,12,11,2022,3,3,18H 33M 00S,20H 27M 00S,20H 13M 00S,Lepilemur_seali,Lepilemur,seali,Fitsidika,1,0,NA,NA,NA,1109,0,0,NA,Repos,NA,NA,NA,NA
-1032,-14.477098,49.52914,Ambodivohitra_Kobahina,Nocturnal,11/12/22,12,11,2022,3,3,18H 33M 00S,20H 27M 00S,20H 19M 00S,Allocebus_trichotis,Allocebus,trichotis,Kandrandra,1,0,NA,NA,NA,1107,70,15,NA,Repos,NA,NA,NA,NA
+957,-14.481897,49.528548,AmbodivohitraKobahina,Nocturnal,11/4/22,4,11,2022,1,1,18H 16M 00S,19H 38M 00S,18H 22M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1001,310,5,NA,Repos,NA,NA,NA,NA
+958,-14.48027,49.526921,AmbodivohitraKobahina,Nocturnal,11/4/22,4,11,2022,1,1,18H 16M 00S,19H 38M 00S,18H 52M 00S,Microcebus_lehilahytsara,Microcebus,mittermieiri,Tsidy,1,0,NA,NA,NA,1053,90,6,NA,Repos,NA,NA,NA,NA
+959,-14.470458,49.519776,AmbodivohitraKobahina,Nocturnal,11/4/22,4,11,2022,1,1,18H 16M 00S,19H 38M 00S,18H 59M 00S,Microcebus_lehilahytsara,Microcebus,mittermieiri,Tsidy,1,0,NA,NA,NA,NA,90,7,NA,Deplacement,NA,NA,NA,NA
+960,-14.479844,49.525747,AmbodivohitraKobahina,Nocturnal,11/4/22,4,11,2022,1,1,18H 16M 00S,19H 38M 00S,19H 17M 00S,Lepilemur_seali,Lepilemur,seali,Fitsidika,1,0,1,0,1,NA,90,2,NA,Repos,NA,NA,NA,NA
+961,-14.477678,49.529187,AmbodivohitraKobahina,Nocturnal,11/5/22,5,11,2022,3,1,18H 13M 00S,20H 21M 00S,18H 40M 00S,Lepilemur_seali,Lepilemur,seali,Fitsidika,1,0,NA,NA,NA,1096,120,13,NA,Toilettage,NA,NA,NA,NA
+962,-14.477712,49.52923,AmbodivohitraKobahina,Nocturnal,11/5/22,5,11,2022,3,1,18H 13M 00S,20H 21M 00S,18H 46M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1096,90,10,NA,Repos,NA,NA,NA,NA
+963,-14.478038,49.529392,AmbodivohitraKobahina,Nocturnal,11/5/22,5,11,2022,3,1,18H 13M 00S,20H 21M 00S,18H 55M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1093,90,8,NA,Repos,NA,NA,NA,NA
+964,-14.478107,49.529594,AmbodivohitraKobahina,Nocturnal,11/5/22,5,11,2022,3,1,18H 13M 00S,20H 21M 00S,19H 02M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1089,0,0,NA,Repos,NA,NA,NA,NA
+965,-14.478284,49.529965,AmbodivohitraKobahina,Nocturnal,11/5/22,5,11,2022,3,1,18H 13M 00S,20H 21M 00S,19H 15M 00S,Avahi_laniger,Avahi,laniger,Fotsife,3,1,1,1,1,1084,0,0,NA,Repos,NA,NA,Female carried a baby (juvenile),NA
+966,-14.479042,49.530476,AmbodivohitraKobahina,Nocturnal,11/5/22,5,11,2022,3,1,18H 13M 00S,20H 21M 00S,19H 31M 00S,Avahi_laniger,Avahi,laniger,Fotsife,1,0,NA,NA,NA,1077,90,5,NA,Repos,NA,NA,NA,NA
+967,-14.481062,49.53079,AmbodivohitraKobahina,Nocturnal,11/5/22,5,11,2022,3,1,18H 13M 00S,20H 21M 00S,19H 49M 00S,Microcebus_lehilahytsara,Microcebus,mittermieiri,Tsidy,1,0,NA,NA,NA,1099,70,5,NA, Deplacement,NA,NA,NA,NA
+968,-14.482058,49.530636,AmbodivohitraKobahina,Nocturnal,11/5/22,5,11,2022,3,1,18H 13M 00S,20H 21M 00S,19H 57M 00S,Microcebus_lehilahytsara,Microcebus,mittermieiri,Tsidy,1,0,NA,NA,NA,1004,90,8,NA,Deplacement rapide,NA,NA,NA,NA
+969,-14.48237,49.530573,AmbodivohitraKobahina,Nocturnal,11/5/22,5,11,2022,3,1,18H 13M 00S,20H 21M 00S,20H 01M 00S,Avahi_laniger,Avahi,laniger,Fotsife,2,0,1,1,1,1008,0,0,NA,Repos,NA,NA,NA,NA
+970,-14.482117,49.530006,AmbodivohitraKobahina,Nocturnal,11/5/22,5,11,2022,3,1,18H 13M 00S,20H 21M 00S,20H 08M 00S,Lepilemur_seali,Lepilemur,seali,Fitsidika,2,0,1,1,1,990,60,10,NA,Repos,NA,NA,NA,NA
+971,-14.482334,49.52949,AmbodivohitraKobahina,Nocturnal,11/5/22,5,11,2022,3,1,18H 13M 00S,20H 21M 00S,20H 18M 00S,Microcebus_lehilahytsara,Microcebus,mittermieiri,Tsidy,1,0,NA,NA,NA,996,130,7,NA,Deplcement rapide,NA,NA,NA,NA
+972,-14.480867,49.528197,AmbodivohitraKobahina,Nocturnal,11/6/22,6,11,2022,2,1,18H 44M 00S,20H 12M 00S,18H 57M 00S,Lepilemur_seali,Lepilemur,seali,Fitsidika,1,0,1,0,1,998,90,2,NA,Repos,NA,NA,NA,NA
+973,-14.479671,49.527734,AmbodivohitraKobahina,Nocturnal,11/6/22,6,11,2022,2,1,18H 44M 00S,20H 12M 00S,19H 14M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1045,0,0,NA,Deplacement rapide,NA,NA,NA,NA
+974,-14.477927,49.528064,AmbodivohitraKobahina,Nocturnal,11/6/22,6,11,2022,2,1,18H 44M 00S,20H 12M 00S,19H 32M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1080,90,12,NA,Deplacement rapide,NA,NA,NA,NA
+975,-14.477419,49.527747,AmbodivohitraKobahina,Nocturnal,11/6/22,6,11,2022,2,1,18H 44M 00S,20H 12M 00S,19H 44M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1094,90,12,NA,Deplacement rapide,NA,NA,NA,NA
+976,-14.476909,49.527534,AmbodivohitraKobahina,Nocturnal,11/6/22,6,11,2022,2,1,18H 44M 00S,20H 12M 00S,19H 51M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1103,90,15,NA,Deplacement,NA,NA,NA,NA
+977,-14.480327,49.526504,AmbodivohitraKobahina,Nocturnal,11/7/22,7,11,2022,1,2,18H 20M 00S,19H 27M 00S,18H 49M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1047,0,0,NA,Deplacement,NA,NA,NA,NA
+978,-14.480997,49.527476,AmbodivohitraKobahina,Nocturnal,11/7/22,7,11,2022,1,2,18H 20M 00S,19H 27M 00S,19H 05M 00S,Lepilemur_seali,Lepilemur,seali,Fitsidika,1,0,0,1,0,1101,90,10,NA,Repos,NA,NA,NA,NA
+979,-14.481184,49.527628,AmbodivohitraKobahina,Nocturnal,11/7/22,7,11,2022,1,2,18H 20M 00S,19H 27M 00S,19H 10M 00S,Lepilemur_seali,Lepilemur,seali,Fitsidika,1,0,NA,NA,NA,1004,320,13,NA,Deplacement,NA,NA,NA,NA
+980,-14.481918,49.528434,AmbodivohitraKobahina,Nocturnal,11/7/22,7,11,2022,1,2,18H 20M 00S,19H 27M 00S,19H 23M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,979,0,0,NA,Deplacement,NA,NA,NA,NA
+981,-14.475328,49.527474,AmbodivohitraKobahina,Nocturnal,11/8/22,8,11,2022,2,2,18H 15M 00S,20H 33M 00S,18H 28M 00S,Microcebus_lehilahytsara,Microcebus,mittermieiri,Tsidy,1,0,NA,NA,NA,1184,100,5,NA,Deplacement rapide,NA,NA,NA,NA
+982,-14.476692,49.527479,AmbodivohitraKobahina,Nocturnal,11/8/22,8,11,2022,2,2,18H 15M 00S,20H 33M 00S,18H 52M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1141,120,7,NA,Deplacement rapide,NA,NA,NA,NA
+983,-14.477555,49.527911,AmbodivohitraKobahina,Nocturnal,11/8/22,8,11,2022,2,2,18H 15M 00S,20H 33M 00S,19H 4M 00S,Microcebus_lehilahytsara,Microcebus,mittermieiri,Tsidy,1,0,NA,NA,NA,1119,60,4,NA,Deplacement rapide,NA,NA,NA,NA
+984,-14.477676,49.527909,AmbodivohitraKobahina,Nocturnal,11/8/22,8,11,2022,2,2,18H 15M 00S,20H 33M 00S,19H 7M 00S,Microcebus_lehilahytsara,Microcebus,mittermieiri,Tsidy,1,0,NA,NA,NA,1115,90,9,NA,Deplacement rapide,NA,NA,NA,NA
+985,-14.478081,49.528011,AmbodivohitraKobahina,Nocturnal,11/8/22,8,11,2022,2,2,18H 15M 00S,20H 33M 00S,19H 16M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1099,90,10,NA,Deplacement,NA,NA,NA,NA
+986,-14.47894,49.52805,AmbodivohitraKobahina,Nocturnal,11/8/22,8,11,2022,2,2,18H 15M 00S,20H 33M 00S,19H 31M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1093,0,0,NA,Deplacement rapide,NA,NA,NA,NA
+987,-14.478969,49.528025,AmbodivohitraKobahina,Nocturnal,11/8/22,8,11,2022,2,2,18H 15M 00S,20H 33M 00S,19H 32M 00S,Microcebus_lehilahytsara,Microcebus,mittermieiri,Tsidy,1,0,NA,NA,NA,1090,35,3,NA,Deplacement rapide,NA,NA,NA,NA
+988,-14.479255,49.527849,AmbodivohitraKobahina,Nocturnal,11/8/22,8,11,2022,2,2,18H 15M 00S,20H 33M 00S,19H 37M 00S,Lepilemur_seali,Lepilemur,seali,Fitsidika,1,0,NA,NA,NA,1082,110,20,NA,Repos,NA,NA,NA,NA
+989,-14.479397,49.527748,AmbodivohitraKobahina,Nocturnal,11/8/22,8,11,2022,2,2,18H 15M 00S,20H 33M 00S,19H 41M 00S,Lepilemur_seali,Lepilemur,seali,Fitsidika,1,0,NA,NA,NA,1076,15,5,NA,Repos,NA,NA,NA,NA
+990,-14.47991,49.5277,AmbodivohitraKobahina,Nocturnal,11/8/22,8,11,2022,2,2,18H 15M 00S,20H 33M 00S,19H 49M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1047,90,12,NA,Deplacement,NA,NA,NA,NA
+991,-14.480399,49.527874,AmbodivohitraKobahina,Nocturnal,11/8/22,8,11,2022,2,2,18H 15M 00S,20H 33M 00S,19H 56M 00S,Allocebus_trichotis,Allocebus,trichotis,Kandrandra,1,0,NA,NA,NA,1031,100,18,NA,Deplacement rapide,NA,NA,NA,NA
+992,-14.480885,49.528174,AmbodivohitraKobahina,Nocturnal,11/8/22,8,11,2022,2,2,18H 15M 00S,20H 33M 00S,20H 25M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1013,45,25,NA,Deplacement,NA,NA,NA,NA
+993,-14.4822,49.529494,AmbodivohitraKobahina,Nocturnal,11/9/22,9,11,2022,3,2,18H 25M 00S,19H 50M 00S,18H 28M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,999,90,2,NA,Repos,NA,NA,NA,NA
+994,-14.480644,49.530628,AmbodivohitraKobahina,Nocturnal,11/9/22,9,11,2022,3,2,18H 25M 00S,19H 50M 00S,18H 56M 00S,Microcebus_lehilahytsara,Microcebus,mittermieiri,Tsidy,1,0,NA,NA,NA,1056,90,10,NA,Deplacement rapide,NA,NA,NA,NA
+995,-14.478956,49.530484,AmbodivohitraKobahina,Nocturnal,11/9/22,9,11,2022,3,2,18H 25M 00S,19H 50M 00S,19H 13M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1090,90,2,NA,Repos,NA,NA,NA,NA
+996,-14.478546,49.530103,AmbodivohitraKobahina,Nocturnal,11/9/22,9,11,2022,3,2,18H 25M 00S,19H 50M 00S,19H 18M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1106,90,11,NA,Repos,NA,NA,NA,NA
+997,-14.478203,49.529728,AmbodivohitraKobahina,Nocturnal,11/9/22,9,11,2022,3,2,18H 25M 00S,19H 50M 00S,19H 24M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1108,90,1,NA,Repos,NA,NA,NA,NA
+998,-14.481937,49.528452,AmbodivohitraKobahina,Nocturnal,11/10/22,10,11,2022,1,3,18H 19M 00S,20H 19M 00S,18H 24M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,3,0,NA,NA,NA,1019,0,0,NA,Repos,NA,NA,NA,NA
+999,-14.481877,49.528284,AmbodivohitraKobahina,Nocturnal,11/10/22,10,11,2022,1,3,18H 19M 00S,20H 19M 00S,18H 31M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1023,0,1,NA, Deplacement,NA,NA,NA,NA
+1000,-14.48034,49.527036,AmbodivohitraKobahina,Nocturnal,11/10/22,10,11,2022,1,3,18H 19M 00S,20H 19M 00S,19H 19M 00S,Lepilemur_seali,Lepilemur,seali,Fitsidika,1,0,NA,NA,NA,1069,90,3,NA,Repos,NA,NA,NA,NA
+1001,-14.480356,49.526548,AmbodivohitraKobahina,Nocturnal,11/10/22,10,11,2022,1,3,18H 19M 00S,20H 19M 00S,19H 27M 00S,Microcebus_lehilahytsara,Microcebus,mittermieiri,Tsidy,1,0,NA,NA,NA,1081,90,3,NA,Deplacement rapide,NA,NA,NA,NA
+1002,-14.479933,49.525795,AmbodivohitraKobahina,Nocturnal,11/10/22,10,11,2022,1,3,18H 19M 00S,20H 19M 00S,19H 46M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1120,90,12,NA,Repos,NA,NA,NA,NA
+1003,-14.480238,49.524766,AmbodivohitraKobahina,Nocturnal,11/10/22,10,11,2022,1,3,18H 19M 00S,20H 19M 00S,20H 08M 00S,Microcebus_lehilahytsara,Microcebus,mittermieiri,Tsidy,1,0,NA,NA,NA,1182,90,5,NA,Deplacement,NA,NA,NA,NA
+1004,-14.481014,49.528432,AmbodivohitraKobahina,Nocturnal,11/11/22,11,11,2022,2,3,18H 30M 00S,19H 52M 00S,18H 42M 00S,Allocebus_trichotis,Allocebus,trichotis,Kandrandra,1,0,NA,NA,NA,1051,20,13,NA,Repos,NA,NA,NA,NA
+1005,-14.481014,49.528432,AmbodivohitraKobahina,Nocturnal,11/11/22,11,11,2022,2,3,18H 30M 00S,19H 52M 00S,18H 42M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1051,90,5,NA,Repos,NA,NA,NA,NA
+1006,-14.47849,49.528102,AmbodivohitraKobahina,Nocturnal,11/11/22,11,11,2022,2,3,18H 30M 00S,19H 52M 00S,19H 05M 00S,Microcebus_lehilahytsara,Microcebus,mittermieiri,Tsidy,1,0,NA,NA,NA,1118,0,0,NA,Deplacement,NA,NA,NA,NA
+1007,-14.480913,49.528811,AmbodivohitraKobahina,Nocturnal,11/11/22,11,11,2022,2,3,18H 30M 00S,19H 52M 00S,19H 07M 00S,Allocebus_trichotis,Allocebus,trichotis,Kandrandra,1,0,NA,NA,NA,1118,90,5,NA,Repos,NA,NA,NA,NA
+1008,-14.478334,49.528044,AmbodivohitraKobahina,Nocturnal,11/11/22,11,11,2022,2,3,18H 30M 00S,19H 52M 00S,19H 10M 00S,Avahi_laniger,Avahi,laniger,Fotsife,2,1,1,0,1,1114,90,7,NA,Repos,NA,NA,Female carried a baby (juvenile),NA
+1009,-14.478126,49.527995,AmbodivohitraKobahina,Nocturnal,11/11/22,11,11,2022,2,3,18H 30M 00S,19H 52M 00S,19H 19M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1117,90,6,NA,Deplacement,NA,NA,NA,NA
+1010,-14.478126,49.527995,AmbodivohitraKobahina,Nocturnal,11/11/22,11,11,2022,2,3,18H 30M 00S,19H 52M 00S,19H 19M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1117,90,12,NA,Deplacement,NA,NA,NA,NA
+1011,-14.476904,49.527532,AmbodivohitraKobahina,Nocturnal,11/11/22,11,11,2022,2,3,18H 30M 00S,19H 52M 00S,19H 30M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1154,90,12,NA,Repos,NA,NA,NA,NA
+1012,-14.476504,49.527427,AmbodivohitraKobahina,Nocturnal,11/11/22,11,11,2022,2,3,18H 30M 00S,19H 52M 00S,19H 36M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1171,90,8,NA,Deplacement,NA,NA,NA,NA
+1013,-14.476107,49.527448,AmbodivohitraKobahina,Nocturnal,11/11/22,11,11,2022,2,3,18H 30M 00S,19H 52M 00S,19H 42M 00S,Lepilemur_seali,Lepilemur,seali,Fitsidika,1,0,1,NA,1,1149,90,2,NA,Deplacement,NA,NA,NA,NA
+1014,-14.48254,49.529834,AmbodivohitraKobahina,Nocturnal,11/12/22,12,11,2022,3,3,18H 33M 00S,20H 27M 00S,18H 36M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,988,0,0,NA,Repos,NA,NA,NA,NA
+1015,-14.482264,49.52959,AmbodivohitraKobahina,Nocturnal,11/12/22,12,11,2022,3,3,18H 33M 00S,20H 27M 00S,18H 37M 00S,Microcebus_lehilahytsara,Microcebus,mittermieiri,Tsidy,1,0,NA,NA,NA,988,0,0,NA,Repos,NA,NA,NA,NA
+1016,-14.482234,49.530181,AmbodivohitraKobahina,Nocturnal,11/12/22,12,11,2022,3,3,18H 33M 00S,20H 27M 00S,18H 46M 00S,Lepilemur_seali,Lepilemur,seali,Fitsidika,3,1,1,1,1,1021,0,0,NA,Repos,NA,NA,Female carried a baby(juvenile),NA
+1017,-14.482344,49.530418,AmbodivohitraKobahina,Nocturnal,11/12/22,12,11,2022,3,3,18H 33M 00S,20H 27M 00S,18H 55M 00S,Avahi_laniger,Avahi,laniger,Fotsife,3,1,1,1,1,1024,90,6,NA,Repos,NA,NA,NA,NA
+1018,-14.482291,49.530619,AmbodivohitraKobahina,Nocturnal,11/12/22,12,11,2022,3,3,18H 33M 00S,20H 27M 00S,19H 00M 00S,Lepilemur_seali,Lepilemur,seali,Fitsidika,1,0,NA,NA,NA,1025,90,8,NA,Repos,NA,NA,NA,NA
+1019,-14.482291,49.530619,AmbodivohitraKobahina,Nocturnal,11/12/22,12,11,2022,3,3,18H 33M 00S,20H 27M 00S,19H 00M 00S,Allocebus_trichotis,Allocebus,trichotis,Kandrandra,1,0,NA,NA,NA,1025,80,6,NA,Repos,NA,NA,NA,NA
+1020,-14.481624,49.530587,AmbodivohitraKobahina,Nocturnal,11/12/22,12,11,2022,3,3,18H 33M 00S,20H 27M 00S,19H 12M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1024,80,7,NA, Repos,NA,NA,NA,NA
+1021,-14.480564,49.530664,AmbodivohitraKobahina,Nocturnal,11/12/22,12,11,2022,3,3,18H 33M 00S,20H 27M 00S,19H 27M 00S,Microcebus_lehilahytsara,Microcebus,mittermieiri,Tsidy,1,0,NA,NA,NA,1041,90,5,NA,Deplacement rapide,NA,NA,NA,NA
+1022,-14.47997,49.530788,AmbodivohitraKobahina,Nocturnal,11/12/22,12,11,2022,3,3,18H 33M 00S,20H 27M 00S,19H 33M 00S,Lepilemur_seali,Lepilemur,seali,Fitsidika,1,0,NA,NA,NA,1057,0,0,NA,Repos,NA,NA,NA,NA
+1023,-14.479674,49.530733,AmbodivohitraKobahina,Nocturnal,11/12/22,12,11,2022,3,3,18H 33M 00S,20H 27M 00S,19H 37M 00S,Microcebus_lehilahytsara,Microcebus,mittermieiri,Tsidy,1,0,NA,NA,NA,1067,0,0,NA,Repos,NA,NA,NA,NA
+1024,-14.479007,49.530467,AmbodivohitraKobahina,Nocturnal,11/12/22,12,11,2022,3,3,18H 33M 00S,20H 27M 00S,19H 45M 00S,Avahi_laniger,Avahi,laniger,Fotsife,1,0,NA,NA,NA,1084,0,0,NA,Repos,NA,NA,NA,NA
+1025,-14.478902,49.530456,AmbodivohitraKobahina,Nocturnal,11/12/22,12,11,2022,3,3,18H 33M 00S,20H 27M 00S,19H 47M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,0,NA,NA,NA,1083,90,12,NA,Repos,NA,NA,NA,NA
+1026,-14.478406,49.530043,AmbodivohitraKobahina,Nocturnal,11/12/22,12,11,2022,3,3,18H 33M 00S,20H 27M 00S,19H 53M 00S,Lepilemur_seali,Lepilemur,seali,Fitsidika,1,0,NA,NA,NA,1091,120,10,NA,Repos,NA,NA,NA,NA
+1027,-14.47826,49.529785,AmbodivohitraKobahina,Nocturnal,11/12/22,12,11,2022,3,3,18H 33M 00S,20H 27M 00S,19H 56M 00S,Avahi_laniger,Avahi,laniger,Fotsife,2,1,1,0,1,1091,0,0,NA,Repos,NA,NA,NA,NA
+1028,-14.478173,49.529672,AmbodivohitraKobahina,Nocturnal,11/12/22,12,11,2022,3,3,18H 33M 00S,20H 27M 00S,19H 59M 00S,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,1,NA,NA,NA,1094,90,13,NA,Deplacement rapide,NA,NA,NA,NA
+1029,-14.478107,49.529515,AmbodivohitraKobahina,Nocturnal,11/12/22,12,11,2022,3,3,18H 33M 00S,20H 27M 00S,20H 04M 00S,Lepilemur_seali,Lepilemur,seali,Fitsidika,1,0,NA,NA,NA,1096,80,4,NA,Repos,NA,NA,NA,NA
+1030,-14.477939,49.529292,AmbodivohitraKobahina,Nocturnal,11/12/22,12,11,2022,3,3,18H 33M 00S,20H 27M 00S,20H 08M 00S,Microcebus_lehilahytsara,Microcebus,mittermieiri,Tsidy,1,0,NA,NA,NA,1101,90,7,NA,Repos,NA,NA,NA,NA
+1031,-14.477534,49.529098,AmbodivohitraKobahina,Nocturnal,11/12/22,12,11,2022,3,3,18H 33M 00S,20H 27M 00S,20H 13M 00S,Lepilemur_seali,Lepilemur,seali,Fitsidika,1,0,NA,NA,NA,1109,0,0,NA,Repos,NA,NA,NA,NA
+1032,-14.477098,49.52914,AmbodivohitraKobahina,Nocturnal,11/12/22,12,11,2022,3,3,18H 33M 00S,20H 27M 00S,20H 19M 00S,Allocebus_trichotis,Allocebus,trichotis,Kandrandra,1,0,NA,NA,NA,1107,70,15,NA,Repos,NA,NA,NA,NA
 1033,14.158949,49.484984,Antanambe,Nocturnal,2/25/23,25,2,2023,3,1,18:43,20:16,18:40,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,NA,NA,NA,NA,NA,NA,15,NA,Deplacement,NA,NA,Hors transect,NA
 1034,14.521774,49.483774,Antanambe,Nocturnal,2/25/23,25,2,2023,3,1,18:43,20:16,18:46,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,NA,NA,NA,NA,NA,90,4,NA,Repos,NA,NA,,NA
 1035,14.521774,49.48379,Antanambe,Nocturnal,2/25/23,25,2,2023,3,1,18:43,20:16,18:50,Allocebus_trichotis,Allocebus,trichotis,kandradra,1,NA,NA,NA,NA,NA,90,15,NA,Repos,NA,NA,,NA
@@ -1357,8 +1357,8 @@
 1360,NA,NA,Ambavala,Diurnal,18/11/2023,18,11,2023,2,4,7H 52M 00S,9H 04M 00S,NA,NA,NA,NA,NA,,,,,,,,,,,,,,
 1361,NA,NA,Ambavala,Diurnal,18/11/2023,18,11,2023,3,2,13H 57M 00S,15H 04M 00S,NA,NA,NA,NA,NA,,,,,,,,,,,,,,
 1362,NA,NA,Ambavala,Diurnal,19/11/2023,19,11,2023,3,3,7H 45M 00S,9H 03M 00S,NA,NA,NA,NA,NA,,,,,,,,,,,,,,
-1363,-14.47461,49.54177,Ambavala,Diurnal,19/11/2023,19,11,2023,1,3,13H 55M 00S,14H 51M 00S,14:23,Eulemur_albifrons,Eulemur,albifrons,Komba fotsiloha,3,0,3,2,1,1141,45,10,420,,,,,
-1364,-14.47571,49.54018,Ambavala,Diurnal,20/11/2023,20,11,2023,1,4,6H 56M 00S,7H 56M 00S,7H 36M 00S,Eulemur_albifrons,Eulemur,albifrons,Komba fotsiloha,6,0,6,3,3,1198,35,8,450,,,,,
+1363,-14.47461,49.54177,Ambavala,Diurnal,19/11/2023,19,11,2023,1,2,13H 55M 00S,14H 51M 00S,14:23,Eulemur_albifrons,Eulemur,albifrons,Komba fotsiloha,3,0,3,2,1,1141,45,10,420,,,,,
+1364,-14.47571,49.54018,Ambavala,Diurnal,20/11/2023,20,11,2023,1,3,6H 56M 00S,7H 56M 00S,7H 36M 00S,Eulemur_albifrons,Eulemur,albifrons,Komba fotsiloha,6,0,6,3,3,1198,35,8,450,,,,,
 1365,-14.47247,49.54343,Ambavala,Nocturnal,19/11/2023,19,11,2023,2,3,18H 33M 00S,20H 11M 00S,18:37,Allocebus_trichotis,Allocebus,trichotis,Kandrandra,1,0,1,NA,NA,1058,90,5,10,,,,,
 1366,-14.47247,49.54343,Ambavala,Nocturnal,19/11/2023,19,11,2023,2,3,18H 33M 00S,20H 11M 00S,18:37,Microcebus_lehilahytsara,Microcebus,lehilahytsara,Tsidy,1,0,1,NA,NA,1058,95,10,10,,,,,
 1367,-14.4728,49.54147,Ambavala,Nocturnal,19/11/2023,19,11,2023,2,3,18H 33M 00S,20H 11M 00S,19:00,Lepilemur_seali,Lepilemur,seali,Fitsidika,2,1,1,NA,1,1093,90,15,296,,,,,

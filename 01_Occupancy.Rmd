@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r Data and packages}
-lemur_combined_total <- read.csv("~/Documents/MadaResearch/COMATSA/lemur_surveys/lemurs_all_sept1.csv")
+lemur_combined_total <- read.csv("~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/lemurs_all_dec5.csv")
 
 library(tidyverse); library(unmarked)
 
@@ -74,6 +74,7 @@ ldat_rub4$`1`[ldat_rub4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
 ldat_rub4$`2`[ldat_rub4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
 ldat_rub4$`3`[ldat_rub4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
 ldat_rub4$`4`[ldat_rub4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
+
 ```
 
 
@@ -102,6 +103,9 @@ ldat_alb4$`1`[ldat_alb4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
 ldat_alb4$`2`[ldat_alb4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
 ldat_alb4$`3`[ldat_alb4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
 ldat_alb4$`4`[ldat_alb4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
+
+ldat_alb4 <- ldat_alb4[-30,]
+
 ```
 
 
@@ -129,6 +133,9 @@ ldat_prop4$`1`[ldat_prop4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
 ldat_prop4$`2`[ldat_prop4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
 ldat_prop4$`3`[ldat_prop4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
 ldat_prop4$`4`[ldat_prop4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
+
+ldat_prop4 <- ldat_prop4[-30,]
+
 ```
 
 
@@ -156,7 +163,8 @@ ldat_hap4$`1`[ldat_hap4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
 ldat_hap4$`2`[ldat_hap4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
 ldat_hap4$`3`[ldat_hap4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
 ldat_hap4$`4`[ldat_hap4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
-ldat_hap4 <- ldat_hap4[-27,]
+ldat_hap4 <- ldat_hap4[-30,]
+
 ```
 
 
