@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r Data and packages}
-lemur_combined_total <- read.csv("~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/lemurs_all_dec5.csv")
+lemur_combined_total <- read.csv("~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/lemurs_primary_in_transect_jan22.csv")
 
 library(tidyverse); library(unmarked)
 
@@ -76,7 +76,6 @@ ldat_rub4$`3`[ldat_rub4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
 ldat_rub4$`4`[ldat_rub4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
 
 ```
-
 
 ```{r Organize Occupancy Dataframes By Lemur Species}
 #EULEMUR ALBIFRONS

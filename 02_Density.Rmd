@@ -16,7 +16,10 @@ knitr::opts_chunk$set(echo = TRUE)
 library(Distance); library(tidyverse); library(lme4); library(lmerTest); library(rsq); library(ggplot2);library(REdaS)
 
 #Import relevant data 
-survey_all <- read.csv("~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/lemurs_all_dec5.csv")
+survey_all <- read.csv("~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/lemurs_primary_in_transect_jan22.csv")
+survey_all$Date <- mdy(survey_all$Date)
+survey_all <- survey_all[survey_all$Date >= ymd("20220601"),]
+
 survey_all$Angle <- deg2rad(survey_all$Angle)
 #Make separate data frames for dirunal and nocturnal lemurs
 survey_diurnal <- survey_all %>% filter(Type=="Diurnal")
@@ -26,7 +29,6 @@ transect_lengths <- read.csv("~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/D
 
 ```{r Number of repetitions, number of observations, effort}
 #NREP NOCTURNAL
-nrep_nocturnal <- survey_all %>% select(Site, Transect, Repetition, Type)%>%filter(Type=="Nocturnal") %>%drop_na(Transect) %>% group_by(Site, Transect) %>% mutate(NRep = max(Repetition)) %>% select(-Repetition)%>% distinct()
 nrep_nocturnal$Site2 <- nrep_nocturnal$Site
 nrep_nocturnal$Transect2 <- nrep_nocturnal$Transect
 nrep_nocturnal <-nrep_nocturnal %>% unite("Site_Transect", Site2:Transect2, sep="_")
@@ -82,15 +84,14 @@ allocebus_df$distance[is.na(allocebus_df$distance)] <- 0
 allocebus_df2 <- allocebus_df %>% select(Site_Transect,Effort, distance)
 allocebus_df3 <-allocebus_df2
 
-#Truncate data to eliminate most extreme distance calues 
-allocebus_df3 <-allocebus_df3[allocebus_df3$distance < quantile(allocebus_df3$distance, 0.95),]
-
 #Further clean data data set
 allocebus_df3 <- allocebus_df3[!is.na(allocebus_df3$distance),]
 allocebus_df3 <- allocebus_df3[(allocebus_df3$Site_Transect!="HT"),]
-allocebus_df3$Area <- 1 #For now, assume an area of 1 
+allocebus_df3$Area <- 0.02 #For now, assume an area of 1 
 allocebus_df3$Sample.Label <- seq(1:nrow(allocebus_df3))
 colnames(allocebus_df3) <- c("Region.Label",  "Effort", "distance","Area", "Sample.Label")
+
+conversion.factor <- convert_units("Meter", "Kilometer", "Square kilometer")
 
 #Detection function models
 model1_allocebus <- ds(allocebus_df3, key="hn", adjustment=NULL)
@@ -105,13 +106,13 @@ model9_allocebus <- ds(allocebus_df3, key="unif", adjustment="herm")
 
 #Test goodness of fit for detection functions
 gof_ds(model1_allocebus)#significant, poor fit
-gof_ds(model2_allocebus)
+gof_ds(model2_allocebus)#significant, poor fit
 gof_ds(model3_allocebus)#significant, poor fit
 gof_ds(model4_allocebus)#significant, poor fit
 gof_ds(model5_allocebus)#significant, poor fit
 gof_ds(model6_allocebus)#significant, poor fit
 gof_ds(model7_allocebus)#significant, poor fit
-gof_ds(model8_allocebus)
+gof_ds(model8_allocebus)#significant, poor fit
 gof_ds(model9_allocebus)#significant, poor fit
 
 #Of the models without poor fit, compare AIC calues
@@ -201,13 +202,10 @@ microcebus_df$distance[is.na(microcebus_df$distance)] <- 0
 microcebus_df2 <- microcebus_df %>% select(Site_Transect,Effort, distance)
 microcebus_df3 <-microcebus_df2
 
-#Truncate data to eliminate most extreme distance calues 
-microcebus_df3 <-microcebus_df3[microcebus_df3$distance < quantile(microcebus_df3$distance, 0.95),]
-
 #Further clean data data set
 microcebus_df3 <- microcebus_df3[!is.na(microcebus_df3$distance),]
 microcebus_df3 <- microcebus_df3[(microcebus_df3$Site_Transect!="HT"),]
-microcebus_df3$Area <- 1 #For now, assume an area of 1 
+microcebus_df3$Area <- 0.2 #For now, assume an area of 1 
 microcebus_df3$Sample.Label <- seq(1:nrow(microcebus_df3))
 colnames(microcebus_df3) <- c("Region.Label",  "Effort", "distance","Area", "Sample.Label")
 
