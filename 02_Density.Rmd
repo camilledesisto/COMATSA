@@ -16,85 +16,132 @@ knitr::opts_chunk$set(echo = TRUE)
 library(Distance); library(tidyverse); library(lme4); library(lmerTest); library(rsq); library(ggplot2);library(REdaS)
 
 #Import relevant data 
-survey_all <- read.csv("~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/lemurs_primary_in_transect_jan22.csv")
-survey_all$Date <- mdy(survey_all$Date)
-survey_all <- survey_all[survey_all$Date >= ymd("20220601"),]
-
-survey_all$Angle <- deg2rad(survey_all$Angle)
-#Make separate data frames for dirunal and nocturnal lemurs
-survey_diurnal <- survey_all %>% filter(Type=="Diurnal")
-survey_nocturnal <- survey_all %>% filter(Type=="Nocturnal")
 transect_lengths <- read.csv("~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/Transect_Length.csv")
-```
+survey_all <- read.csv("~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/lemurs_primary_in_transect_jan22.csv")
+survey_all$Type[survey_all$Type=="diurnal"] <- "Diurnal"
 
-```{r Number of repetitions, number of observations, effort}
-#NREP NOCTURNAL
-nrep_nocturnal <- survey_all %>% select(Site, Transect, Repetition, Type)%>%filter(Type=="Nocturnal") %>%drop_na(Transect) %>% group_by(Site, Transect) %>% mutate(NRep = max(Repetition)) %>% select(-Repetition)%>% distinct()
-nrep_nocturnal$Site2 <- nrep_nocturnal$Site
-nrep_nocturnal$Transect2 <- nrep_nocturnal$Transect
-nrep_nocturnal <-nrep_nocturnal %>% unite("Site_Transect", Site2:Transect2, sep="_")
-
-#NREP DIURNAL
-nrep_diurnal <- survey_all %>% select(Site, Transect, Repetition, Type)%>%filter(Type=="Diurnal") %>%drop_na(Transect) %>% group_by(Site, Transect) %>% mutate(NRep = max(Repetition)) %>% select(-Repetition)%>% distinct()
-nrep_diurnal$Site2 <- nrep_diurnal$Site
-nrep_diurnal$Transect2 <- nrep_diurnal$Transect
-nrep_diurnal <-nrep_diurnal %>% unite("Site_Transect", Site2:Transect2, sep="_")
-
-survey_diurnal$Site2 <- survey_diurnal$Site
-survey_diurnal$Transect2 <- survey_diurnal$Transect
-survey_diurnal <-survey_diurnal %>% unite("Site_Transect", Site2:Transect2, sep="_")
+#size as in group size - take the larger value of n_ind or sum of n_juv +n_ad
+survey_all$N_ind[is.na(survey_all$N_ind)] <- 0
+survey_all$N_ad[is.na(survey_all$N_ad)] <- 0
+survey_all$N_juv[is.na(survey_all$N_juv)] <- 0
+survey_all$N_total <- survey_all$N_ad + survey_all$N_juv
+survey_all <- survey_all %>% mutate(N_total = ifelse(N_total > N_ind, N_total, N_ind))
 
 
-#NOBS 
+#Nom_scientifique, Site_transect.x, Type, N_total
+#sum1 <- survey_all %>% group_by(Site, Transect, Nom_sientifique,Type) %>% summarise(N_total = sum(as.numeric(N_total)))
+#sum_noct <- sum1 %>% filter(Type=="Nocturnal") %>% pivot_wider(names_from = Nom_sientifique, values_from = N_total)
+#sum_diur <- sum1 %>% filter(Type=="Diurnal") %>% pivot_wider(names_from = Nom_sientifique, values_from = N_total)
 
-#not working, excluding many sites/transects
-nobs <- survey_all %>% select(Site, Transect, Nom_sientifique)%>%drop_na(Nom_sientifique) %>%group_by(Site, Transect, Nom_sientifique) %>% mutate(NObs =n())%>% distinct()
-
+#NOBS - calculate before filtering by date
+nobs <- survey_all %>% select(Site, Transect, Nom_sientifique, Type)%>%drop_na(Nom_sientifique) %>%group_by(Site, Transect, Nom_sientifique, Type) %>% mutate(NObs =n())%>% distinct()
+nobs <- pivot_wider(nobs, names_from = Type, values_from = NObs)
+nobs[is.na(nobs)]<- 0
+nobs$NObs_total <- nobs$Diurnal + nobs$Nocturnal
 nobs <-nobs %>% unite("Site_Transect", Site:Transect, sep="_")
-
-#CHEIRO
-nrep_cheiro <- survey_all %>%filter(Mois==1|Mois==2|Mois==3|Mois==11|Mois==12) %>%filter(Type=="Nocturnal") %>%select(Site, Transect, Repetition)%>%drop_na(Transect) %>% group_by(Site, Transect) %>% mutate(NRep = max(Repetition)) %>% select(-Repetition)%>% distinct()
-nrep_cheiro$Site2 <- nrep_cheiro$Site
-nrep_cheiro$Transect2 <- nrep_cheiro$Transect
-nrep_cheiro <-nrep_cheiro %>% unite("Site_Transect", Site2:Transect2, sep="_")
 
 nobs_cheiro <- survey_all%>%filter(Mois==1|Mois==2|Mois==3|Mois==11|Mois==12)%>% filter(Nom_sientifique=="Cheirogaleus_crossleyi") %>% select(Site, Transect, Nom_sientifique) %>%group_by(Site, Transect) %>% mutate(NObs =n())%>% distinct()
 nobs_cheiro$Transect2 <- nobs_cheiro$Transect
 nobs_cheiro$Site2 <- nobs_cheiro$Site
 nobs_cheiro <-nobs_cheiro %>% unite("Site_Transect", Site2:Transect2, sep="_")
 
+```
 
-#EFFORT
+```{r Number of repetitions, number of observations, effort}
+#NREP NOCTURNAL - Counts ALL REPS
+nrep_nocturnal <- survey_all %>% select(Site, Transect, Repetition, Type)%>%filter(Type=="Nocturnal") %>%drop_na(Transect) %>% group_by(Site, Transect) %>% mutate(NRep = length(unique(Repetition))) %>% select(-Repetition)%>% distinct()
+nrep_nocturnal$Site2 <- nrep_nocturnal$Site
+nrep_nocturnal$Transect2 <- nrep_nocturnal$Transect
+nrep_nocturnal <-nrep_nocturnal %>% unite("Site_Transect", Site2:Transect2, sep="_")
+
+#NREP DIURNAL- Counts ALL REPS
+nrep_diurnal <- survey_all %>% select(Site, Transect, Repetition, Type)%>%filter(Type=="Diurnal") %>%drop_na(Transect) %>% group_by(Site, Transect) %>% mutate(NRep = length(unique(Repetition))) %>% select(-Repetition)%>% distinct()
+nrep_diurnal$Site2 <- nrep_diurnal$Site
+nrep_diurnal$Transect2 <- nrep_diurnal$Transect
+nrep_diurnal <-nrep_diurnal %>% unite("Site_Transect", Site2:Transect2, sep="_")
+
+#CHEIRO- Counts ALL REPS
+nrep_cheiro <- survey_all %>%filter(Mois==1|Mois==2|Mois==3|Mois==11|Mois==12) %>%filter(Type=="Nocturnal") %>%select(Site, Transect, Repetition)%>%drop_na(Transect) %>% group_by(Site, Transect) %>% mutate(NRep = length(unique(Repetition))) %>% select(-Repetition)%>% distinct()
+nrep_cheiro$Site2 <- nrep_cheiro$Site
+nrep_cheiro$Transect2 <- nrep_cheiro$Transect
+nrep_cheiro <-nrep_cheiro %>% unite("Site_Transect", Site2:Transect2, sep="_")
+
+
+
+#FILTER DATA FOR DISTANCE SAMPLING
+survey_all$Date <- mdy(survey_all$Date)
+survey_all <- survey_all[survey_all$Date >= ymd("20220601"),]
+
+#Make separate data frames for dirunal and nocturnal lemurs
+survey_diurnal <- survey_all %>% filter(Type=="Diurnal")
+survey_nocturnal <- survey_all %>% filter(Type=="Nocturnal")
+
+
+
+#NREP NOCTURNAL - Only Reps with distance data
+nrep_nocturnal_distance <- survey_all %>% select(Site, Transect, Repetition, Type)%>%filter(Type=="Nocturnal") %>%drop_na(Transect) %>% group_by(Site, Transect) %>% mutate(NRep = length(unique(Repetition))) %>% select(-Repetition)%>% distinct()
+nrep_nocturnal_distance$Site2 <- nrep_nocturnal_distance$Site
+nrep_nocturnal_distance$Transect2 <- nrep_nocturnal_distance$Transect
+nrep_nocturnal_distance <-nrep_nocturnal_distance %>% unite("Site_Transect", Site2:Transect2, sep="_")
+
+#NREP DIURNAL- Only Reps with distance data
+nrep_diurnal_distance <- survey_all %>% select(Site, Transect, Repetition, Type)%>%filter(Type=="Diurnal") %>%drop_na(Transect) %>% group_by(Site, Transect) %>% mutate(NRep = length(unique(Repetition))) %>% select(-Repetition)%>% distinct()
+nrep_diurnal_distance$Site2 <- nrep_diurnal_distance$Site
+nrep_diurnal_distance$Transect2 <- nrep_diurnal_distance$Transect
+nrep_diurnal_distance <-nrep_diurnal_distance %>% unite("Site_Transect", Site2:Transect2, sep="_")
+
+#CHEIRO- Only Reps with distance data
+nrep_cheiro_distance <- survey_all %>%filter(Mois==1|Mois==2|Mois==3|Mois==11|Mois==12) %>%filter(Type=="Nocturnal") %>%select(Site, Transect, Repetition)%>%drop_na(Transect) %>% group_by(Site, Transect) %>% mutate(NRep = length(unique(Repetition))) %>% select(-Repetition)%>% distinct()
+nrep_cheiro_distance$Site2 <- nrep_cheiro_distance$Site
+nrep_cheiro_distance$Transect2 <- nrep_cheiro_distance$Transect
+nrep_cheiro_distance <-nrep_cheiro_distance %>% unite("Site_Transect", Site2:Transect2, sep="_")
+
+
+#EFFORT - only adding effort relevant to distance to the files, can calculate total with full version at end
 survey_nocturnal <- left_join(survey_nocturnal, transect_lengths, by =c("Site", "Transect"))
+survey_nocturnal <- left_join(survey_nocturnal, nrep_nocturnal_distance, by =c("Site", "Transect"))
+survey_nocturnal$Effort.distance <- survey_nocturnal$Length* survey_nocturnal$NRep
 survey_nocturnal <- left_join(survey_nocturnal, nrep_nocturnal, by =c("Site", "Transect"))
-survey_nocturnal$Effort <- survey_nocturnal$Length* survey_nocturnal$NRep
+survey_nocturnal$Effort.distance <- survey_nocturnal$Length* survey_nocturnal$NRep.y
   
 survey_diurnal <- left_join(survey_diurnal, transect_lengths, by =c("Site", "Transect"))
+survey_diurnal <- left_join(survey_diurnal, nrep_diurnal_distance, by =c("Site", "Transect"))
+survey_diurnal$Effort.distance <- survey_diurnal$Length* survey_diurnal$NRep
 survey_diurnal <- left_join(survey_diurnal, nrep_diurnal, by =c("Site", "Transect"))
-survey_diurnal$Effort <- survey_diurnal$Length* survey_diurnal$NRep
+survey_diurnal$Effort.total <- survey_diurnal$Length* survey_diurnal$NRep.y
 ```
 
 ```{r Allocebus density calculations}
-
 #Get data frame for just allocebus
-allocebus_df <- survey_nocturnal  %>% filter(Nom_sientifique=="Allocebus_trichotis") %>% filter(Site =="Ambodivoara"|Site=="AmbodivohitraKobahina"| Site=="Antanambe"| Site=="Ambavala") %>% select(Nom_sientifique, Site, Transect, Angle, Dis, Effort, Site_Transect)
+allocebus_df <- survey_nocturnal  %>% filter(Nom_sientifique=="Allocebus_trichotis")
 
 #Calculate perpendicular distance from angle and distance
-allocebus_df$distance <- abs(sin(allocebus_df$Angle)*(allocebus_df$Dis))
+allocebus_df$distance <- abs((sin(allocebus_df$Angle))*(allocebus_df$Dis))
 allocebus_df$distance[is.na(allocebus_df$distance)] <- 0
 
 #Clean data frame
-allocebus_df2 <- allocebus_df %>% select(Site_Transect,Effort, distance)
-allocebus_df3 <-allocebus_df2
+#allocebus_df2 <- allocebus_df %>% select(Site_Transect,Effort, distance)
+#allocebus_df3 <-allocebus_df2
 
 #Further clean data data set
-allocebus_df3 <- allocebus_df3[!is.na(allocebus_df3$distance),]
-allocebus_df3 <- allocebus_df3[(allocebus_df3$Site_Transect!="HT"),]
-allocebus_df3$Area <- 0.02 #For now, assume an area of 1 
-allocebus_df3$Sample.Label <- seq(1:nrow(allocebus_df3))
-colnames(allocebus_df3) <- c("Region.Label",  "Effort", "distance","Area", "Sample.Label")
+allocebus_df3 <- allocebus_df
+allocebus_df3$Area <- 1000000 #For now, assume an area of 1... million 
+allocebus_df3$Sample.Label <- 1
+allocebus_df3$Region.Label <- allocebus_df3$Site_Transect.x
+allocebus_df3$size <- as.numeric(allocebus_df3$N_total)
+allocebus_df3$Effort <- allocebus_df3$Effort.distance
+
+
+
+#colnames(allocebus_df3) <- c("Region.Label",  "Effort", "distance","Area", "Sample.Label")
 
 conversion.factor <- convert_units("Meter", "Kilometer", "Square kilometer")
+hist(allocebus_df3$distance)
+ds_allocebus <- ds(allocebus_df3)
+ggplot(allocebus_df3, aes(distance,size))+geom_point()+geom_smooth(method=lm)
+library(mrds)
+ds_allocebus <- ds(allocebus_df3, truncation = 20, formula = ~size)
+ds_allocebus <- ds(allocebus_df3, truncation = 20)
 
 #Detection function models
 model1_allocebus <- ds(allocebus_df3, key="hn", adjustment=NULL)
@@ -125,10 +172,11 @@ AIC(model2_allocebus, model8_allocebus)
 plot(model2_allocebus, nc=6)
 
 #Get detection probability
-allocebus_detection_prob <- predict(model2_allocebus)$fitted[[1]]
+allocebus_detection_prob <- predict(ds_allocebus)$fitted[[1]]
 
 #Calculate strp width (2 * maximum distance, of the truncated distance data)
-allocebus_strip_width <- max(allocebus_df3$distance) * 2
+allocebus_strip_width <- 20
+#allocebus_strip_width <- max(allocebus_df3$distance) * 2
 
 #Upload covariate data 
 allocebus_dat <- read.csv("~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/allo_reps.csv")
@@ -677,11 +725,14 @@ summary(lmer_avahi)
 
 ```{r Rubriventer density calculations}
 #Get data frame for just rubriventer
-rubriventer_df <- survey_diurnal  %>% filter(Nom_sientifique=="Eulemur_rubriventer") %>% filter(Site =="Ambodivoara"|Site=="AmbodivohitraKobahina"| Site=="Antanambe"| Site=="Ambavala") %>% select(Nom_sientifique, Site, Transect, Angle, Dis, Effort, Site_Transect)
+rubriventer_df <- survey_diurnal  %>% filter(Nom_sientifique=="Eulemur_rubriventer") 
 
 #Calculate perpendicular distance from angle and distance
 rubriventer_df$distance <- abs(sin(rubriventer_df$Angle)*(rubriventer_df$Dis))
 rubriventer_df$distance[is.na(rubriventer_df$distance)] <- 0
+
+ggplot(rubriventer_df, aes(distance,as.numeric(rubriventer_df$N_total)))+geom_point()+geom_smooth(method=lm)
+
 
 #Clean data frame
 rubriventer_df2 <- rubriventer_df %>% select(Site_Transect,Effort, distance)
@@ -802,11 +853,13 @@ summary(lmer_rubriventer_best)
 ```{r Albifrons density calculations}
 
 #Get data frame for just albifrons
-albifrons_df <- survey_diurnal  %>% filter(Nom_sientifique=="Eulemur_albifrons") %>% filter(Site =="Ambodivoara"|Site=="AmbodivohitraKobahina"| Site=="Antanambe"| Site=="Ambavala") %>% select(Nom_sientifique, Site, Transect, Angle, Dis, Effort, Site_Transect)
+albifrons_df <- survey_diurnal  %>% filter(Nom_sientifique=="Eulemur_albifrons") 
 
 #Calculate perpendicular distance from angle and distance
 albifrons_df$distance <- abs(sin(albifrons_df$Angle)*(albifrons_df$Dis))
 albifrons_df$distance[is.na(albifrons_df$distance)] <- 0
+
+ggplot(albifrons_df, aes(distance,as.numeric(albifrons_df$N_total)))+geom_point()+geom_smooth(method=lm)
 
 #Clean data frame
 albifrons_df2 <- albifrons_df %>% select(Site_Transect,Effort, distance)
@@ -923,11 +976,13 @@ summary(lmer_albifrons6)
 ```{r Propithecus density calculations}
 
 #Get data frame for just propithecus
-propithecus_df <- survey_diurnal  %>% filter(Nom_sientifique=="Propithecus_candidus") %>% filter(Site =="Ambodivoara"|Site=="AmbodivohitraKobahina"| Site=="Antanambe"| Site=="Ambavala") %>% select(Nom_sientifique, Site, Transect, Angle, Dis, Effort, Site_Transect)
+propithecus_df <- survey_diurnal  %>% filter(Nom_sientifique=="Propithecus_candidus") 
 
 #Calculate perpendicular distance from angle and distance
 propithecus_df$distance <- abs(sin(propithecus_df$Angle)*(propithecus_df$Dis))
 propithecus_df$distance[is.na(propithecus_df$distance)] <- 0
+
+ggplot(propithecus_df, aes(distance,as.numeric(propithecus_df$N_total)))+geom_point()+geom_smooth(method=lm)
 
 #Clean data frame
 propithecus_df2 <- propithecus_df %>% select(Site_Transect,Effort, distance)
