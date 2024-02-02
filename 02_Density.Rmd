@@ -17,8 +17,11 @@ library(Distance); library(tidyverse); library(lme4); library(lmerTest); library
 
 #Import relevant data 
 transect_lengths <- read.csv("~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/Transect_Length.csv")
-survey_all <- read.csv("~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/lemurs_primary_in_transect_jan22.csv")
+survey_all <- read.csv("~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/lemurs_primary_in_transect_feb2.csv")
 survey_all$Type[survey_all$Type=="diurnal"] <- "Diurnal"
+
+#remove detections not based on sight
+survey_all <- survey_all %>% filter(ObjectID != 1440 & ObjectID != 1418 & ObjectID != 417 & ObjectID != 418)
 
 #size as in group size - take the larger value of n_ind or sum of n_juv +n_ad
 survey_all$N_ind[is.na(survey_all$N_ind)] <- 0
@@ -139,8 +142,7 @@ conversion.factor <- convert_units("Meter", "Kilometer", "Square kilometer")
 hist(allocebus_df3$distance)
 ds_allocebus <- ds(allocebus_df3)
 ggplot(allocebus_df3, aes(distance,size))+geom_point()+geom_smooth(method=lm)
-library(mrds)
-ds_allocebus <- ds(allocebus_df3, truncation = 20, formula = ~size)
+#ds_allocebus <- ds(allocebus_df3, truncation = 20, formula = ~size)
 ds_allocebus <- ds(allocebus_df3, truncation = 20)
 
 #Detection function models
