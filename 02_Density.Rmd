@@ -17,13 +17,20 @@ library(Distance); library(tidyverse); library(lme4); library(lmerTest); library
 
 #Import relevant data 
 transect_lengths <- read.csv("~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/Transect_Length.csv")
+transect_lengths$Site_Transect <- paste(transect_lengths$Site,"_",as.numeric(transect_lengths$Transect), sep="")
 survey_all <- read.csv("~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/lemurs_primary_in_transect_feb2.csv")
 survey_all$Type[survey_all$Type=="diurnal"] <- "Diurnal"
+survey_all$Site_Transect <- paste(survey_all$Site,"_",as.numeric(survey_all$Transect), sep="")
+
+#NAs CURRENTLY BEING EXCLUDED, to include them set is.na(Dis) to 0
+survey_all$Angle[is.na(survey_all$Angle)] <- pi/2
+survey_all$distance <- abs((sin(survey_all$Angle))*(survey_all$Dis))
 
 #remove detections not based on sight
-survey_all <- survey_all %>% filter(ObjectID != 1440 & ObjectID != 1418 & ObjectID != 417 & ObjectID != 418)
+survey_all <- survey_all %>% filter(ObjectID != 1440 & ObjectID != 1418 & ObjectID != 417 & ObjectID != 418 & ObjectID != 96)
 
 #size as in group size - take the larger value of n_ind or sum of n_juv +n_ad
+survey_all$N_ind <- as.numeric(survey_all$N_ind)
 survey_all$N_ind[is.na(survey_all$N_ind)] <- 0
 survey_all$N_ad[is.na(survey_all$N_ad)] <- 0
 survey_all$N_juv[is.na(survey_all$N_juv)] <- 0
@@ -41,12 +48,15 @@ nobs <- survey_all %>% select(Site, Transect, Nom_sientifique, Type)%>%drop_na(N
 nobs <- pivot_wider(nobs, names_from = Type, values_from = NObs)
 nobs[is.na(nobs)]<- 0
 nobs$NObs_total <- nobs$Diurnal + nobs$Nocturnal
+nobs <- nobs %>% rename(Nobs_Diurnal = Diurnal)
+nobs <- nobs %>% rename(Nobs_Nocturnal = Nocturnal)
 nobs <-nobs %>% unite("Site_Transect", Site:Transect, sep="_")
 
 nobs_cheiro <- survey_all%>%filter(Mois==1|Mois==2|Mois==3|Mois==11|Mois==12)%>% filter(Nom_sientifique=="Cheirogaleus_crossleyi") %>% select(Site, Transect, Nom_sientifique) %>%group_by(Site, Transect) %>% mutate(NObs =n())%>% distinct()
 nobs_cheiro$Transect2 <- nobs_cheiro$Transect
 nobs_cheiro$Site2 <- nobs_cheiro$Site
 nobs_cheiro <-nobs_cheiro %>% unite("Site_Transect", Site2:Transect2, sep="_")
+
 
 ```
 
@@ -73,77 +83,84 @@ nrep_cheiro <-nrep_cheiro %>% unite("Site_Transect", Site2:Transect2, sep="_")
 
 #FILTER DATA FOR DISTANCE SAMPLING
 survey_all$Date <- mdy(survey_all$Date)
-survey_all <- survey_all[survey_all$Date >= ymd("20220601"),]
+survey_all_dist <- survey_all[survey_all$Date >= ymd("20220601"),]
 
 #Make separate data frames for dirunal and nocturnal lemurs
-survey_diurnal <- survey_all %>% filter(Type=="Diurnal")
-survey_nocturnal <- survey_all %>% filter(Type=="Nocturnal")
+survey_diurnal <- survey_all_dist %>% filter(Type=="Diurnal")
+survey_nocturnal <- survey_all_dist %>% filter(Type=="Nocturnal")
 
 
 
 #NREP NOCTURNAL - Only Reps with distance data
-nrep_nocturnal_distance <- survey_all %>% select(Site, Transect, Repetition, Type)%>%filter(Type=="Nocturnal") %>%drop_na(Transect) %>% group_by(Site, Transect) %>% mutate(NRep = length(unique(Repetition))) %>% select(-Repetition)%>% distinct()
+nrep_nocturnal_distance <- survey_all_dist %>% select(Site, Transect, Repetition, Type)%>%filter(Type=="Nocturnal") %>%drop_na(Transect) %>% group_by(Site, Transect) %>% mutate(NRep = length(unique(Repetition))) %>% select(-Repetition)%>% distinct()
 nrep_nocturnal_distance$Site2 <- nrep_nocturnal_distance$Site
 nrep_nocturnal_distance$Transect2 <- nrep_nocturnal_distance$Transect
 nrep_nocturnal_distance <-nrep_nocturnal_distance %>% unite("Site_Transect", Site2:Transect2, sep="_")
 
 #NREP DIURNAL- Only Reps with distance data
-nrep_diurnal_distance <- survey_all %>% select(Site, Transect, Repetition, Type)%>%filter(Type=="Diurnal") %>%drop_na(Transect) %>% group_by(Site, Transect) %>% mutate(NRep = length(unique(Repetition))) %>% select(-Repetition)%>% distinct()
+nrep_diurnal_distance <- survey_all_dist %>% select(Site, Transect, Repetition, Type)%>%filter(Type=="Diurnal") %>%drop_na(Transect) %>% group_by(Site, Transect) %>% mutate(NRep = length(unique(Repetition))) %>% select(-Repetition)%>% distinct()
 nrep_diurnal_distance$Site2 <- nrep_diurnal_distance$Site
 nrep_diurnal_distance$Transect2 <- nrep_diurnal_distance$Transect
 nrep_diurnal_distance <-nrep_diurnal_distance %>% unite("Site_Transect", Site2:Transect2, sep="_")
 
 #CHEIRO- Only Reps with distance data
-nrep_cheiro_distance <- survey_all %>%filter(Mois==1|Mois==2|Mois==3|Mois==11|Mois==12) %>%filter(Type=="Nocturnal") %>%select(Site, Transect, Repetition)%>%drop_na(Transect) %>% group_by(Site, Transect) %>% mutate(NRep = length(unique(Repetition))) %>% select(-Repetition)%>% distinct()
+nrep_cheiro_distance <- survey_all_dist %>%filter(Mois==1|Mois==2|Mois==3|Mois==11|Mois==12) %>%filter(Type=="Nocturnal" ) %>%select(Site, Transect, Repetition)%>%drop_na(Transect) %>% group_by(Site, Transect) %>% mutate(NRep = length(unique(Repetition))) %>% select(-Repetition)%>% distinct()
 nrep_cheiro_distance$Site2 <- nrep_cheiro_distance$Site
 nrep_cheiro_distance$Transect2 <- nrep_cheiro_distance$Transect
 nrep_cheiro_distance <-nrep_cheiro_distance %>% unite("Site_Transect", Site2:Transect2, sep="_")
 
 
 #EFFORT - only adding effort relevant to distance to the files, can calculate total with full version at end
-survey_nocturnal <- left_join(survey_nocturnal, transect_lengths, by =c("Site", "Transect"))
-survey_nocturnal <- left_join(survey_nocturnal, nrep_nocturnal_distance, by =c("Site", "Transect"))
+survey_nocturnal <- left_join(survey_nocturnal, transect_lengths , by ="Site_Transect")
+survey_nocturnal <- left_join(survey_nocturnal, nrep_nocturnal_distance, by ="Site_Transect")
 survey_nocturnal$Effort.distance <- survey_nocturnal$Length* survey_nocturnal$NRep
-survey_nocturnal <- left_join(survey_nocturnal, nrep_nocturnal, by =c("Site", "Transect"))
-survey_nocturnal$Effort.distance <- survey_nocturnal$Length* survey_nocturnal$NRep.y
+survey_nocturnal <- left_join(survey_nocturnal, nrep_nocturnal, by ="Site_Transect")
+survey_nocturnal$Effort.total <- survey_nocturnal$Length* survey_nocturnal$NRep.y
+survey_nocturnal <- survey_nocturnal %>% select(-Type, - Type.y, -Site.y.y, -Transect.x.x, -Site.x.x, -Site.y, -Transect.y.y, -Transect.y)
+survey_nocturnal <- survey_nocturnal %>% rename(Type = Type.x, Site = Site.x, Transect = Transect.x)
   
-survey_diurnal <- left_join(survey_diurnal, transect_lengths, by =c("Site", "Transect"))
-survey_diurnal <- left_join(survey_diurnal, nrep_diurnal_distance, by =c("Site", "Transect"))
+survey_diurnal <- left_join(survey_diurnal, transect_lengths, by ="Site_Transect")
+survey_diurnal <- left_join(survey_diurnal, nrep_diurnal_distance, by ="Site_Transect")
 survey_diurnal$Effort.distance <- survey_diurnal$Length* survey_diurnal$NRep
-survey_diurnal <- left_join(survey_diurnal, nrep_diurnal, by =c("Site", "Transect"))
+survey_diurnal <- left_join(survey_diurnal, nrep_diurnal, by ="Site_Transect")
 survey_diurnal$Effort.total <- survey_diurnal$Length* survey_diurnal$NRep.y
+survey_diurnal <- survey_diurnal %>% select(-Type, - Type.y, -Site.y.y, -Transect.x.x, -Site.x.x, -Site.y, -Transect.y.y, -Transect.y)
+survey_diurnal <- survey_diurnal %>% rename(Type = Type.x, Site = Site.x, Transect = Transect.x)
+
+survey_cheiro <- left_join((survey_all_dist %>% filter(Nom_sientifique=="Cheirogaleus_crossleyi" & (Mois >= 11 | Mois <=3 ))), transect_lengths , by ="Site_Transect")
+survey_cheiro <- left_join(survey_cheiro, nrep_cheiro_distance, by ="Site_Transect")
+survey_cheiro$Effort.distance <- survey_cheiro$Length* survey_cheiro$NRep
+survey_cheiro <- left_join(survey_cheiro, nrep_cheiro, by ="Site_Transect")
+survey_cheiro$Effort.total <- survey_cheiro$Length* survey_cheiro$NRep.y
+survey_cheiro <- survey_cheiro %>% select( -Site.y.y, -Transect.x.x, -Site.x.x, -Site.y, -Transect.y.y, -Transect.y)
+survey_cheiro <- survey_cheiro %>% rename( Site = Site.x, Transect = Transect.x)
 ```
 
 ```{r Allocebus density calculations}
 #Get data frame for just allocebus
 allocebus_df <- survey_nocturnal  %>% filter(Nom_sientifique=="Allocebus_trichotis")
 
-#Calculate perpendicular distance from angle and distance
-allocebus_df$distance <- abs((sin(allocebus_df$Angle))*(allocebus_df$Dis))
-allocebus_df$distance[is.na(allocebus_df$distance)] <- 0
+#NAs currently being excluded
+#allocebus_df$distance[is.na(allocebus_df$distance)] <- 0
 
-#Clean data frame
-#allocebus_df2 <- allocebus_df %>% select(Site_Transect,Effort, distance)
-#allocebus_df3 <-allocebus_df2
-
-#Further clean data data set
+#clean data data set
 allocebus_df3 <- allocebus_df
 allocebus_df3$Area <- 1000000 #For now, assume an area of 1... million 
 allocebus_df3$Sample.Label <- 1
-allocebus_df3$Region.Label <- allocebus_df3$Site_Transect.x
+allocebus_df3$Region.Label <- allocebus_df3$Site_Transect
 allocebus_df3$size <- as.numeric(allocebus_df3$N_total)
 allocebus_df3$Effort <- allocebus_df3$Effort.distance
 
 
-
 #colnames(allocebus_df3) <- c("Region.Label",  "Effort", "distance","Area", "Sample.Label")
 
-conversion.factor <- convert_units("Meter", "Kilometer", "Square kilometer")
 hist(allocebus_df3$distance)
-ds_allocebus <- ds(allocebus_df3)
-ggplot(allocebus_df3, aes(distance,size))+geom_point()+geom_smooth(method=lm)
+#ds_allocebus <- ds(allocebus_df3) - used for finding truncation dist
+#check if group size affects detection dist
+#ggplot(allocebus_df3, aes(distance,size))+geom_point()+geom_smooth(method=lm)
 #ds_allocebus <- ds(allocebus_df3, truncation = 20, formula = ~size)
-ds_allocebus <- ds(allocebus_df3, truncation = 20)
+allocebus_truncation_dist <- 20
+ds_allocebus <- ds(allocebus_df3, truncation = allocebus_truncation_dist)
 
 #Detection function models
 model1_allocebus <- ds(allocebus_df3, key="hn", adjustment=NULL)
@@ -177,21 +194,45 @@ plot(model2_allocebus, nc=6)
 allocebus_detection_prob <- predict(ds_allocebus)$fitted[[1]]
 
 #Calculate strp width (2 * maximum distance, of the truncated distance data)
-allocebus_strip_width <- 20
+allocebus_strip_width <- allocebus_truncation_dist
 #allocebus_strip_width <- max(allocebus_df3$distance) * 2
 
 #Upload covariate data 
-allocebus_dat <- read.csv("~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/allo_reps.csv")
 
-allocebus_dat <- left_join(allocebus_dat, nrep_nocturnal, by =c("Site_Transect"))
-allocebus_dat <- left_join(allocebus_dat, nobs[nobs$Nom_sientifique=="Allocebus_trichotis",], by =c("Site_Transect"))
-allocebus_dat <- allocebus_dat %>% select(Site_Transect, NObs, NRep)
-allocebus_dat$NObs[is.na(allocebus_dat$NObs)] <- 0
+#NOTE THAT ALL DETECTIONS BEYOND TRUNCATION DISTANCE ARE BEING EXCLUDED
+#CURRENTLY INCLUDING NA DISTANCE VALUES AS DETECTIONS
+site_transects <- survey_all %>% group_by(Site_Transect) %>% summarise()
+
+allocebus_df_old <- survey_all %>% filter(Nom_sientifique=="Allocebus_trichotis" & Type=="Nocturnal" & Date < ymd("20220601") & (Dis <1.56*allocebus_truncation_dist | is.na(Dis)))
+allocebus_df_new <- survey_all %>% filter(Nom_sientifique=="Allocebus_trichotis" & Type=="Nocturnal"  & Date >= ymd("20220601") & (distance <= allocebus_truncation_dist  | is.na(distance)) )
+allocebus_dat1 <- rbind(allocebus_df_new, allocebus_df_old)
+
+allocebus_dat <- allocebus_dat1  %>% group_by(Site_Transect)%>% summarise(Nind = sum(as.numeric(N_total)))
+allocebus_dat <- left_join(site_transects, allocebus_dat, by =c("Site_Transect"))
+
+nobs_allocebus <- allocebus_dat1  %>% select(Site_Transect) %>%group_by(Site_Transect) %>% mutate(NObs =n())%>% distinct()
+allocebus_dat <- left_join(allocebus_dat, nobs_allocebus, by =c("Site_Transect"))
+allocebus_dat[is.na(allocebus_dat)] <- 0
+
+allocebus_dat <- left_join(allocebus_dat,nrep_nocturnal, by =c("Site_Transect"))
+allocebus_dat <- allocebus_dat %>% select(-Site, -Transect, -Type)
+
+allocebus_dat <- left_join(allocebus_dat,transect_lengths, by =c("Site_Transect"))
+allocebus_dat$Density <- (allocebus_dat$Nind/allocebus_detection_prob)/(allocebus_truncation_dist*allocebus_dat$Length*allocebus_dat$NRep)
+allocebus_dat$Density_km2 <- allocebus_dat$Density*1000000
+
+
+#allocebus_dat <- read.csv("~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/allo_reps.csv")
+
+#allocebus_dat <- left_join(allocebus_dat, nrep_nocturnal, by =c("Site_Transect"))
+#allocebus_dat <- left_join(allocebus_dat, nobs[nobs$Nom_sientifique=="Allocebus_trichotis",], by =c("Site_Transect"))
+#allocebus_dat <- allocebus_dat %>% select(Site_Transect, NObs, NRep)
+#allocebus_dat$NObs[is.na(allocebus_dat$NObs)] <- 0
 
 #Use global detection function to calulate density at each transect
-allocebus_dat$M_surveyed <- allocebus_dat$NRep *1000*  allocebus_strip_width
-allocebus_dat$Density <- (allocebus_dat$NObs) / (allocebus_dat$M_surveyed*allocebus_detection_prob) * 1000000
-allocebus_dat <- allocebus_dat %>% select(Site_Transect, Density)
+#allocebus_dat$M_surveyed <- allocebus_dat$NRep *1000*  allocebus_strip_width
+#allocebus_dat$Density <- (allocebus_dat$NObs) / (allocebus_dat$M_surveyed*allocebus_detection_prob) * 1000000
+#allocebus_dat <- allocebus_dat %>% select(Site_Transect, Density)
 
 #Clean transect names
 covs_allo$Site_Transect[covs_allo$Site_Transect=="Ambodivohitra_Kobahina_1"]<- "AmbodivohitraKobahina_1"
@@ -245,24 +286,22 @@ summary(lmer_allocebus_best)
 ```{r Microcebus density calculations}
 
 #Get data frame for just microcebus
-microcebus_df <- survey_nocturnal  %>% filter(Nom_sientifique=="Microcebus_lehilahytsara") %>% filter(Site =="Ambodivoara"|Site=="AmbodivohitraKobahina"| Site=="Antanambe"| Site=="Ambavala") %>% select(Nom_sientifique, Site, Transect, Angle, Dis, Effort, Site_Transect)
+microcebus_df <- survey_nocturnal  %>% filter(Nom_sientifique=="Microcebus_lehilahytsara")
 
-#Calculate perpendicular distance from angle and distance
-microcebus_df$distance <- abs(sin(microcebus_df$Angle)*(microcebus_df$Dis))
-microcebus_df$distance[is.na(microcebus_df$distance)] <- 0
+#microcebus_df$distance[is.na(microcebus_df$distance)] <- 0
 
 #Clean data frame
-microcebus_df2 <- microcebus_df %>% select(Site_Transect,Effort, distance)
-microcebus_df3 <-microcebus_df2
-
-#Further clean data data set
-microcebus_df3 <- microcebus_df3[!is.na(microcebus_df3$distance),]
-microcebus_df3 <- microcebus_df3[(microcebus_df3$Site_Transect!="HT"),]
-microcebus_df3$Area <- 0.2 #For now, assume an area of 1 
-microcebus_df3$Sample.Label <- seq(1:nrow(microcebus_df3))
-colnames(microcebus_df3) <- c("Region.Label",  "Effort", "distance","Area", "Sample.Label")
+microcebus_df3 <- microcebus_df
+microcebus_df3$Area <- 1000000 #For now, assume an area of 1... million 
+microcebus_df3$Sample.Label <- 1
+microcebus_df3$Region.Label <- microcebus_df3$Site_Transect
+microcebus_df3$size <- as.numeric(microcebus_df3$N_total)
+microcebus_df3$Effort <- microcebus_df3$Effort.distance
 
 #Detection function models
+microcebus_truncation_dist <- 15
+ds_microcebus <- ds(microcebus_df3, truncation = microcebus_truncation_dist)
+
 model1_microcebus <- ds(microcebus_df3, key="hn", adjustment=NULL)
 model2_microcebus <- ds(microcebus_df3, key="hn", adjustment="cos")
 model3_microcebus <- ds(microcebus_df3, key="hn", adjustment="herm")
@@ -291,23 +330,41 @@ AIC(model5_microcebus)
 plot(model5_microcebus, nc=6)
 
 #Get detection probability
-microcebus_detection_prob <- predict(model5_microcebus)$fitted[[1]]
+microcebus_detection_prob <- predict(ds_microcebus)$fitted[[1]]
 
 #Calculate strp width (2 * maximum distance, of the truncated distance data)
-microcebus_strip_width <- max(microcebus_df3$distance) * 2
+microcebus_strip_width <- microcebus_truncation_dist
 
 #Upload covariate data 
-microcebus_dat <- read.csv("~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/micro_reps.csv")
+microcebus_df_old <- survey_all %>% filter(Nom_sientifique=="Microcebus_lehilahytsara" & Type=="Nocturnal" & Date < ymd("20220601") & (Dis <1.56*microcebus_truncation_dist | is.na(Dis)))
+microcebus_df_new <- survey_all %>% filter(Nom_sientifique=="Microcebus_lehilahytsara" & Type=="Nocturnal"  & Date >= ymd("20220601") & (distance <= microcebus_truncation_dist  | is.na(distance)) )
+microcebus_dat1 <- rbind(microcebus_df_new, microcebus_df_old)
 
-microcebus_dat <- left_join(microcebus_dat, nrep_nocturnal, by =c("Site_Transect"))
-microcebus_dat <- left_join(microcebus_dat, nobs[nobs$Nom_sientifique=="Microcebus_lehilahytsara",], by =c("Site_Transect"))
-microcebus_dat <- microcebus_dat %>% select(Site_Transect, NObs, NRep)
-microcebus_dat$NObs[is.na(microcebus_dat$NObs)] <- 0
+microcebus_dat <- microcebus_dat1  %>% group_by(Site_Transect)%>% summarise(Nind = sum(as.numeric(N_total)))
+microcebus_dat <- left_join(site_transects, microcebus_dat, by =c("Site_Transect"))
+
+nobs_microcebus <- microcebus_dat1  %>% select(Site_Transect) %>%group_by(Site_Transect) %>% mutate(NObs =n())%>% distinct()
+microcebus_dat <- left_join(microcebus_dat, nobs_microcebus, by =c("Site_Transect"))
+microcebus_dat[is.na(microcebus_dat)] <- 0
+
+microcebus_dat <- left_join(microcebus_dat,nrep_nocturnal, by =c("Site_Transect"))
+microcebus_dat <- microcebus_dat %>% select(-Site, -Transect, -Type)
+
+microcebus_dat <- left_join(microcebus_dat,transect_lengths, by =c("Site_Transect"))
+microcebus_dat$Density <- (microcebus_dat$Nind/microcebus_detection_prob)/(microcebus_truncation_dist*microcebus_dat$Length*microcebus_dat$NRep)
+microcebus_dat$Density_km2 <- microcebus_dat$Density*1000000
+
+#microcebus_dat <- read.csv("~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/micro_reps.csv")
+
+#microcebus_dat <- left_join(microcebus_dat, nrep_nocturnal, by =c("Site_Transect"))
+#microcebus_dat <- left_join(microcebus_dat, #nobs[nobs$Nom_sientifique=="Microcebus_lehilahytsara",], by =c("Site_Transect"))
+#microcebus_dat <- microcebus_dat %>% select(Site_Transect, NObs, NRep)
+#microcebus_dat$NObs[is.na(microcebus_dat$NObs)] <- 0
 
 #Use global detection function to calulate density at each transect
-microcebus_dat$M_surveyed <- microcebus_dat$NRep *1000*  microcebus_strip_width
-microcebus_dat$Density <- (microcebus_dat$NObs) / (microcebus_dat$M_surveyed*microcebus_detection_prob) * 1000000
-microcebus_dat <- microcebus_dat %>% select(Site_Transect, Density)
+#microcebus_dat$M_surveyed <- microcebus_dat$NRep *1000*  microcebus_strip_width
+#microcebus_dat$Density <- (microcebus_dat$NObs) / (microcebus_dat$M_surveyed*microcebus_detection_prob) * 1000000
+#microcebus_dat <- microcebus_dat %>% select(Site_Transect, Density)
 
 #Clean transect names
 covs_micro$Site_Transect[covs_micro$Site_Transect=="Ambodivohitra_Kobahina_1"]<- "AmbodivohitraKobahina_1"
@@ -360,32 +417,29 @@ summary(lmer_microcebus_best)
 
 ```{r Cheirogaleus density calculations: NOT ALL SITES}
 #Get data frame for just cheirogaleus
-cheirogaleus_df <- survey_nocturnal  %>% filter(Nom_sientifique=="Cheirogaleus_crossleyi") %>% filter(Site =="Ambodivoara"|Site=="AmbodivohitraKobahina"| Site=="Antanambe"| Site=="Ambavala") %>% select(Nom_sientifique, Site, Transect, Angle, Dis, Length, Site_Transect)
+cheirogaleus_df <- survey_cheiro
 
-cheirogaleus_df <- left_join(cheirogaleus_df, nrep_cheiro, by =c("Site", "Transect"))
-cheirogaleus_df$Effort <- cheirogaleus_df$Length *cheirogaleus_df$NRep
+#cheirogaleus_df <- left_join(cheirogaleus_df, nrep_cheiro, by =c("Site", "Transect"))
+#cheirogaleus_df$Effort <- cheirogaleus_df$Length *cheirogaleus_df$NRep
 
 #Calculate perpendicular distance from angle and distance
-cheirogaleus_df$distance <- abs(sin(cheirogaleus_df$Angle)*(cheirogaleus_df$Dis))
-cheirogaleus_df$distance[is.na(cheirogaleus_df$distance)] <- 0
+#cheirogaleus_df$distance[is.na(cheirogaleus_df$distance)] <- 0
 
-cheirogaleus_df <- cheirogaleus_df %>% unite("Site_Transect", Site:Transect, sep="_")
 
 #Clean data frame
-cheirogaleus_df2 <- cheirogaleus_df %>% select(Site_Transect,Effort, distance)
-cheirogaleus_df3 <-cheirogaleus_df2
+cheirogaleus_df3 <- cheirogaleus_df
+cheirogaleus_df3$Area <- 1000000 #For now, assume an area of 1... million 
+cheirogaleus_df3$Sample.Label <- 1
+cheirogaleus_df3$Region.Label <- cheirogaleus_df3$Site_Transect
+cheirogaleus_df3$size <- as.numeric(cheirogaleus_df3$N_total)
+cheirogaleus_df3$Effort <- cheirogaleus_df3$Effort.distance
 
-#Truncate data to eliminate most extreme distance calues 
-cheirogaleus_df3 <-cheirogaleus_df3[cheirogaleus_df3$distance < quantile(cheirogaleus_df3$distance, 0.95),]
-
-#Further clean data data set
-cheirogaleus_df3 <- cheirogaleus_df3[!is.na(cheirogaleus_df3$distance),]
-cheirogaleus_df3 <- cheirogaleus_df3[(cheirogaleus_df3$Site_Transect!="HT"),]
-cheirogaleus_df3$Area <- 1 #For now, assume an area of 1 
-cheirogaleus_df3$Sample.Label <- seq(1:nrow(cheirogaleus_df3))
-colnames(cheirogaleus_df3) <- c("Region.Label",  "Effort", "distance","Area", "Sample.Label")
 
 #Detection function models
+cheirogaleus_truncation_dist <- 25
+ds_cheirogaleus <- ds(cheirogaleus_df3, truncation = cheirogaleus_truncation_dist)
+
+
 model1_cheirogaleus <- ds(cheirogaleus_df3, key="hn", adjustment=NULL)
 model2_cheirogaleus <- ds(cheirogaleus_df3, key="hn", adjustment="cos")
 model3_cheirogaleus <- ds(cheirogaleus_df3, key="hn", adjustment="herm")
@@ -416,24 +470,29 @@ AIC(model1_cheirogaleus, model2_cheirogaleus, model3_cheirogaleus, model4_cheiro
 plot(model2_cheirogaleus, nc=4)
 
 #Get detection probability
-cheirogaleus_detection_prob <- predict(model2_cheirogaleus)$fitted[[1]]
+cheirogaleus_detection_prob <- predict(ds_cheirogaleus)$fitted[[1]]
 
 #Calculate strp width (2 * maximum distance, of the truncated distance data)
-cheirogaleus_strip_width <- max(cheirogaleus_df3$distance) * 2
+cheirogaleus_strip_width <- cheirogaleus_truncation_dist
 
 #Upload covariate data 
-cheirogaleus_dat <- read.csv("~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/cheiro_reps.csv")
+cheirogaleus_df_old <- survey_all %>% filter(Nom_sientifique=="Cheirogaleus_crossleyi" & Type=="Nocturnal" & Date < ymd("20220601") & (Mois >= 11 | Mois <=3 ) & (Dis <1.56*cheirogaleus_truncation_dist | is.na(Dis)))
+cheirogaleus_df_new <- survey_all %>% filter(Nom_sientifique=="Cheirogaleus_crossleyi" & Type=="Nocturnal"  & Date >= ymd("20220601" )& (Mois >= 11 | Mois <=3 ) & (distance <= cheirogaleus_truncation_dist  | is.na(distance)) )
+cheirogaleus_dat1 <- rbind(cheirogaleus_df_new, cheirogaleus_df_old)
 
-cheirogaleus_dat <- left_join(cheirogaleus_dat, nrep_cheiro, by =c("Site_Transect"))
-cheirogaleus_dat <- left_join(cheirogaleus_dat, nobs_cheiro, by =c("Site_Transect"))
-cheirogaleus_dat <- cheirogaleus_dat %>% select(Site_Transect, NObs, NRep)
-cheirogaleus_dat$NObs[is.na(cheirogaleus_dat$NObs)] <- 0
+cheirogaleus_dat <- cheirogaleus_dat1  %>% group_by(Site_Transect)%>% summarise(Nind = sum(as.numeric(N_total)))
+cheirogaleus_dat <- left_join(site_transects, cheirogaleus_dat, by =c("Site_Transect"))
 
+nobs_cheirogaleus <- cheirogaleus_dat1  %>% select(Site_Transect) %>%group_by(Site_Transect) %>% mutate(NObs =n())%>% distinct()
+cheirogaleus_dat <- left_join(cheirogaleus_dat, nobs_cheirogaleus, by =c("Site_Transect"))
+cheirogaleus_dat[is.na(cheirogaleus_dat)] <- 0
 
-#Use global detection function to calulate density at each transect
-cheirogaleus_dat$M_surveyed <- cheirogaleus_dat$NRep *1000*  cheirogaleus_strip_width
-cheirogaleus_dat$Density <- (cheirogaleus_dat$NObs) / (cheirogaleus_dat$M_surveyed*cheirogaleus_detection_prob) * 1000000
-cheirogaleus_dat <- cheirogaleus_dat %>% select(Site_Transect, Density)
+cheirogaleus_dat <- left_join(cheirogaleus_dat,nrep_cheiro, by =c("Site_Transect"))
+cheirogaleus_dat <- cheirogaleus_dat %>% select(-Site, -Transect)
+
+cheirogaleus_dat <- left_join(cheirogaleus_dat,transect_lengths, by =c("Site_Transect"))
+cheirogaleus_dat$Density <- (cheirogaleus_dat$Nind/cheirogaleus_detection_prob)/(cheirogaleus_truncation_dist*cheirogaleus_dat$Length*cheirogaleus_dat$NRep)
+cheirogaleus_dat$Density_km2 <- cheirogaleus_dat$Density*1000000
 
 #Clean transect names
 covs_cheiro$Site_Transect[covs_cheiro$Site_Transect=="Ambodivohitra_Kobahina_1"]<- "AmbodivohitraKobahina_1"
@@ -486,27 +545,22 @@ lmer_cheirogaleus_best <- lmer_cheirogaleus11 #forest loss proportion has a sign
 ```{r Lepilemur density calculations}
 
 #Get data frame for just lepilemur
-lepilemur_df <- survey_nocturnal  %>% filter(Nom_sientifique=="Lepilemur_seali") %>% filter(Site=="Ambodivoara"|Site=="AmbodivohitraKobahina"| Site=="Antanambe"| Site=="Ambavala") %>% select(Nom_sientifique, Site, Transect, Angle, Dis, Effort, Site_Transect)
+lepilemur_df <- survey_nocturnal  %>% filter(Nom_sientifique=="Lepilemur_seali")
 
-#Calculate perpendicular distance from angle and distance
-lepilemur_df$distance <- abs(sin(lepilemur_df$Angle)*(lepilemur_df$Dis))
-lepilemur_df$distance[is.na(lepilemur_df$distance)] <- 0
+#lepilemur_df$distance[is.na(lepilemur_df$distance)] <- 0
 
 #Clean data frame
-lepilemur_df2 <- lepilemur_df %>% select(Site_Transect,Effort, distance)
-lepilemur_df3 <-lepilemur_df2
-
-#Truncate data to eliminate most extreme distance calues 
-lepilemur_df3 <-lepilemur_df3[lepilemur_df3$distance < quantile(lepilemur_df3$distance, 0.95),]
-
-#Further clean data data set
-lepilemur_df3 <- lepilemur_df3[!is.na(lepilemur_df3$distance),]
-lepilemur_df3 <- lepilemur_df3[(lepilemur_df3$Site_Transect!="HT"),]
-lepilemur_df3$Area <- 1 #For now, assume an area of 1 
-lepilemur_df3$Sample.Label <- seq(1:nrow(lepilemur_df3))
-colnames(lepilemur_df3) <- c("Region.Label",  "Effort", "distance","Area", "Sample.Label")
+lepilemur_df3 <- lepilemur_df
+lepilemur_df3$Area <- 1000000 #For now, assume an area of 1... million 
+lepilemur_df3$Sample.Label <- 1
+lepilemur_df3$Region.Label <- lepilemur_df3$Site_Transect
+lepilemur_df3$size <- as.numeric(lepilemur_df3$N_total)
+lepilemur_df3$Effort <- lepilemur_df3$Effort.distance
 
 #Detection function models
+lepilemur_truncation_dist <- 25
+ds_lepilemur <- ds(lepilemur_df3, truncation = lepilemur_truncation_dist)
+
 model1_lepilemur <- ds(lepilemur_df3, key="hn", adjustment=NULL)
 model2_lepilemur <- ds(lepilemur_df3, key="hn", adjustment="cos")
 model3_lepilemur <- ds(lepilemur_df3, key="hn", adjustment="herm")
@@ -535,23 +589,42 @@ AIC(model1_lepilemur, model2_lepilemur, model3_lepilemur, model4_lepilemur,model
 plot(model4_lepilemur, nc=4)
 
 #Get detection probability
-lepilemur_detection_prob <- predict(model4_lepilemur)$fitted[[1]]
+lepilemur_detection_prob <- predict(ds_lepilemur)$fitted[[1]]
 
 #Calculate strp width (2 * maximum distance, of the truncated distance data)
-lepilemur_strip_width <- max(lepilemur_df3$distance) * 2
+lepilemur_strip_width <- lepilemur_truncation_dist
+
+lepilemur_df_old <- survey_all %>% filter(Nom_sientifique=="Lepilemur_seali" & Type=="Nocturnal" & Date < ymd("20220601") & (Dis <1.56*lepilemur_truncation_dist | is.na(Dis)))
+lepilemur_df_new <- survey_all %>% filter(Nom_sientifique=="Lepilemur_seali" & Type=="Nocturnal"  & Date >= ymd("20220601") & (distance <= lepilemur_truncation_dist  | is.na(distance)) )
+lepilemur_dat1 <- rbind(lepilemur_df_new, lepilemur_df_old)
+
+lepilemur_dat <- lepilemur_dat1  %>% group_by(Site_Transect)%>% summarise(Nind = sum(as.numeric(N_total)))
+lepilemur_dat <- left_join(site_transects, lepilemur_dat, by =c("Site_Transect"))
+
+nobs_lepilemur <- lepilemur_dat1  %>% select(Site_Transect) %>%group_by(Site_Transect) %>% mutate(NObs =n())%>% distinct()
+lepilemur_dat <- left_join(lepilemur_dat, nobs_lepilemur, by =c("Site_Transect"))
+lepilemur_dat[is.na(lepilemur_dat)] <- 0
+
+lepilemur_dat <- left_join(lepilemur_dat,nrep_nocturnal, by =c("Site_Transect"))
+lepilemur_dat <- lepilemur_dat %>% select(-Site, -Transect, -Type)
+
+lepilemur_dat <- left_join(lepilemur_dat,transect_lengths, by =c("Site_Transect"))
+lepilemur_dat$Density <- (lepilemur_dat$Nind/lepilemur_detection_prob)/(lepilemur_truncation_dist*lepilemur_dat$Length*lepilemur_dat$NRep)
+lepilemur_dat$Density_km2 <- lepilemur_dat$Density*1000000
+
 
 #Upload covariate data 
-lepilemur_dat <- read.csv("~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/lepi_reps.csv")
+#lepilemur_dat <- read.csv("~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/lepi_reps.csv")
 
-lepilemur_dat <- left_join(lepilemur_dat, nrep_nocturnal, by =c("Site_Transect"))
-lepilemur_dat <- left_join(lepilemur_dat, nobs[nobs$Nom_sientifique=="Lepilemur_seali",], by =c("Site_Transect"))
-lepilemur_dat <- lepilemur_dat %>% select(Site_Transect, NObs, NRep)
-lepilemur_dat$NObs[is.na(lepilemur_dat$NObs)] <- 0
+#lepilemur_dat <- left_join(lepilemur_dat, nrep_nocturnal, by =c("Site_Transect"))
+#lepilemur_dat <- left_join(lepilemur_dat, nobs[nobs$Nom_sientifique=="Lepilemur_seali",], by =c("Site_Transect"))
+#lepilemur_dat <- lepilemur_dat %>% select(Site_Transect, NObs, NRep)
+#lepilemur_dat$NObs[is.na(lepilemur_dat$NObs)] <- 0
 
 #Use global detection function to calulate density at each transect
-lepilemur_dat$M_surveyed <- lepilemur_dat$NRep *1000*  lepilemur_strip_width
-lepilemur_dat$Density <- (lepilemur_dat$NObs) / (lepilemur_dat$M_surveyed*lepilemur_detection_prob) * 1000000
-lepilemur_dat <- lepilemur_dat %>% select(Site_Transect, Density)
+#lepilemur_dat$M_surveyed <- lepilemur_dat$NRep *1000*  lepilemur_strip_width
+#lepilemur_dat$Density <- (lepilemur_dat$NObs) / (lepilemur_dat$M_surveyed*lepilemur_detection_prob) * 1000000
+#lepilemur_dat <- lepilemur_dat %>% select(Site_Transect, Density)
 
 #Clean transect names
 covs_lepi$Site_Transect[covs_lepi$Site_Transect=="Ambodivohitra_Kobahina_1"]<- "AmbodivohitraKobahina_1"
@@ -605,27 +678,24 @@ summary(lmer_lepilemur4)
 ```{r Avahi density calculations}
 
 #Get data frame for just avahi
-avahi_df <- survey_nocturnal  %>% filter(Nom_sientifique=="Avahi_laniger") %>% filter(Site =="Ambodivoara"|Site=="AmbodivohitraKobahina"| Site=="Antanambe"| Site=="Ambavala") %>% select(Nom_sientifique, Site, Transect, Angle, Dis, Effort, Site_Transect)
+avahi_df <- survey_nocturnal  %>% filter(Nom_sientifique=="Avahi_laniger")
 
-#Calculate perpendicular distance from angle and distance
-avahi_df$distance <- abs(sin(avahi_df$Angle)*(avahi_df$Dis))
-avahi_df$distance[is.na(avahi_df$distance)] <- 0
+#avahi_df$distance[is.na(avahi_df$distance)] <- 0
 
 #Clean data frame
-avahi_df2 <- avahi_df %>% select(Site_Transect,Effort, distance)
-avahi_df3 <-avahi_df2
+avahi_df3 <- avahi_df
+avahi_df3$Area <- 1000000 #For now, assume an area of 1... million 
+avahi_df3$Sample.Label <- 1
+avahi_df3$Region.Label <- avahi_df3$Site_Transect
+avahi_df3$size <- as.numeric(avahi_df3$N_total)
+avahi_df3$Effort <- avahi_df3$Effort.distance
 
-#Truncate data to eliminate most extreme distance calues 
-avahi_df3 <-avahi_df3[avahi_df3$distance < quantile(avahi_df3$distance, 0.95),]
-
-#Further clean data data set
-avahi_df3 <- avahi_df3[!is.na(avahi_df3$distance),]
-avahi_df3 <- avahi_df3[(avahi_df3$Site_Transect!="HT"),]
-avahi_df3$Area <- 1 #For now, assume an area of 1 
-avahi_df3$Sample.Label <- seq(1:nrow(avahi_df3))
-colnames(avahi_df3) <- c("Region.Label",  "Effort", "distance","Area", "Sample.Label")
 
 #Detection function models
+avahi_truncation_dist <- 25
+ds_avahi <- ds(avahi_df3, truncation = avahi_truncation_dist)
+#
+
 model1_avahi <- ds(avahi_df3, key="hn", adjustment=NULL)
 model2_avahi <- ds(avahi_df3, key="hn", adjustment="cos")
 model3_avahi <- ds(avahi_df3, key="hn", adjustment="herm")
@@ -658,23 +728,30 @@ plot(model4_avahi, nc=4)
 plot(model2_avahi, nc=4)
 
 #Get detection probability
-avahi_detection_prob <- predict(model2_avahi)$fitted[[1]]
+avahi_detection_prob <- predict(ds_avahi)$fitted[[1]]
 
 #Calculate strp width (2 * maximum distance, of the truncated distance data)
-avahi_strip_width <- max(avahi_df3$distance) * 2
+avahi_strip_width <- allocebus_truncation_dist
 
 #Upload covariate data 
-avahi_dat <- read.csv("~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/avahi_reps.csv")
+avahi_df_old <- survey_all %>% filter(Nom_sientifique=="Avahi_laniger" & Type=="Nocturnal" & Date < ymd("20220601") & (Dis <1.56*avahi_truncation_dist | is.na(Dis)))
+avahi_df_new <- survey_all %>% filter(Nom_sientifique=="Avahi_laniger" & Type=="Nocturnal"  & Date >= ymd("20220601") & (distance <= avahi_truncation_dist  | is.na(distance)) )
+avahi_dat1 <- rbind(avahi_df_new, avahi_df_old)
 
-avahi_dat <- left_join(avahi_dat, nrep_nocturnal, by =c("Site_Transect"))
-avahi_dat <- left_join(avahi_dat, nobs[nobs$Nom_sientifique=="Avahi_laniger",], by =c("Site_Transect"))
-avahi_dat <- avahi_dat %>% select(Site_Transect, NObs, NRep)
-avahi_dat$NObs[is.na(avahi_dat$NObs)] <- 0
+avahi_dat <- avahi_dat1  %>% group_by(Site_Transect)%>% summarise(Nind = sum(as.numeric(N_total)))
+avahi_dat <- left_join(site_transects, avahi_dat, by =c("Site_Transect"))
 
-#Use global detection function to calulate density at each transect
-avahi_dat$M_surveyed <- avahi_dat$NRep *1000*  avahi_strip_width
-avahi_dat$Density <- (avahi_dat$NObs) / (avahi_dat$M_surveyed*avahi_detection_prob) * 1000000
-avahi_dat <- avahi_dat %>% select(Site_Transect, Density)
+nobs_avahi <- avahi_dat1  %>% select(Site_Transect) %>%group_by(Site_Transect) %>% mutate(NObs =n())%>% distinct()
+avahi_dat <- left_join(avahi_dat, nobs_avahi, by =c("Site_Transect"))
+avahi_dat[is.na(avahi_dat)] <- 0
+
+avahi_dat <- left_join(avahi_dat,nrep_nocturnal, by =c("Site_Transect"))
+avahi_dat <- avahi_dat %>% select(-Site, -Transect, -Type)
+
+avahi_dat <- left_join(avahi_dat,transect_lengths, by =c("Site_Transect"))
+avahi_dat$Density <- (avahi_dat$Nind/avahi_detection_prob)/(avahi_truncation_dist*avahi_dat$Length*avahi_dat$NRep)
+avahi_dat$Density_km2 <- avahi_dat$Density*1000000
+
 
 #Clean transect names
 covs_avahi$Site_Transect[covs_avahi$Site_Transect=="Ambodivohitra_Kobahina_1"]<- "AmbodivohitraKobahina_1"
@@ -730,27 +807,23 @@ summary(lmer_avahi)
 rubriventer_df <- survey_diurnal  %>% filter(Nom_sientifique=="Eulemur_rubriventer") 
 
 #Calculate perpendicular distance from angle and distance
-rubriventer_df$distance <- abs(sin(rubriventer_df$Angle)*(rubriventer_df$Dis))
-rubriventer_df$distance[is.na(rubriventer_df$distance)] <- 0
+#rubriventer_df$distance[is.na(rubriventer_df$distance)] <- 0
 
-ggplot(rubriventer_df, aes(distance,as.numeric(rubriventer_df$N_total)))+geom_point()+geom_smooth(method=lm)
-
+#ggplot(rubriventer_df, aes(distance,as.numeric(rubriventer_df$N_total)))+geom_point()+geom_smooth(method=lm)
 
 #Clean data frame
-rubriventer_df2 <- rubriventer_df %>% select(Site_Transect,Effort, distance)
-rubriventer_df3 <-rubriventer_df2
-
-#Truncate data to eliminate most extreme distance calues 
-rubriventer_df3 <-rubriventer_df3[rubriventer_df3$distance < quantile(rubriventer_df3$distance, 0.95),]
-
-#Further clean data data set
-rubriventer_df3 <- rubriventer_df3[!is.na(rubriventer_df3$distance),]
-rubriventer_df3 <- rubriventer_df3[(rubriventer_df3$Site_Transect!="HT"),]
-rubriventer_df3$Area <- 1 #For now, assume an area of 1 
-rubriventer_df3$Sample.Label <- seq(1:nrow(rubriventer_df3))
-colnames(rubriventer_df3) <- c("Region.Label",  "Effort", "distance","Area", "Sample.Label")
+rubriventer_df3 <- rubriventer_df
+rubriventer_df3$Area <- 1000000 #For now, assume an area of 1... million 
+rubriventer_df3$Sample.Label <- 1
+rubriventer_df3$Region.Label <- rubriventer_df3$Site_Transect
+rubriventer_df3$size <- as.numeric(rubriventer_df3$N_total)
+rubriventer_df3$Effort <- rubriventer_df3$Effort.distance
 
 #Detection function models
+rubriventer_truncation_dist <- 30
+ds_rubriventer <- ds(rubriventer_df3, truncation = rubriventer_truncation_dist)
+
+
 model1_rubriventer <- ds(rubriventer_df3, key="hn", adjustment=NULL)
 model2_rubriventer <- ds(rubriventer_df3, key="hn", adjustment="cos")
 model3_rubriventer <- ds(rubriventer_df3, key="hn", adjustment="herm")
@@ -783,34 +856,38 @@ plot(model4_rubriventer, nc=5)
 plot(model2_rubriventer, nc=5)
 
 #Get detection probability
-rubriventer_detection_prob <- predict(model8_rubriventer)$fitted[[1]]
+rubriventer_detection_prob <- predict(ds_rubriventer)$fitted[[1]]
 
 #Calculate strp width (2 * maximum distance, of the truncated distance data)
-rubriventer_strip_width <- max(rubriventer_df3$distance) * 2
+rubriventer_strip_width <- rubriventer_truncation_dist
 
 #Upload covariate data 
-rubri_dat <- read.csv("~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/rubri_reps.csv")
+rubriventer_df_old <- survey_all %>% filter(Nom_sientifique=="Eulemur_rubriventer" & Type=="Diurnal" & Date < ymd("20220601") & (Dis <1.56*rubriventer_truncation_dist | is.na(Dis)))
+rubriventer_df_new <- survey_all %>% filter(Nom_sientifique=="Eulemur_rubriventer" & Type=="Diurnal"  & Date >= ymd("20220601") & (distance <= rubriventer_truncation_dist  | is.na(distance)) )
+rubriventer_dat1 <- rbind(rubriventer_df_new, rubriventer_df_old)
 
-rubri_dat <- left_join(rubri_dat, nrep_diurnal, by =c("Site_Transect"))
-rubri_dat <- left_join(rubri_dat, nobs[nobs$Nom_sientifique=="Eulemur_rubriventer",], by =c("Site_Transect"))
-rubri_dat <- rubri_dat %>% select(Site_Transect, NObs, NRep)
-rubri_dat$NObs[is.na(rubri_dat$NObs)] <- 0
+rubriventer_dat <- rubriventer_dat1  %>% group_by(Site_Transect)%>% summarise(Nind = sum(as.numeric(N_total)))
+rubriventer_dat <- left_join(site_transects, rubriventer_dat, by =c("Site_Transect"))
 
-rubri_dat$M_surveyed <- rubri_dat$NRep *1000*  rubriventer_strip_width
-rubri_dat$Density <- (rubri_dat$NObs) / (rubri_dat$M_surveyed*rubriventer_detection_prob) * 1000000
-rubri_dat <- rubri_dat %>% select(Site_Transect, Density)
+nobs_rubriventer <- rubriventer_dat1  %>% select(Site_Transect) %>%group_by(Site_Transect) %>% mutate(NObs =n())%>% distinct()
+rubriventer_dat <- left_join(rubriventer_dat, nobs_rubriventer, by =c("Site_Transect"))
+rubriventer_dat[is.na(rubriventer_dat)] <- 0
 
-covs_rubri$Site_Transect[covs_rubri$Site_Transect=="Ambodivohitra_Kobahina_1"]<- "AmbodivohitraKobahina_1"
-covs_rubri$Site_Transect[covs_rubri$Site_Transect=="Ambodivohitra_Kobahina_2"]<- "AmbodivohitraKobahina_2"
-covs_rubri$Site_Transect[covs_rubri$Site_Transect=="Ambodivohitra_Kobahina_3"]<- "AmbodivohitraKobahina_3"
+rubriventer_dat <- left_join(rubriventer_dat,nrep_diurnal, by =c("Site_Transect"))
+rubriventer_dat <- rubriventer_dat %>% select(-Site, -Transect, -Type)
 
-covs_rubri_density <- left_join(rubri_dat, covs_rubri, by="Site_Transect")
-covs_rubri_density$Species <- "Eulemur_rubriventer"
+rubriventer_dat <- left_join(rubriventer_dat,transect_lengths, by =c("Site_Transect"))
+rubriventer_dat$Density <- (rubriventer_dat$Nind/rubriventer_detection_prob)/(rubriventer_truncation_dist*rubriventer_dat$Length*rubriventer_dat$NRep)
+rubriventer_dat$Density_km2 <- rubriventer_dat$Density*1000000
 
-rub_ind <- survey_diurnal %>% filter(Nom_sientifique=="Eulemur_rubriventer") %>% drop_na(N_ind)
-rub_ind2 <- mean(as.numeric(rub_ind$N_ind))
+#Clean transect names
+covs_rubriventer$Site_Transect[covs_rubriventer$Site_Transect=="Ambodivohitra_Kobahina_1"]<- "AmbodivohitraKobahina_1"
+covs_rubriventer$Site_Transect[covs_rubriventer$Site_Transect=="Ambodivohitra_Kobahina_2"]<- "AmbodivohitraKobahina_2"
+covs_rubriventer$Site_Transect[covs_rubriventer$Site_Transect=="Ambodivohitra_Kobahina_3"]<- "AmbodivohitraKobahina_3"
 
-covs_rubri_density$Density <- covs_rubri_density$Density *rub_ind2
+#Join density data to covariate data 
+covs_rubriventer_density <- left_join(rubriventer_dat, covs_rubriventer, by="Site_Transect")
+covs_rubriventer_density$Species <- "Eulemur_rubriventer"
 
 #Linear model of density as explained by combinations of the covariates
 lmer_rubriventer <- lmer(data=covs_rubri_density , Density~ elevation + log(forest_loss_prop+1) + height + rug +(1|Site))
@@ -858,26 +935,23 @@ summary(lmer_rubriventer_best)
 albifrons_df <- survey_diurnal  %>% filter(Nom_sientifique=="Eulemur_albifrons") 
 
 #Calculate perpendicular distance from angle and distance
-albifrons_df$distance <- abs(sin(albifrons_df$Angle)*(albifrons_df$Dis))
-albifrons_df$distance[is.na(albifrons_df$distance)] <- 0
+#albifrons_df$distance[is.na(albifrons_df$distance)] <- 0
 
-ggplot(albifrons_df, aes(distance,as.numeric(albifrons_df$N_total)))+geom_point()+geom_smooth(method=lm)
+#ggplot(albifrons_df, aes(distance,as.numeric(albifrons_df$N_total)))+geom_point()+geom_smooth(method=lm)
 
 #Clean data frame
-albifrons_df2 <- albifrons_df %>% select(Site_Transect,Effort, distance)
-albifrons_df3 <-albifrons_df2
-
-#Truncate data to eliminate most extreme distance calues 
-albifrons_df3 <-albifrons_df3[albifrons_df3$distance < quantile(albifrons_df3$distance, 0.95),]
-
-#Further clean data data set
-albifrons_df3 <- albifrons_df3[!is.na(albifrons_df3$distance),]
-albifrons_df3 <- albifrons_df3[(albifrons_df3$Site_Transect!="HT"),]
-albifrons_df3$Area <- 1 #For now, assume an area of 1 
-albifrons_df3$Sample.Label <- seq(1:nrow(albifrons_df3))
-colnames(albifrons_df3) <- c("Region.Label",  "Effort", "distance","Area", "Sample.Label")
+albifrons_df3 <- albifrons_df
+albifrons_df3$Area <- 1000000 #For now, assume an area of 1... million 
+albifrons_df3$Sample.Label <- 1
+albifrons_df3$Region.Label <- albifrons_df3$Site_Transect
+albifrons_df3$size <- as.numeric(albifrons_df3$N_total)
+albifrons_df3$Effort <- albifrons_df3$Effort.distance
 
 #Detection function models
+albifrons_truncation_dist <- 25
+ds_albifrons <- ds(albifrons_df3, truncation = albifrons_truncation_dist)
+
+
 model1_albifrons <- ds(albifrons_df3, key="hn", adjustment=NULL)
 model2_albifrons <- ds(albifrons_df3, key="hn", adjustment="cos")
 model3_albifrons <- ds(albifrons_df3, key="hn", adjustment="herm")
@@ -906,22 +980,30 @@ AIC(model1_albifrons, model2_albifrons, model3_albifrons,model4_albifrons,model5
 plot(model7_albifrons, nc=5)
 
 #Get detection probability
-albifrons_detection_prob <- predict(model2_albifrons)$fitted[[1]]
+albifrons_detection_prob <- predict(ds_albifrons)$fitted[[1]]
 
 #Calculate strp width (2 * maximum distance, of the truncated distance data)
-albifrons_strip_width <- max(albifrons_df3$distance) * 2
+albifrons_strip_width <- albifrons_truncation_dist
 
 #Upload covariate data 
-albi_dat <- read.csv("~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/albi_reps.csv")
+albifrons_df_old <- survey_all %>% filter(Nom_sientifique=="Eulemur_albifrons" & Type=="Diurnal" & Date < ymd("20220601") & (Dis <1.56*albifrons_truncation_dist | is.na(Dis)))
+albifrons_df_new <- survey_all %>% filter(Nom_sientifique=="Eulemur_albifrons" & Type=="Diurnal"  & Date >= ymd("20220601") & (distance <= albifrons_truncation_dist  | is.na(distance)) )
+albi_dat1 <- rbind(albifrons_df_new, albifrons_df_old)
 
-albi_dat <- left_join(albi_dat, nrep_diurnal, by =c("Site_Transect"))
-albi_dat <- left_join(albi_dat, nobs[nobs$Nom_sientifique=="Eulemur_albifrons",], by =c("Site_Transect"))
-albi_dat <- albi_dat %>% select(Site_Transect, NObs, NRep)
-albi_dat$NObs[is.na(albi_dat$NObs)] <- 0
+albi_dat <- albi_dat1  %>% group_by(Site_Transect)%>% summarise(Nind = sum(as.numeric(N_total)))
+albi_dat <- left_join(site_transects, albi_dat, by =c("Site_Transect"))
 
-albi_dat$M_surveyed <- albi_dat$NRep *1000*  albifrons_strip_width
-albi_dat$Density <- (albi_dat$NObs) / (albi_dat$M_surveyed*albifrons_detection_prob) * 1000000
-albi_dat <- albi_dat %>% select(Site_Transect, Density)
+nobs_albifrons <- albi_dat1  %>% select(Site_Transect) %>%group_by(Site_Transect) %>% mutate(NObs =n())%>% distinct()
+albi_dat <- left_join(albi_dat, nobs_albifrons, by =c("Site_Transect"))
+albi_dat[is.na(albi_dat)] <- 0
+
+albi_dat <- left_join(albi_dat,nrep_diurnal, by =c("Site_Transect"))
+albi_dat <- albi_dat %>% select(-Site, -Transect, -Type)
+
+albi_dat <- left_join(albi_dat,transect_lengths, by =c("Site_Transect"))
+albi_dat$Density <- (albi_dat$Nind/albifrons_detection_prob)/(albifrons_truncation_dist*albi_dat$Length*albi_dat$NRep)
+albi_dat$Density_km2 <- albi_dat$Density*1000000
+
 
 covs_albi$Site_Transect[covs_albi$Site_Transect=="Ambodivohitra_Kobahina_1"]<- "AmbodivohitraKobahina_1"
 covs_albi$Site_Transect[covs_albi$Site_Transect=="Ambodivohitra_Kobahina_2"]<- "AmbodivohitraKobahina_2"
@@ -933,7 +1015,7 @@ covs_albi_density$Species <- "Eulemur_albifrons"
 albi_ind <- survey_diurnal %>% filter(Nom_sientifique=="Eulemur_albifrons") %>% drop_na(N_ind)
 albi_ind2 <- mean(as.numeric(albi_ind$N_ind))
 
-covs_albi_density$Density <- covs_albi_density$Density *albi_ind2
+#covs_albi_density$Density <- covs_albi_density$Density *albi_ind2
 
 #Linear model of density as explained by combinations of the covariates
 lmer_albifrons <- lmer(data=covs_albi_density , Density~ elevation + log(forest_loss_prop+1) + height + rug +(1|Site))
@@ -981,26 +1063,23 @@ summary(lmer_albifrons6)
 propithecus_df <- survey_diurnal  %>% filter(Nom_sientifique=="Propithecus_candidus") 
 
 #Calculate perpendicular distance from angle and distance
-propithecus_df$distance <- abs(sin(propithecus_df$Angle)*(propithecus_df$Dis))
-propithecus_df$distance[is.na(propithecus_df$distance)] <- 0
+#propithecus_df$distance[is.na(propithecus_df$distance)] <- 0
 
-ggplot(propithecus_df, aes(distance,as.numeric(propithecus_df$N_total)))+geom_point()+geom_smooth(method=lm)
+#ggplot(propithecus_df, aes(distance,as.numeric(propithecus_df$N_total)))+geom_point()+geom_smooth(method=lm)
 
 #Clean data frame
-propithecus_df2 <- propithecus_df %>% select(Site_Transect,Effort, distance)
-propithecus_df3 <-propithecus_df2
-
-#Truncate data to eliminate most extreme distance calues 
-propithecus_df3 <-propithecus_df3[propithecus_df3$distance < quantile(propithecus_df3$distance, 0.95),]
-
-#Further clean data data set
-propithecus_df3 <- propithecus_df3[!is.na(propithecus_df3$distance),]
-propithecus_df3 <- propithecus_df3[(propithecus_df3$Site_Transect!="HT"),]
-propithecus_df3$Area <- 1 #For now, assume an area of 1 
-propithecus_df3$Sample.Label <- seq(1:nrow(propithecus_df3))
-colnames(propithecus_df3) <- c("Region.Label",  "Effort", "distance","Area", "Sample.Label")
+propithecus_df3 <- propithecus_df
+propithecus_df3$Area <- 1000000 #For now, assume an area of 1... million 
+propithecus_df3$Sample.Label <- 1
+propithecus_df3$Region.Label <- propithecus_df3$Site_Transect
+propithecus_df3$size <- as.numeric(propithecus_df3$N_total)
+propithecus_df3$Effort <- propithecus_df3$Effort.distance
 
 #Detection function models
+  propithecus_truncation_dist <- 30
+ds_propithecus <- ds(propithecus_df3, truncation = propithecus_truncation_dist)
+
+
 model1_propithecus <- ds(propithecus_df3, key="hn", adjustment=NULL)
 model2_propithecus <- ds(propithecus_df3, key="hn", adjustment="cos")
 model3_propithecus <- ds(propithecus_df3, key="hn", adjustment="herm")
@@ -1029,23 +1108,30 @@ AIC(model1_propithecus,model2_propithecus,model3_propithecus, model8_propithecus
 plot(model2_propithecus, nc=5)
 
 #Get detection probability
-propithecus_detection_prob <- predict(model2_propithecus)$fitted[[1]]
+propithecus_detection_prob <- predict(ds_propithecus)$fitted[[1]]
 
 #Calculate strp width (2 * maximum distance, of the truncated distance data)
-propithecus_strip_width <- max(propithecus_df3$distance) * 2
+propithecus_strip_width <- propithecus_truncation_dist
 
 #Upload covariate data 
-prop_dat <- read.csv("~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/prop_reps.csv")
+propithecus_df_old <- survey_all %>% filter(Nom_sientifique=="Propithecus_candidus" & Type=="Diurnal" & Date < ymd("20220601") & (Dis <1.56*propithecus_truncation_dist | is.na(Dis)))
+propithecus_df_new <- survey_all %>% filter(Nom_sientifique=="Propithecus_candidus" & Type=="Diurnal"  & Date >= ymd("20220601") & (distance <= propithecus_truncation_dist  | is.na(distance)) )
+prop_dat1 <- rbind(propithecus_df_new, propithecus_df_old)
 
-prop_dat <- left_join(prop_dat, nrep_diurnal, by =c("Site_Transect"))
-prop_dat <- left_join(prop_dat, nobs[nobs$Nom_sientifique=="Propithecus_candidus",], by =c("Site_Transect"))
-prop_dat <- prop_dat %>% select(Site_Transect, NObs, NRep)
-prop_dat$NObs[is.na(prop_dat$NObs)] <- 0
+prop_dat <- prop_dat1  %>% group_by(Site_Transect)%>% summarise(Nind = sum(as.numeric(N_total)))
+prop_dat <- left_join(site_transects, prop_dat, by =c("Site_Transect"))
 
+nobs_propithecus <- prop_dat1  %>% select(Site_Transect) %>%group_by(Site_Transect) %>% mutate(NObs =n())%>% distinct()
+prop_dat <- left_join(prop_dat, nobs_propithecus, by =c("Site_Transect"))
+prop_dat[is.na(prop_dat)] <- 0
 
-prop_dat$M_surveyed <- prop_dat$NRep *1000*  propithecus_strip_width
-prop_dat$Density <- (prop_dat$NObs) / (prop_dat$M_surveyed*propithecus_detection_prob) * 1000000
-prop_dat <- prop_dat %>% select(Site_Transect, Density)
+prop_dat <- left_join(prop_dat,nrep_diurnal, by =c("Site_Transect"))
+prop_dat <- prop_dat %>% select(-Site, -Transect, -Type)
+
+prop_dat <- left_join(prop_dat,transect_lengths, by =c("Site_Transect"))
+prop_dat$Density <- (prop_dat$Nind/propithecus_detection_prob)/(propithecus_truncation_dist*prop_dat$Length*prop_dat$NRep)
+prop_dat$Density_km2 <- prop_dat$Density*1000000
+
 
 covs_prop$Site_Transect[covs_prop$Site_Transect=="Ambodivohitra_Kobahina_1"]<- "AmbodivohitraKobahina_1"
 covs_prop$Site_Transect[covs_prop$Site_Transect=="Ambodivohitra_Kobahina_2"]<- "AmbodivohitraKobahina_2"
@@ -1101,27 +1187,25 @@ summary(lmer_propithecus_best)
 
 ```{r Hapalemur density calculations}
 #Get data frame for just hapalemur
-hapalemur_df <- survey_diurnal  %>% filter(Nom_sientifique=="Hapalemur_occidentalis") %>% filter(Site =="Ambodivoara"|Site=="AmbodivohitraKobahina"| Site=="Antanambe"| Site=="Ambavala") %>% select(Nom_sientifique, Site, Transect, Angle, Dis, Effort, Site_Transect)
+hapalemur_df <- survey_diurnal  %>% filter(Nom_sientifique=="Hapalemur_occidentalis") 
 
 #Calculate perpendicular distance from angle and distance
-hapalemur_df$distance <- abs(sin(hapalemur_df$Angle)*(hapalemur_df$Dis))
-hapalemur_df$distance[is.na(hapalemur_df$distance)] <- 0
+#hapalemur_df$distance[is.na(hapalemur_df$distance)] <- 0
 
 #Clean data frame
-hapalemur_df2 <- hapalemur_df %>% select(Site_Transect,Effort, distance)
-hapalemur_df3 <-hapalemur_df2
+hapalemur_df3 <- hapalemur_df
+hapalemur_df3$Area <- 1000000 #For now, assume an area of 1... million 
+hapalemur_df3$Sample.Label <- 1
+hapalemur_df3$Region.Label <- hapalemur_df3$Site_Transect
+hapalemur_df3$size <- as.numeric(hapalemur_df3$N_total)
+hapalemur_df3$Effort <- hapalemur_df3$Effort.distance
 
-#Truncate data to eliminate most extreme distance calues 
-hapalemur_df3 <-hapalemur_df3[hapalemur_df3$distance < quantile(hapalemur_df3$distance, 0.95),]
-
-#Further clean data data set
-hapalemur_df3 <- hapalemur_df3[!is.na(hapalemur_df3$distance),]
-hapalemur_df3 <- hapalemur_df3[(hapalemur_df3$Site_Transect!="HT"),]
-hapalemur_df3$Area <- 1 #For now, assume an area of 1 
-hapalemur_df3$Sample.Label <- seq(1:nrow(hapalemur_df3))
-colnames(hapalemur_df3) <- c("Region.Label",  "Effort", "distance","Area", "Sample.Label")
 
 #Detection function models
+hapalemur_truncation_dist <- 18
+ds_hapalemur <- ds(hapalemur_df3, truncation = hapalemur_truncation_dist)
+
+
 model1_hapalemur <- ds(hapalemur_df3, key="hn", adjustment=NULL)
 model2_hapalemur <- ds(hapalemur_df3, key="hn", adjustment="cos")
 model3_hapalemur <- ds(hapalemur_df3, key="hn", adjustment="herm")
@@ -1150,22 +1234,30 @@ AIC(model1_hapalemur, model2_hapalemur, model3_hapalemur, model4_hapalemur,model
 plot(model7_hapalemur, nc=5)
 
 #Get detection probability
-hapalemur_detection_prob <- predict(model7_hapalemur)$fitted[[1]] #odd that this is 1? Assumed perfect detection but they are so cryptic! 
+hapalemur_detection_prob <- predict(ds_hapalemur)$fitted[[1]] #odd that this is 1? Assumed perfect detection but they are so cryptic! 
 
 #Calculate strp width (2 * maximum distance, of the truncated distance data)
-hapalemur_strip_width <- max(hapalemur_df3$distance) * 2
+hapalemur_strip_width <- hapalemur_truncation_dist
 
 #Upload covariate data 
-hapa_dat <- read.csv("~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/hapa_reps.csv")
-hapa_dat <- left_join(hapa_dat, nrep_diurnal, by =c("Site_Transect"))
-hapa_dat <- left_join(hapa_dat, nobs[nobs$Nom_sientifique=="Hapalemur_occidentalis",], by =c("Site_Transect"))
-hapa_dat <- hapa_dat %>% select(Site_Transect, NObs, NRep)
-hapa_dat$NObs[is.na(hapa_dat$NObs)] <- 0
+hapalemur_df_old <- survey_all %>% filter(Nom_sientifique=="Hapalemur_occidentalis" & Type=="Diurnal" & Date < ymd("20220601") & (Dis <1.56*hapalemur_truncation_dist | is.na(Dis)))
+hapalemur_df_new <- survey_all %>% filter(Nom_sientifique=="Hapalemur_occidentalis" & Type=="Diurnal"  & Date >= ymd("20220601") & (distance <= hapalemur_truncation_dist  | is.na(distance)) )
+hapa_dat1 <- rbind(hapalemur_df_new, hapalemur_df_old)
 
+hapa_dat <- hapa_dat1  %>% group_by(Site_Transect)%>% summarise(Nind = sum(as.numeric(N_total)))
+hapa_dat <- left_join(site_transects, hapa_dat, by =c("Site_Transect"))
 
-hapa_dat$M_surveyed <- hapa_dat$NRep *1000*  hapalemur_strip_width
-hapa_dat$Density <- (hapa_dat$NObs) / (hapa_dat$M_surveyed*hapalemur_detection_prob) * 1000000
-hapa_dat <- hapa_dat %>% select(Site_Transect, Density)
+nobs_hapalemur <- hapa_dat1  %>% select(Site_Transect) %>%group_by(Site_Transect) %>% mutate(NObs =n())%>% distinct()
+hapa_dat <- left_join(hapa_dat, nobs_hapalemur, by =c("Site_Transect"))
+hapa_dat[is.na(hapa_dat)] <- 0
+
+hapa_dat <- left_join(hapa_dat,nrep_diurnal, by =c("Site_Transect"))
+hapa_dat <- hapa_dat %>% select(-Site, -Transect, -Type)
+
+hapa_dat <- left_join(hapa_dat,transect_lengths, by =c("Site_Transect"))
+hapa_dat$Density <- (hapa_dat$Nind/hapalemur_detection_prob)/(hapalemur_truncation_dist*hapa_dat$Length*hapa_dat$NRep)
+hapa_dat$Density_km2 <- hapa_dat$Density*1000000
+
 
 covs_hapa$Site_Transect[covs_hapa$Site_Transect=="Ambodivohitra_Kobahina_1"]<- "AmbodivohitraKobahina_1"
 covs_hapa$Site_Transect[covs_hapa$Site_Transect=="Ambodivohitra_Kobahina_2"]<- "AmbodivohitraKobahina_2"
