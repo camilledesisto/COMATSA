@@ -74,8 +74,8 @@ ObjectID,Lat,Long,Site,Type,Date,Jour,Mois,An,Transect,Repetition,Depart_h,Arriv
 73,-14.524661,49.424661,Ambodivoara,Nocturnal,7/28/2023,28,7,2023,4,17,18H 09M 0S,19H 50M 0S,18H 49M 0S,Avahi_laniger,Avahi,laniger,fotsife,2,0,1,1,1,1150,0,0,NA,Repos,NA,,dry,NA
 74,-14.524769,49.429091,Ambodivoara,Nocturnal,7/28/2023,28,7,2023,4,17,18H 09M 0S,19H 50M 0S,18H 54M 0S,Avahi_laniger,Avahi,laniger,fotsife,1,0,1,NA,NA,1161,5.585053606,6,NA,Repos,NA,,dry,NA
 75,-14.524815,49.429047,Ambodivoara,Nocturnal,7/28/2023,28,7,2023,4,17,18H 09M 0S,19H 50M 0S,19H 03M 0S,Avahi_laniger,Avahi,laniger,fotsife,1,0,1,NA,NA,1161,0,0,NA,Repos,NA,,dry,NA
-76,-14.525328,49.428699,Ambodivoara,Nocturnal,7/28/2023,28,7,2023,4,17,18H 09M 0S,19H 50M 0S,19H 11M 0S,Microcebus_lehilahytsara,Microcebus,lehilahytsara,Tsidy,1,0,1,NA,NA,1175,1.570796327,90,NA,Deplacement,NA,,dry,NA
-77,-14.52737,49.427816,Ambodivoara,Nocturnal,7/28/2023,28,7,2023,4,17,18H 09M 0S,19H 50M 0S,19H 33M 0S,Microcebus_lehilahytsara,Microcebus,lehilahytsara,Tsidy,1,0,1,NA,NA,1259,1.745329252,100,NA,Repos,NA,,dry,NA
+76,-14.525328,49.428699,Ambodivoara,Nocturnal,7/28/2023,28,7,2023,4,17,18H 09M 0S,19H 50M 0S,19H 11M 0S,Microcebus_lehilahytsara,Microcebus,lehilahytsara,Tsidy,1,0,1,NA,NA,1175,1.570796327,NA,NA,Deplacement,NA,,dry,NA
+77,-14.52737,49.427816,Ambodivoara,Nocturnal,7/28/2023,28,7,2023,4,17,18H 09M 0S,19H 50M 0S,19H 33M 0S,Microcebus_lehilahytsara,Microcebus,lehilahytsara,Tsidy,1,0,1,NA,NA,1259,1.745329252,NA,NA,Repos,NA,,dry,NA
 78,-14.52756,49.427325,Ambodivoara,Nocturnal,7/28/2023,28,7,2023,4,17,18H 09M 0S,19H 50M 0S,19H 40M 0s,Microcebus_lehilahytsara,Microcebus,lehilahytsara,Tsidy,1,0,1,NA,NA,1284,7.853981634,10,NA,Repos,NA,,dry,NA
 79,-14.525351,49.428716,Ambodivoara,Nocturnal,7/28/2023,28,7,2023,4,17,18H 09M 0S,19H 50M 0S,20H 11M 0s,Allocebus_trichotis,Allocebus,trichotis,Kandrandra,1,0,1,NA,NA,1283,NA,NA,NA,Repos,NA,,dry,NA
 80,-14.519953,49.434261,Ambodivoara,Nocturnal,7/29/2023,29,7,2023,2,20,18H 12M 0S,19M 47M 0S,18H 26M 0S,Lepilemur_seali,Lepilemur,seali,Fitsidika,1,0,1,NA,NA,1070,5.672320069,10,NA,Repos,NA,,dry,NA
@@ -1073,7 +1073,7 @@ ObjectID,Lat,Long,Site,Type,Date,Jour,Mois,An,Transect,Repetition,Depart_h,Arriv
 1083,-14.517486,49.482429,Antanambe,Nocturnal,2/26/2023,26,2,2023,1,1,18:44,20:45,18:59,Avahi_laniger,Avahi,laniger,Fotsife,3,NA,NA,NA,NA,NA,1.570796327,10,NA,Repos,NA,NA,,NA
 1084,-14.516851,49.482488,Antanambe,Nocturnal,2/26/2023,26,2,2023,1,1,18:44,20:45,19:11,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,NA,NA,NA,NA,NA,1.570796327,20,NA,Repos,NA,NA,,NA
 1085,-14.516232,49.482475,Antanambe,Nocturnal,2/26/2023,26,2,2023,1,1,18:44,20:45,19:43,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,2,NA,NA,NA,NA,NA,1.570796327,6,NA,Repos,NA,NA,,NA
-1086,-14.51553,49.482286,Antanambe,Nocturnal,2/26/2023,26,2,2023,1,1,18:44,20:45,19:50,Allocebus_trichotis,avahi,laniger,Fotsife,1,NA,NA,NA,NA,NA,1.570796327,2,NA,Repos,NA,NA,,NA
+1086,-14.51553,49.482286,Antanambe,Nocturnal,2/26/2023,26,2,2023,1,1,18:44,20:45,19:50,Avahi_laniger,avahi,laniger,Fotsife,1,NA,NA,NA,NA,NA,1.570796327,2,NA,Repos,NA,NA,,NA
 1087,-14.521693,49.483565,Antanambe,Nocturnal,2/27/2023,27,2,2023,2,1,18:40,20:00,19:03,Allocebus_trichotis,Allocebus,trichotis,kandradra,1,NA,NA,NA,NA,NA,0,0,NA,Repos,NA,NA,,NA
 1088,-14.521605,49.483447,Antanambe,Nocturnal,2/27/2023,27,2,2023,2,1,18:40,20:00,19:11,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,1,NA,NA,NA,NA,NA,1.570796327,4,NA,Deplacement,NA,NA,,NA
 1089,-14.549597,49.495459,Antanambe,Nocturnal,2/27/2023,27,2,2023,2,1,18:40,20:00,19:26,Cheirogaleus_crossleyi,Cheirogaleus,crossleyi,Tsitsihy,2,NA,NA,NA,NA,NA,0,0,NA,Repos,NA,NA,,NA

@@ -17,8 +17,10 @@ library(Distance); library(tidyverse); library(lme4); library(lmerTest); library
 
 #Import relevant data 
 transect_lengths <- read.csv("~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/Transect_Length.csv")
+
 transect_lengths$Site_Transect <- paste(transect_lengths$Site,"_",as.numeric(transect_lengths$Transect), sep="")
-survey_all <- read.csv("~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/lemurs_primary_in_transect_feb2.csv")
+
+survey_all <- read.csv("~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/lemurs_primary_in_transect_feb6.csv")
 survey_all$Type[survey_all$Type=="diurnal"] <- "Diurnal"
 survey_all$Site_Transect <- paste(survey_all$Site,"_",as.numeric(survey_all$Transect), sep="")
 
@@ -28,6 +30,7 @@ survey_all$distance <- abs((sin(survey_all$Angle))*(survey_all$Dis))
 
 #remove detections not based on sight
 survey_all <- survey_all %>% filter(ObjectID != 1440 & ObjectID != 1418 & ObjectID != 417 & ObjectID != 418 & ObjectID != 96)
+
 
 #size as in group size - take the larger value of n_ind or sum of n_juv +n_ad
 survey_all$N_ind <- as.numeric(survey_all$N_ind)
@@ -155,12 +158,16 @@ allocebus_df3$Effort <- allocebus_df3$Effort.distance
 #colnames(allocebus_df3) <- c("Region.Label",  "Effort", "distance","Area", "Sample.Label")
 
 hist(allocebus_df3$distance)
+
 #ds_allocebus <- ds(allocebus_df3) - used for finding truncation dist
 #check if group size affects detection dist
 #ggplot(allocebus_df3, aes(distance,size))+geom_point()+geom_smooth(method=lm)
 #ds_allocebus <- ds(allocebus_df3, truncation = 20, formula = ~size)
+
 allocebus_truncation_dist <- 20
 ds_allocebus <- ds(allocebus_df3, truncation = allocebus_truncation_dist)
+
+
 
 #Detection function models
 model1_allocebus <- ds(allocebus_df3, key="hn", adjustment=NULL)
