@@ -1,0 +1,601 @@
+---
+title: "01_Occupancy"
+author: "Camille"
+date: "3/9/2023"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r Data and packages}
+lemur_combined_total <- read.csv("~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/lemurs_primary_in_transect_feb6.csv")
+
+library(tidyverse); library(unmarked)
+
+```
+
+```{r Organize Occupancy Dataframes By Lemur Species}
+#Edit transect name for seventh site
+lemur_combined_total$Site[lemur_combined_total$Site=="Ambodivohitra_Kobahina"] <- "AmbodivohitraKobahina"
+
+#transect repetitions for diurnal lemurs
+site_trans_base <- lemur_combined_total %>% filter(Type=="Diurnal") %>% mutate(Site_Transect = paste(Site, Transect, sep = '_'))%>% dplyr::select(Site_Transect, Repetition) %>% distinct()
+site_trans_base$obs_total <- 0
+
+#transect repetitions for nocturnal lemurs
+site_trans_base_nocturnal <- lemur_combined_total %>% filter(Type=="Nocturnal") %>% mutate(Site_Transect = paste(Site, Transect, sep = '_'))%>% dplyr::select(Site_Transect, Repetition) %>% distinct()
+site_trans_base_nocturnal$obs_total <- 0
+
+#list of transects 
+transect_lists_df <- lemur_combined_total%>% filter(Type=="Diurnal") %>% mutate(Site_Transect = paste(Site, Transect, sep = '_')) 
+
+transect_lists_df <- transect_lists_df %>% dplyr::select(Site_Transect, Repetition) %>% distinct() %>% filter(Site_Transect!="_NA",Site_Transect!="Betaolana_NA" ) 
+
+transect_lists_df$Site_Transect_rep <- transect_lists_df$Site_Transect
+
+transect_lists_df <- transect_lists_df %>% mutate(Site_Transect_rep = paste(Site_Transect, Repetition, sep = '_')) %>% dplyr::select(Site_Transect_rep)
+
+
+#EULEMUR RUBRIVENTER
+library(igraph)
+ldat_rub <- lemur_combined_total %>% filter(Nom_sientifique=='Eulemur_rubriventer'& Type!="Nocturnal")%>%
+  dplyr::select(Site, Date, Transect, Repetition, N_ind, Elevation_obs) %>% mutate(Site_Transect = paste(Site, Transect, sep = '_'))%>%
+ dplyr:: select(Site_Transect, Repetition)
+ldat_rub$obs <- 1
+ldat_rub2 <- ldat_rub %>% group_by(Site_Transect, Repetition)%>% summarise(obs_total = sum(obs))
+ldat_rub2<-ldat_rub2[order(ldat_rub2$Repetition),]
+ldat_rub3 <- rbind(ldat_rub2, site_trans_base)
+sort(unique(ldat_rub3$Site_Transect))
+ldat_rub3$Site_Transect[ldat_rub3$Site_Transect=="_NA"]<- NA
+ldat_rub3$Site_Transect[ldat_rub3$Site_Transect=="Betaolana_NA"]<- NA
+ldat_rub3 <- ldat_rub3[!is.na(ldat_rub3$Site_Transect),]
+
+ldat_rub3b <- ldat_rub3
+ldat_rub3b$Site_Transect_rep <- ldat_rub3b$Site_Transect
+ldat_rub3b <- ldat_rub3b%>% mutate(Site_Transect_rep = paste(Site_Transect_rep, Repetition, sep = '_')) 
+
+ldat_rub3b <- left_join(transect_lists_df, ldat_rub3b, by ="Site_Transect_rep")
+
+ldat_rub3c <- ldat_rub3b %>% dplyr:::select(Site_Transect_rep, obs_total) %>% separate(col=Site_Transect_rep, into=c("Site","Transect", "Repetition"), sep="_") %>% mutate(Site_Transect = paste(Site, Transect, sep = '_')) 
+
+ldat_rub3c$obs_total[is.na(ldat_rub3c$obs_total)]<- 0
+
+ldat_rub4 <- ldat_rub3c %>% group_by(Site_Transect, Repetition)%>% summarise(obs_total = sum(obs_total)) %>%
+  pivot_wider(names_from = Repetition, values_from= obs_total)
+
+ldat_rub4[nrow(ldat_rub4)+1,]<-list("AmbodivohitraKobahina_2", 0, 0, 0, 0, NA, NA,NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA)
+ldat_rub4$`1`[ldat_rub4$Site_Transect=="AmbodivohitraKobahina_1"]<-0
+ldat_rub4$`2`[ldat_rub4$Site_Transect=="AmbodivohitraKobahina_1"]<-0
+ldat_rub4$`3`[ldat_rub4$Site_Transect=="AmbodivohitraKobahina_1"]<-0
+ldat_rub4$`4`[ldat_rub4$Site_Transect=="AmbodivohitraKobahina_1"]<-0
+ldat_rub4$`1`[ldat_rub4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
+ldat_rub4$`2`[ldat_rub4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
+ldat_rub4$`3`[ldat_rub4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
+ldat_rub4$`4`[ldat_rub4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
+
+```
+
+```{r Organize Occupancy Dataframes By Lemur Species}
+#EULEMUR ALBIFRONS
+ldat_alb <- lemur_combined_total %>% filter(Nom_sientifique=='Eulemur_albifrons'& Type!="Nocturnal")%>%
+  dplyr::select(Site, Date, Transect, Repetition, N_ind, Elevation_obs) %>% mutate(Site_Transect = paste(Site, Transect, sep = '_'))%>%
+ dplyr:: select(Site_Transect, Repetition)
+ldat_alb$obs <- 1
+ldat_alb2 <- ldat_alb %>% group_by(Site_Transect, Repetition)%>% summarise(obs_total = sum(obs))
+ldat_alb3 <- rbind(ldat_alb2, site_trans_base)
+sort(unique(ldat_alb3$Site_Transect))
+ldat_alb3$Site_Transect[ldat_alb3$Site_Transect=="_NA"]<- NA
+ldat_alb3$Site_Transect[ldat_alb3$Site_Transect=="Betaolana_NA"]<- NA
+ldat_alb3 <- ldat_alb3[!is.na(ldat_alb3$Site_Transect),]
+ldat_alb4 <- ldat_alb3 %>% group_by(Site_Transect, Repetition)%>% summarise(obs_total = sum(obs_total)) %>%
+  pivot_wider(names_from = Repetition, values_from= obs_total)
+ldat_alb4[8,14] <- 0
+ldat_alb4[14,2]<- 0
+ldat_alb4[nrow(ldat_alb4)+1,]<-list("AmbodivohitraKobahina_2", 0, 0, 0, 0, NA, NA,NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA)
+ldat_alb4$`1`[ldat_alb4$Site_Transect=="AmbodivohitraKobahina_1"]<-0
+ldat_alb4$`2`[ldat_alb4$Site_Transect=="AmbodivohitraKobahina_1"]<-0
+ldat_alb4$`3`[ldat_alb4$Site_Transect=="AmbodivohitraKobahina_1"]<-0
+ldat_alb4$`4`[ldat_alb4$Site_Transect=="AmbodivohitraKobahina_1"]<-0
+ldat_alb4$`1`[ldat_alb4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
+ldat_alb4$`2`[ldat_alb4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
+ldat_alb4$`3`[ldat_alb4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
+ldat_alb4$`4`[ldat_alb4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
+
+ldat_alb4 <- ldat_alb4[-30,]
+
+```
+
+```{r Organize Occupancy Dataframes By Lemur Species}
+#PROPITHECUS CANDIDUS
+ldat_prop <- lemur_combined_total %>% filter(Nom_sientifique=='Propithecus_candidus'& Type!="Nocturnal")%>%
+  dplyr::select(Site, Date, Transect, Repetition, N_ind, Elevation_obs) %>% mutate(Site_Transect = paste(Site, Transect, sep = '_'))%>%
+ dplyr:: select(Site_Transect, Repetition)
+ldat_prop$obs <- 1
+ldat_prop2 <- ldat_prop %>% group_by(Site_Transect, Repetition)%>% summarise(obs_total = sum(obs))
+ldat_prop3 <- rbind(ldat_prop2, site_trans_base)
+sort(unique(ldat_prop3$Site_Transect))
+ldat_prop3$Site_Transect[ldat_prop3$Site_Transect=="_NA"]<- NA
+ldat_prop3$Site_Transect[ldat_prop3$Site_Transect=="Betaolana_NA"]<- NA
+ldat_prop3 <- ldat_prop3[!is.na(ldat_prop3$Site_Transect),]
+ldat_prop4 <- ldat_prop3 %>% group_by(Site_Transect, Repetition)%>% summarise(obs_total = sum(obs_total)) %>%
+  pivot_wider(names_from = Repetition, values_from= obs_total)
+ldat_prop4[8,14]<-0
+ldat_prop4[nrow(ldat_prop4)+1,]<-list("AmbodivohitraKobahina_2", 0, 0, 0, 0, NA, NA,NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA)
+ldat_prop4$`1`[ldat_prop4$Site_Transect=="AmbodivohitraKobahina_1"]<-0
+ldat_prop4$`2`[ldat_prop4$Site_Transect=="AmbodivohitraKobahina_1"]<-0
+ldat_prop4$`3`[ldat_prop4$Site_Transect=="AmbodivohitraKobahina_1"]<-0
+ldat_prop4$`4`[ldat_prop4$Site_Transect=="AmbodivohitraKobahina_1"]<-0
+ldat_prop4$`1`[ldat_prop4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
+ldat_prop4$`2`[ldat_prop4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
+ldat_prop4$`3`[ldat_prop4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
+ldat_prop4$`4`[ldat_prop4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
+
+ldat_prop4 <- ldat_prop4[-30,]
+
+```
+
+```{r Organize Occupancy Dataframes By Lemur Species}
+#HAPALEMUS OCCIDENTALIS
+ldat_hap <- lemur_combined_total %>% filter(Nom_sientifique=='Hapalemur_occidentalis'& Type!="Nocturnal")%>%
+  dplyr::select(Site, Date, Transect, Repetition, N_ind, Elevation_obs) %>% mutate(Site_Transect = paste(Site, Transect, sep = '_'))%>%
+ dplyr:: select(Site_Transect, Repetition)
+ldat_hap$obs <- 1
+ldat_hap2 <- ldat_hap %>% group_by(Site_Transect, Repetition)%>% summarise(obs_total = sum(obs))
+ldat_hap3 <- rbind(ldat_hap2, site_trans_base)
+sort(unique(ldat_hap3$Site_Transect))
+ldat_hap3$Site_Transect[ldat_hap3$Site_Transect=="_NA"]<- NA
+ldat_hap3$Site_Transect[ldat_hap3$Site_Transect=="Betaolana_NA"]<- NA
+ldat_hap3 <- ldat_hap3[!is.na(ldat_hap3$Site_Transect),]
+ldat_hap4 <- ldat_hap3 %>% group_by(Site_Transect, Repetition)%>% summarise(obs_total = sum(obs_total)) %>%
+  pivot_wider(names_from = Repetition, values_from= obs_total)
+ldat_hap4[8,14]<- 0
+ldat_hap4[nrow(ldat_hap4)+1,]<-list("AmbodivohitraKobahina_2", 0, 0, 0, 0, NA, NA,NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA)
+ldat_hap4$`1`[ldat_hap4$Site_Transect=="AmbodivohitraKobahina_1"]<-0
+ldat_hap4$`2`[ldat_hap4$Site_Transect=="AmbodivohitraKobahina_1"]<-0
+ldat_hap4$`3`[ldat_hap4$Site_Transect=="AmbodivohitraKobahina_1"]<-0
+ldat_hap4$`4`[ldat_hap4$Site_Transect=="AmbodivohitraKobahina_1"]<-0
+ldat_hap4$`1`[ldat_hap4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
+ldat_hap4$`2`[ldat_hap4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
+ldat_hap4$`3`[ldat_hap4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
+ldat_hap4$`4`[ldat_hap4$Site_Transect=="AmbodivohitraKobahina_3"]<-0
+ldat_hap4 <- ldat_hap4[-30,]
+
+```
+
+```{r Organize Occupancy Dataframes By Lemur Species}
+#ALLOCEBUS TRICHOTIS
+ldat_allo <- lemur_combined_total %>% filter(Nom_sientifique=='Allocebus_trichotis'& Type!="Diurnal")%>%
+  dplyr::select(Site, Date, Transect, Repetition, N_ind, Elevation_obs) %>% mutate(Site_Transect = paste(Site, Transect, sep = '_'))%>%
+ dplyr:: select(Site_Transect, Repetition)
+ldat_allo$obs <- 1
+ldat_allo2 <- ldat_allo %>% group_by(Site_Transect, Repetition)%>% summarise(obs_total = sum(obs))
+ldat_allo3 <- rbind(ldat_allo2, site_trans_base_nocturnal)
+sort(unique(ldat_allo3$Site_Transect))
+ldat_allo3$Site_Transect[ldat_allo3$Site_Transect=="_NA"]<- NA
+ldat_allo3$Site_Transect[ldat_allo3$Site_Transect=="Betaolana_NA"]<- NA
+ldat_allo3 <- ldat_allo3[!is.na(ldat_allo3$Site_Transect),]
+ldat_allo4 <- ldat_allo3 %>% group_by(Site_Transect, Repetition)%>% summarise(obs_total = sum(obs_total)) %>%
+  pivot_wider(names_from = Repetition, values_from= obs_total)
+
+```
+
+```{r Organize Occupancy Dataframes By Lemur Species}
+#MICROCEBUS
+ldat_micro <- lemur_combined_total %>% filter(Nom_sientifique=='Microcebus_lehilahytsara'& Type!="Diurnal")%>%
+  dplyr::select(Site, Date, Transect, Repetition, N_ind, Elevation_obs) %>% mutate(Site_Transect = paste(Site, Transect, sep = '_'))%>%
+ dplyr:: select(Site_Transect, Repetition)
+ldat_micro$obs <- 1
+ldat_micro2 <- ldat_micro %>% group_by(Site_Transect, Repetition)%>% summarise(obs_total = sum(obs))
+ldat_micro3 <- rbind(ldat_micro2, site_trans_base_nocturnal)
+sort(unique(ldat_micro3$Site_Transect))
+ldat_micro3$Site_Transect[ldat_micro3$Site_Transect=="_NA"]<- NA
+ldat_micro3$Site_Transect[ldat_micro3$Site_Transect=="Betaolana_NA"]<- NA
+ldat_micro3 <- ldat_micro3[!is.na(ldat_micro3$Site_Transect),]
+ldat_micro4 <- ldat_micro3 %>% group_by(Site_Transect, Repetition)%>% summarise(obs_total = sum(obs_total)) %>%
+  pivot_wider(names_from = Repetition, values_from= obs_total)
+
+#CHEIROGALEUS
+ldat_cheiro <- lemur_combined_total %>% filter(Nom_sientifique=='Cheirogaleus_crossleyi'& Type!="Diurnal")%>%
+  dplyr::select(Site, Date, Transect, Repetition, N_ind, Elevation_obs) %>% mutate(Site_Transect = paste(Site, Transect, sep = '_'))%>%
+ dplyr:: select(Site_Transect, Repetition)
+ldat_cheiro$obs <- 1
+ldat_cheiro2 <- ldat_cheiro %>% group_by(Site_Transect, Repetition)%>% summarise(obs_total = sum(obs))
+ldat_cheiro3 <- rbind(ldat_cheiro2, site_trans_base_nocturnal)
+sort(unique(ldat_cheiro3$Site_Transect))
+ldat_cheiro3$Site_Transect[ldat_cheiro3$Site_Transect=="_NA"]<- NA
+ldat_cheiro3$Site_Transect[ldat_cheiro3$Site_Transect=="Betaolana_NA"]<- NA
+ldat_cheiro3 <- ldat_cheiro3[!is.na(ldat_cheiro3$Site_Transect),]
+ldat_cheiro4 <- ldat_cheiro3 %>% group_by(Site_Transect, Repetition)%>% summarise(obs_total = sum(obs_total)) %>%
+  pivot_wider(names_from = Repetition, values_from= obs_total)
+ldat_cheiro4 <- ldat_cheiro4[,c(1:4)]
+
+#LEPILEMUR
+ldat_lepi <- lemur_combined_total %>% filter(Nom_sientifique=='Lepilemur_seali'& Type!="Diurnal")%>%
+  dplyr::select(Site, Date, Transect, Repetition, N_ind, Elevation_obs) %>% mutate(Site_Transect = paste(Site, Transect, sep = '_'))%>%
+ dplyr:: select(Site_Transect, Repetition)
+ldat_lepi$obs <- 1
+ldat_lepi2 <- ldat_lepi %>% group_by(Site_Transect, Repetition)%>% summarise(obs_total = sum(obs))
+ldat_lepi3 <- rbind(ldat_lepi2, site_trans_base_nocturnal)
+sort(unique(ldat_lepi3$Site_Transect))
+ldat_lepi3$Site_Transect[ldat_lepi3$Site_Transect=="_NA"]<- NA
+ldat_lepi3$Site_Transect[ldat_lepi3$Site_Transect=="Betaolana_NA"]<- NA
+ldat_lepi3 <- ldat_lepi3[!is.na(ldat_lepi3$Site_Transect),]
+ldat_lepi4 <- ldat_lepi3 %>% group_by(Site_Transect, Repetition)%>% summarise(obs_total = sum(obs_total)) %>%
+  pivot_wider(names_from = Repetition, values_from= obs_total)
+
+#AVAHI
+ldat_avahi <- lemur_combined_total %>% filter(Nom_sientifique=='Avahi_laniger'& Type!="Diurnal")%>%
+  dplyr::select(Site, Date, Transect, Repetition, N_ind, Elevation_obs) %>% mutate(Site_Transect = paste(Site, Transect, sep = '_'))%>%
+ dplyr:: select(Site_Transect, Repetition)
+ldat_avahi$obs <- 1
+ldat_avahi2 <- ldat_avahi %>% group_by(Site_Transect, Repetition)%>% summarise(obs_total = sum(obs))
+ldat_avahi3 <- rbind(ldat_avahi2, site_trans_base_nocturnal)
+sort(unique(ldat_avahi3$Site_Transect))
+ldat_avahi3$Site_Transect[ldat_avahi3$Site_Transect=="_NA"]<- NA
+ldat_avahi3$Site_Transect[ldat_avahi3$Site_Transect=="Betaolana_NA"]<- NA
+ldat_avahi3 <- ldat_avahi3[!is.na(ldat_avahi3$Site_Transect),]
+ldat_avahi4 <- ldat_avahi3 %>% group_by(Site_Transect, Repetition)%>% summarise(obs_total = sum(obs_total)) %>%
+  pivot_wider(names_from = Repetition, values_from= obs_total)
+
+ldat_rub4 <- ldat_rub4[-30,]
+
+write.csv(ldat_avahi4, "Data/avahi_reps.csv")
+write.csv(ldat_lepi4, "Data/lepi_reps.csv")
+write.csv(ldat_cheiro4, "Data/cheiro_reps.csv")
+write.csv(ldat_micro4, "Data/micro_reps.csv")
+write.csv(ldat_allo4, "Data/allo_reps.csv")
+write.csv(ldat_rub4, "Data/rubri_reps.csv")
+write.csv(ldat_alb4, "Data/albi_reps.csv")
+write.csv(ldat_prop4, "Data/prop_reps.csv")
+write.csv(ldat_hap4, "Data/hapa_reps.csv")
+```
+
+```{r Get covariate data together}
+
+covs_allo <- combined_data[combined_data$Species=="Allocebus_trichotis",] %>% select(MEAN, cov, SiteTransect, Site, Transect)%>% pivot_wider(names_from = cov, values_from = MEAN)
+
+covs_micro <- combined_data[combined_data$Species=="Microcebus_lehilahytsara",] %>% select(MEAN, cov, SiteTransect, Site, Transect)%>% pivot_wider(names_from = cov, values_from = MEAN)
+
+covs_lepi <- combined_data[combined_data$Species=="Lepilemur_saeli",] %>% select(MEAN, cov, SiteTransect, Site, Transect)%>% pivot_wider(names_from = cov, values_from = MEAN)
+
+covs_avahi <- combined_data[combined_data$Species=="Avahi_laniger",] %>% select(MEAN, cov, SiteTransect, Site, Transect)%>% pivot_wider(names_from = cov, values_from = MEAN)
+
+covs_cheiro <- combined_data[combined_data$Species=="Cheirogaleus_crossleyi",] %>% select(MEAN, cov, SiteTransect, Site, Transect)%>% pivot_wider(names_from = cov, values_from = MEAN)
+
+covs_prop <- combined_data[combined_data$Species=="Propithecus_candidus",] %>% select(MEAN, cov, SiteTransect, Site, Transect)%>% pivot_wider(names_from = cov, values_from = MEAN)
+
+covs_rubri <- combined_data[combined_data$Species=="Eulemur_rubriventer",] %>% select(MEAN, cov, SiteTransect, Site, Transect)%>% pivot_wider(names_from = cov, values_from = MEAN)
+
+covs_albi <- combined_data[combined_data$Species=="Eulemur_albifrons",] %>% select(MEAN, cov, SiteTransect, Site, Transect)%>% pivot_wider(names_from = cov, values_from = MEAN)
+
+covs_hapa <- combined_data[combined_data$Species=="Hapalemur_occidentalis",] %>% select(MEAN, cov, SiteTransect, Site, Transect)%>% pivot_wider(names_from = cov, values_from = MEAN)
+
+```
+
+```{r Create unmarked frames}
+
+####ALLOCEBUS####
+allo_dat <- read.csv("Data/allo_reps.csv")
+allo_dat2 <- allo_dat
+rownames(allo_dat2) <- allo_dat$Site_Transect
+covs2_allo <- covs_allo[order(covs_allo$SiteTransect), ]
+
+umf_allo <- unmarkedFrameOccu(y=allo_dat2[,-c(1:2)], #Observation data must be named 'y'
+                         siteCovs=data.frame(covars=covs2_allo))
+
+####MICROCEBUS####
+micro_dat <- read.csv("Data/micro_reps.csv")
+micro_dat2 <- micro_dat
+rownames(micro_dat2) <- micro_dat$Site_Transect
+covs2_micro <- covs_micro[order(covs_micro$SiteTransect), ]
+
+umf_micro <- unmarkedFrameOccu(y=micro_dat2[,-c(1:2)], #Observation data must be named 'y'
+                         siteCovs=data.frame(covars=covs2_micro))
+
+####LEPILEMUR####
+lepi_dat <- read.csv("Data/lepi_reps.csv")
+lepi_dat2 <- lepi_dat
+rownames(lepi_dat2) <- lepi_dat$Site_Transect
+covs2_lepi <- covs_lepi[order(covs_lepi$SiteTransect), ]
+
+umf_lepi <- unmarkedFrameOccu(y=lepi_dat2[,-c(1:2)], #Observation data must be named 'y'
+                         siteCovs=data.frame(covars=covs2_lepi))
+
+####AVAHI####
+avahi_dat <- read.csv("Data/avahi_reps.csv")
+avahi_dat2 <- avahi_dat
+rownames(avahi_dat2) <- avahi_dat$Site_Transect
+covs2_avahi <- covs_avahi[order(covs_avahi$SiteTransect), ]
+
+umf_avahi <- unmarkedFrameOccu(y=avahi_dat2[,-c(1:2)], #Observation data must be named 'y'
+                         siteCovs=data.frame(covars=covs2_avahi))
+
+####CHEIRO####
+cheiro_dat <- read.csv("Data/cheiro_reps.csv")
+cheiro_dat2 <- cheiro_dat
+rownames(cheiro_dat2) <- cheiro_dat$Site_Transect
+covs2_cheiro <- covs_cheiro[order(covs_cheiro$SiteTransect), ]
+
+umf_cheiro <- unmarkedFrameOccu(y=cheiro_dat2[,-c(1:2)], #Observation data must be named 'y'
+                         siteCovs=data.frame(covars=covs2_cheiro))
+
+####PROPITHECUS####
+prop_dat <- read.csv("Data/prop_reps.csv")
+prop_dat2 <- prop_dat
+rownames(prop_dat2) <- prop_dat$Site_Transect
+covs2_prop <- covs_prop[order(covs_prop$SiteTransect), ]
+
+umf_prop <- unmarkedFrameOccu(y=prop_dat2[,-c(1:2)], #Observation data must be named 'y'
+                         siteCovs=data.frame(covars=covs2_prop))
+
+####RUBRIVENTER####
+rubri_dat <- read.csv("Data/rubri_reps.csv")
+rubri_dat2 <- rubri_dat
+rownames(rubri_dat2) <- rubri_dat$Site_Transect
+covs2_rubri <- covs_rubri[order(covs_rubri$SiteTransect), ]
+
+umf_rubri <- unmarkedFrameOccu(y=rubri_dat2[,-c(1:2)], #Observation data must be named 'y'
+                         siteCovs=data.frame(covars=covs2_rubri))
+
+####ALBIFRONS####
+albi_dat <- read.csv("Data/albi_reps.csv")
+albi_dat2 <- albi_dat
+rownames(albi_dat2) <- albi_dat$Site_Transect
+covs2_albi <- covs_albi[order(covs_albi$SiteTransect), ]
+
+umf_albi <- unmarkedFrameOccu(y=albi_dat2[,-c(1:2)], #Observation data must be named 'y'
+                         siteCovs=data.frame(covars=covs2_albi))
+
+####HAPALEMUR####
+hapa_dat <- read.csv("Data/hapa_reps.csv")
+hapa_dat2 <- hapa_dat
+rownames(hapa_dat2) <- hapa_dat$Site_Transect
+covs2_hapa <- covs_hapa[order(covs_hapa$SiteTransect), ]
+
+umf_hapa <- unmarkedFrameOccu(y=hapa_dat2[,-c(1:2)], #Observation data must be named 'y'
+                         siteCovs=data.frame(covars=covs2_hapa))
+
+```
+
+```{r allocebus occupancy model}
+library(AICcmodavg)
+
+summary(umf_allo)
+occu_allo <- occu(formula = ~1~ 1, data = umf_allo)
+occu_allo_full <- occu(formula = ~1~ covars.Elevation +covars.CanopyHeight +covars.Ruggedness, data = umf_micro)
+occu_allo1 <- occu(formula = ~ 1 ~covars.Elevation +covars.CanopyHeight, data = umf_allo)
+occu_allo2 <- occu(formula = ~ 1 ~covars.Elevation + covars.Ruggedness, data = umf_allo)
+occu_allo3<- occu(formula = ~ 1 ~covars.CanopyHeight + covars.Ruggedness, data = umf_allo)
+occu_allo4 <- occu(formula = ~ 1 ~covars.Elevation , data = umf_allo)
+occu_allo5 <- occu(formula = ~ 1 ~covars.CanopyHeight, data = umf_allo)
+occu_allo6 <- occu(formula = ~ 1 ~covars.Ruggedness, data = umf_micro)
+
+summary(occu_allo_full)
+summary(occu_allo6 )
+dredge(occu_allo_full, rank = "AIC")
+
+occu_model_list <- list(occu_allo_full, occu_allo1, occu_allo2, occu_allo3, occu_allo4, occu_allo5, occu_allo6)
+
+occu_allp_newdata <- data.frame(forest = seq(min(covs_allo$Elevation), 
+                                                 max(covs_allo$Elevation), by = 0.5),
+                                  agri = mean(site_cov$agri), # hold other variables constant
+                                  wetland = mean(site_cov$wetland)) 
+
+occu_modavg_psi_predict_allo <- model.avg(occu_model_list)
+
+
+
+
+allo_null <-  occu(~1~1, data=umf_allo)
+
+allo_elev <-  occu(~1~scale(covars.elevation), data=umf_allo)
+allo_rug <-  occu(~1~scale(covars.rug), data=umf_allo)
+allo_height <-  occu(~1~scale(covars.height), data=umf_allo)
+allo_loss <- occu(~1~scale(covars.forest_loss_prop), data=umf_allo)
+
+allo_full <-  occu(~1~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height), data=umf_allo) # did not converge
+
+allo_elev_detection <- occu(~scale(covars.elevation)~1, data=umf_allo)#significant! Allocebus detection negative with elevation, lowest AIC with model convergence
+allo_rug_detection <- occu(~scale(covars.rug)~1, data=umf_allo)
+allo_height_detection <- occu(~scale(covars.height)~1, data=umf_allo)
+allo_loss_detection <- occu(~scale(covars.forest_loss_prop)~1, data=umf_allo)
+
+allo_full_detection <- occu(~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height)~1, data=umf_allo)
+
+allo_occupancy_model <- allo_elev_detection 
+```
+
+```{r microcebus occupancy model}
+micro_null <-  occu(~1~1, data=umf_micro)
+micro_elev <-  occu(~1~scale(covars.elevation), data=umf_micro)
+micro_rug <-  occu(~1~scale(covars.rug), data=umf_micro)
+micro_height <-  occu(~1~scale(covars.height), data=umf_micro) #model does not converge
+micro_loss <- occu(~1~scale(covars.forest_loss_prop), data=umf_micro)
+
+micro_full <-  occu(~1~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height), data=umf_micro)
+
+micro_elev_detection <- occu(~scale(covars.elevation)~1, data=umf_micro)
+micro_rug_detection <- occu(~scale(covars.rug)~1, data=umf_micro)
+micro_height_detection <- occu(~scale(covars.height)~1, data=umf_micro)
+micro_loss_detection <- occu(~scale(covars.forest_loss_prop)~1, data=umf_micro)
+
+micro_full_detection <- occu(~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height)~1, data=umf_micro)
+
+micro_occupancy_model <- micro_null
+
+```
+
+```{r cheiro occupancy model}
+cheiro_null <-  occu(~1~1, data=umf_cheiro)
+
+cheiro_elev <-  occu(~1~scale(covars.elevation), data=umf_cheiro)
+cheiro_rug <-  occu(~1~scale(covars.rug), data=umf_cheiro)
+cheiro_height <-  occu(~1~scale(covars.height), data=umf_cheiro) 
+cheiro_loss <- occu(~1~scale(covars.forest_loss_prop), data=umf_cheiro)
+
+cheiro_full <-  occu(~1~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height), data=umf_cheiro)
+
+cheiro_elev_detection <- occu(~scale(covars.elevation)~1, data=umf_cheiro) #marginally significant, elevation positively related to detection (marginally)
+cheiro_rug_detection <- occu(~scale(covars.rug)~1, data=umf_cheiro)
+cheiro_height_detection <- occu(~scale(covars.height)~1, data=umf_cheiro)
+cheiro_loss_detection <- occu(~scale(covars.forest_loss_prop)~1, data=umf_cheiro)
+
+cheiro_full_detection <- occu(~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height)~1, data=umf_cheiro)
+
+cheiro_occupancy_model <- cheiro_elev_detection
+
+```
+
+```{r avahi occupancy model}
+avahi_null <-  occu(~1~1, data=umf_avahi)
+
+avahi_elev <-  occu(~1~scale(covars.elevation), data=umf_avahi)
+avahi_rug <-  occu(~1~scale(covars.rug), data=umf_avahi)
+avahi_height <-  occu(~1~scale(covars.height), data=umf_avahi) 
+avahi_loss <- occu(~1~scale(covars.forest_loss_prop), data=umf_avahi)
+
+avahi_full <-  occu(~1~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height), data=umf_avahi) #model does not converge
+
+avahi_elev_detection <- occu(~scale(covars.elevation)~1, data=umf_avahi) 
+avahi_rug_detection <- occu(~scale(covars.rug)~1, data=umf_avahi)
+avahi_height_detection <- occu(~scale(covars.height)~1, data=umf_avahi)
+avahi_loss_detection <- occu(~scale(covars.forest_loss_prop)~1, data=umf_avahi)
+
+avahi_full_detection <- occu(~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height)~1, data=umf_avahi)
+
+avahi_occupancy_model <- avahi_full
+
+```
+
+```{r lepi occupancy model}
+lepi_null <-  occu(~1~1, data=umf_lepi)
+
+lepi_elev <-  occu(~1~scale(covars.elevation), data=umf_lepi)
+lepi_rug <-  occu(~1~scale(covars.rug), data=umf_lepi)
+lepi_height <-  occu(~1~scale(covars.height), data=umf_lepi) 
+lepi_loss <- occu(~1~scale(covars.forest_loss_prop), data=umf_lepi)
+
+lepi_full <-  occu(~1~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height), data=umf_lepi)#model does not converge
+
+lepi_elev_detection <- occu(~scale(covars.elevation)~1, data=umf_lepi)  #elevation significant and negative
+lepi_rug_detection <- occu(~scale(covars.rug)~1, data=umf_lepi)
+lepi_height_detection <- occu(~scale(covars.height)~1, data=umf_lepi)
+lepi_loss_detection <- occu(~scale(covars.forest_loss_prop)~1, data=umf_lepi)
+
+lepi_full_detection <- occu(~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height)~1, data=umf_lepi) #elevation significant and negative
+
+lepi_occupancy_model <- lepi_full_detection
+```
+
+```{r rubri occupancy model}
+rubri_null <-  occu(~1~1, data=umf_rubri)
+
+rubri_elev <-  occu(~1~scale(covars.elevation), data=umf_rubri)
+rubri_rug <-  occu(~1~scale(covars.rug), data=umf_rubri)
+rubri_height <-  occu(~1~scale(covars.height), data=umf_rubri)
+rubri_loss <- occu(~1~scale(covars.forest_loss_prop), data=umf_rubri)
+
+rubri_full <-  occu(~1~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height), data=umf_rubri)
+
+rubri_elev_detection <- occu(~scale(covars.elevation)~1, data=umf_rubri) 
+rubri_rug_detection <- occu(~scale(covars.rug)~1, data=umf_rubri)
+rubri_height_detection <- occu(~scale(covars.height)~1, data=umf_rubri)
+rubri_loss_detection <- occu(~scale(covars.forest_loss_prop)~1, data=umf_rubri)
+
+rubri_full_detection <- occu(~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height)~1, data=umf_rubri)
+
+rubri_occupancy_model <- rubri_height
+```
+
+```{r albi occupancy model}
+albi_null <-  occu(~1~1, data=umf_albi)
+
+albi_elev <-  occu(~1~scale(covars.elevation), data=umf_albi)
+albi_rug <-  occu(~1~scale(covars.rug), data=umf_albi)#does not converge
+albi_height <-  occu(~1~scale(covars.height), data=umf_albi) 
+albi_loss <- occu(~1~scale(covars.forest_loss_prop), data=umf_albi)
+
+albi_full <-  occu(~1~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height), data=umf_albi)
+
+albi_elev_detection <- occu(~scale(covars.elevation)~1, data=umf_albi) 
+albi_rug_detection <- occu(~scale(covars.rug)~1, data=umf_albi)
+albi_height_detection <- occu(~scale(covars.height)~1, data=umf_albi)
+albi_loss_detection <- occu(~scale(covars.forest_loss_prop)~1, data=umf_albi)
+
+albi_full_detection <- occu(~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height)~1, data=umf_albi)
+
+albi_occupancy_model <- albi_null
+```
+
+```{r prop occupancy model}
+prop_null <-  occu(~1~1, data=umf_prop)
+
+prop_elev <-  occu(~1~scale(covars.elevation), data=umf_prop)
+prop_rug <-  occu(~1~scale(covars.rug), data=umf_prop)
+prop_height <-  occu(~1~scale(covars.height), data=umf_prop) 
+prop_loss <- occu(~1~scale(covars.forest_loss_prop), data=umf_prop)#marginally significant! Positive occupancy with forest loss proportion
+
+prop_full <-  occu(~1~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height), data=umf_prop)
+
+prop_elev_detection <- occu(~scale(covars.elevation)~1, data=umf_prop) 
+prop_rug_detection <- occu(~scale(covars.rug)~1, data=umf_prop)#significant! 
+prop_height_detection <- occu(~scale(covars.height)~1, data=umf_prop)
+prop_loss_detection <- occu(~scale(covars.forest_loss_prop)~1, data=umf_prop)
+
+prop_full_detection <- occu(~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height)~1, data=umf_prop)
+
+prop_occupancy_model <- prop_rug_detection
+```
+
+```{r hapa occupancy model}
+
+hapa_null <-  occu(~1~1, data=umf_hapa)
+
+hapa_elev <-  occu(~1~scale(covars.elevation), data=umf_hapa)
+hapa_rug <-  occu(~1~scale(covars.rug), data=umf_hapa)
+hapa_height <-  occu(~1~scale(covars.height), data=umf_hapa) #did not converge
+hapa_loss <- occu(~1~scale(covars.forest_loss_prop), data=umf_hapa)
+
+hapa_full <-  occu(~1~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height), data=umf_hapa)#does not converge
+
+hapa_elev_detection <- occu(~scale(covars.elevation)~1, data=umf_hapa)
+hapa_rug_detection <- occu(~scale(covars.rug)~1, data=umf_hapa)
+hapa_height_detection <- occu(~scale(covars.height)~1, data=umf_hapa)
+hapa_loss_detection <- occu(~scale(covars.forest_loss_prop)~1, data=umf_hapa)
+
+hapa_full_detection <- occu(~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height)~1, data=umf_hapa)
+
+hapa_occupancy_model <-hapa_null
+
+
+
+```
+
+```{r Back transform to get occupancy and detection probabilities}
+
+occu_allo <- backTransform(allo_null, type="state")
+occu_micro <- backTransform(micro_null, type="state")
+occu_cheiro <- backTransform(cheiro_null, type="state")
+occu_avahi <- backTransform(avahi_null, type="state")
+occu_lepi <- backTransform(lepi_null, type="state")
+occu_rubri <- backTransform(rubri_null, type="state")
+occu_albi <- backTransform(albi_null, type="state")
+occu_prop <- backTransform(prop_null, type="state")
+occu_hapa <- backTransform(hapa_null, type="state")
+
+detection_allo <- backTransform(allo_null, type="det")
+detection_micro <- backTransform(micro_null, type="det")
+detection_cheiro <- backTransform(cheiro_null, type="det")
+detection_avahi <- backTransform(avahi_null, type="det")
+detection_lepi <- backTransform(lepi_null, type="det")
+detection_rubri <- backTransform(rubri_null, type="det")
+detection_albi <- backTransform(albi_null, type="det")
+detection_prop <- backTransform(prop_null, type="det")
+detection_hapa <- backTransform(hapa_null, type="det")
+
+
+```
+
+
