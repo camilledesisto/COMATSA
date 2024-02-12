@@ -1280,7 +1280,7 @@ hapa_dat <- left_join(hapa_dat,transect_lengths, by =c("Site_Transect"))
 hapa_dat$Density <- (hapa_dat$Nind/hapalemur_detection_prob)/(hapalemur_truncation_dist*hapa_dat$Length*hapa_dat$NRep)
 hapa_dat$Density_km2 <- hapa_dat$Density*1000000
 
-write.csv(hapa_dat,"~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/hapa_dat.csv")
+write.csv(hapa_dat,"~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/prop_dat.csv")
 
 covs_hapa$Site_Transect[covs_hapa$Site_Transect=="Ambodivohitra_Kobahina_1"]<- "AmbodivohitraKobahina_1"
 covs_hapa$Site_Transect[covs_hapa$Site_Transect=="Ambodivohitra_Kobahina_2"]<- "AmbodivohitraKobahina_2"
