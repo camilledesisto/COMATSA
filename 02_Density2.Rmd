@@ -153,9 +153,6 @@ survey_cheiro <- survey_cheiro %>% rename( Site = Site.x, Transect = Transect.x)
 #Get data frame for just allocebus
 allocebus_df <- survey_nocturnal  %>% filter(Nom_sientifique=="Allocebus_trichotis")
 
-#NAs currently being excluded
-#allocebus_df$distance[is.na(allocebus_df$distance)] <- 0
-
 #clean data data set
 allocebus_df3 <- allocebus_df
 allocebus_df3$Area <- 1000000 #For now, assume an area of 1... million 
@@ -164,23 +161,9 @@ allocebus_df3$Region.Label <- allocebus_df3$Site_Transect
 allocebus_df3$size <- as.numeric(allocebus_df3$N_total)
 allocebus_df3$Effort <- allocebus_df3$Effort.distance
 
-
-#colnames(allocebus_df3) <- c("Region.Label",  "Effort", "distance","Area", "Sample.Label")
-
 hist(allocebus_df3$distance)
 
-#ds_allocebus <- ds(allocebus_df3) - used for finding truncation dist
-#check if group size affects detection dist
-#ggplot(allocebus_df3, aes(distance,size))+geom_point()+geom_smooth(method=lm)
-#ds_allocebus <- ds(allocebus_df3, truncation = 20, formula = ~size)
-
-allocebus_truncation_dist <- 26
-ds_allocebus <- ds(allocebus_df3,key = c("hn", "hr", "unif"),adjustment = c("cos", "herm", "poly"), truncation = allocebus_truncation_dist)
-plot(ds_allocebus)
-summary(ds_allocebus)
-ds_allocebus$ddf
-gof_ds(ds_allocebus)
-
+allocebus_truncation_dist <- max(na.omit(allocebus_df3$distance)) #Do not truncate
 
 #Detection function models
 model1_allocebus <- ds(allocebus_df3, key="hn", adjustment=NULL)
@@ -194,7 +177,7 @@ model8_allocebus <- ds(allocebus_df3, key="unif", adjustment="cos")
 model9_allocebus <- ds(allocebus_df3, key="unif", adjustment="herm")
 
 #Test goodness of fit for detection functions
-ddf.gof(model1_allocebus, ks=TRUE)#significant, poor fit
+ddf.gof(model1_allocebus)#significant, poor fit
 gof_ds(model2_allocebus)
 gof_ds(model3_allocebus)#significant, poor fit
 gof_ds(model4_allocebus)
@@ -204,7 +187,7 @@ gof_ds(model7_allocebus)#significant, poor fit
 gof_ds(model8_allocebus)
 gof_ds(model9_allocebus)#significant, poor fit
 
-#Of the models without poor fit, compare AIC calues
+#Of the models without poor fit, compare AIC values
 AIC(model2_allocebus, model4_allocebus,model5_allocebus, model6_allocebus,model8_allocebus)
 
 #Plot the best-fitting model 
@@ -215,14 +198,10 @@ summary(model4_allocebus)
 #Get detection probability
 allocebus_detection_prob <- predict(model4_allocebus)$fitted[[1]]
 
-#Calculate strp width (2 * maximum distance, of the truncated distance data)
+#Get strip width 
 allocebus_strip_width <- allocebus_truncation_dist
-#allocebus_strip_width <- max(allocebus_df3$distance) * 2
 
-#Upload covariate data 
 
-#NOTE THAT ALL DETECTIONS BEYOND TRUNCATION DISTANCE ARE BEING EXCLUDED
-#CURRENTLY INCLUDING NA DISTANCE VALUES AS DETECTIONS
 site_transects <- survey_all %>% group_by(Site_Transect) %>% summarise()
 
 allocebus_df_old <- survey_all %>% filter(Nom_sientifique=="Allocebus_trichotis" & Type=="Nocturnal" & Date < ymd("20220601") & (Dis <1.56*allocebus_truncation_dist | is.na(Dis)))
@@ -245,72 +224,11 @@ allocebus_dat$Density_km2 <- allocebus_dat$Density*1000000
 
 write.csv(allocebus_dat,"~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/allocebus_dat.csv")
 
-#allocebus_dat <- read.csv("~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/allo_reps.csv")
-
-#allocebus_dat <- left_join(allocebus_dat, nrep_nocturnal, by =c("Site_Transect"))
-#allocebus_dat <- left_join(allocebus_dat, nobs[nobs$Nom_sientifique=="Allocebus_trichotis",], by =c("Site_Transect"))
-#allocebus_dat <- allocebus_dat %>% select(Site_Transect, NObs, NRep)
-#allocebus_dat$NObs[is.na(allocebus_dat$NObs)] <- 0
-
-#Use global detection function to calulate density at each transect
-#allocebus_dat$M_surveyed <- allocebus_dat$NRep *1000*  allocebus_strip_width
-#allocebus_dat$Density <- (allocebus_dat$NObs) / (allocebus_dat$M_surveyed*allocebus_detection_prob) * 1000000
-#allocebus_dat <- allocebus_dat %>% select(Site_Transect, Density)
-
-#Clean transect names
-covs_allo$Site_Transect[covs_allo$Site_Transect=="Ambodivohitra_Kobahina_1"]<- "AmbodivohitraKobahina_1"
-covs_allo$Site_Transect[covs_allo$Site_Transect=="Ambodivohitra_Kobahina_2"]<- "AmbodivohitraKobahina_2"
-covs_allo$Site_Transect[covs_allo$Site_Transect=="Ambodivohitra_Kobahina_3"]<- "AmbodivohitraKobahina_3"
-
-#Join density data to covariate data 
-covs_allo_density <- left_join(allocebus_dat, covs_allo, by="Site_Transect")
-covs_allo_density$Species <- "Allocebus_trichotis"
-
-#Linear model of density as explained by combinations of the covariates
-lmer_allocebus <- lmer(data=covs_allo_density , Density~ elevation + log(forest_loss_prop+1) + height + rug +(1|Site))
-lmer_allocebus1 <- lmer(data=covs_allo_density , Density~ elevation +(1|Site))
-lmer_allocebus2 <- lmer(data=covs_allo_density , Density~  log(forest_loss_prop+1) +(1|Site))
-lmer_allocebus3 <- lmer(data=covs_allo_density , Density~  height + (1|Site))
-lmer_allocebus4 <- lmer(data=covs_allo_density , Density~ rug +(1|Site))
-lmer_allocebus5 <- lmer(data=covs_allo_density , Density~ elevation + log(forest_loss_prop+1) + (1|Site))
-lmer_allocebus6 <- lmer(data=covs_allo_density , Density~ elevation + height +(1|Site))
-lmer_allocebus7 <- lmer(data=covs_allo_density , Density~ elevation +  rug +(1|Site))
-lmer_allocebus8 <- lmer(data=covs_allo_density , Density~  log(forest_loss_prop+1) + height +(1|Site))
-lmer_allocebus9 <- lmer(data=covs_allo_density , Density~ log(forest_loss_prop+1) +  rug +(1|Site))
-lmer_allocebus10 <- lmer(data=covs_allo_density , Density~ height + rug +(1|Site))
-lmer_allocebus11 <- lmer(data=covs_allo_density , Density~ elevation + log(forest_loss_prop+1) + height +(1|Site))
-lmer_allocebus12 <- lmer(data=covs_allo_density , Density~ elevation + log(forest_loss_prop+1) +  rug +(1|Site))
-lmer_allocebus13 <- lmer(data=covs_allo_density , Density~  log(forest_loss_prop+1) + height + rug +(1|Site))
-lmer_allocebus14 <- lmer(data=covs_allo_density , Density~  +(1|Site))
-
-#Check for the model with the highest r-squared
-lmer_allocebus_rsq <- rsq.lmm(lmer_allocebus)[[1]]
-lmer_allocebus_rsq1 <- rsq.lmm(lmer_allocebus1)[[1]]
-lmer_allocebus_rsq2 <- rsq.lmm(lmer_allocebus2)[[1]]
-lmer_allocebus_rsq3 <- rsq.lmm(lmer_allocebus3)[[1]]
-lmer_allocebus_rsq4 <- rsq.lmm(lmer_allocebus4)[[1]]
-lmer_allocebus_rsq5 <- rsq.lmm(lmer_allocebus5)[[1]]
-lmer_allocebus_rsq6 <- rsq.lmm(lmer_allocebus6)[[1]]
-lmer_allocebus_rsq7 <- rsq.lmm(lmer_allocebus7)[[1]]
-lmer_allocebus_rsq8 <- rsq.lmm(lmer_allocebus8)[[1]]
-lmer_allocebus_rsq9 <- rsq.lmm(lmer_allocebus9)[[1]]
-lmer_allocebus_rsq10 <- rsq.lmm(lmer_allocebus10)[[1]]
-lmer_allocebus_rsq11<- rsq.lmm(lmer_allocebus11)[[1]]
-lmer_allocebus_rsq12 <- rsq.lmm(lmer_allocebus12)[[1]]
-lmer_allocebus_rsq13 <- rsq.lmm(lmer_allocebus13)[[1]]
-lmer_allocebus_rsq14 <- rsq.lmm(lmer_allocebus14)[[1]]
-max(lmer_allocebus_rsq, lmer_allocebus_rsq1 , lmer_allocebus_rsq2 , lmer_allocebus_rsq3 , lmer_allocebus_rsq4 , lmer_allocebus_rsq5 , lmer_allocebus_rsq6, lmer_allocebus_rsq7 , lmer_allocebus_rsq8 , lmer_allocebus_rsq9 , lmer_allocebus_rsq10, lmer_allocebus_rsq11 , lmer_allocebus_rsq12 , lmer_allocebus_rsq13 , lmer_allocebus_rsq14 )
-
-lmer_allocebus_best <-lmer_allocebus9
-summary(lmer_allocebus_best)
-
 ```
 
 ```{r Microcebus density calculations}
 #Get data frame for just microcebus
 microcebus_df <- survey_nocturnal  %>% filter(Nom_sientifique=="Microcebus_lehilahytsara")
-
-#microcebus_df$distance[is.na(microcebus_df$distance)] <- 0
 
 #Clean data frame
 microcebus_df3 <- microcebus_df
@@ -322,9 +240,6 @@ microcebus_df3$Effort <- microcebus_df3$Effort.distance
 
 #Detection function models
 microcebus_truncation_dist <- 22
-ds_microcebus <- ds(microcebus_df3, truncation = microcebus_truncation_dist)
-gof_ds(ds_microcebus) #poor fit, significant
-plot(ds_microcebus)
 
 model1_microcebus <- ds(microcebus_df3, key="hn", adjustment=NULL, truncation = microcebus_truncation_dist)
 model2_microcebus <- ds(microcebus_df3, key="hn", adjustment="cos", truncation = microcebus_truncation_dist)
@@ -349,15 +264,14 @@ gof_ds(model9_microcebus)#significant
 
 plot(model4_microcebus)
 
+#Compare AIC calues
+AIC(model1_microcebus, model2_microcebus, model3_microcebus, model4_microcebus, model5_microcebus, model6_microcebus, model7_microcebus, model8_microcebus, model9_microcebus)
 
-#Of the models without poor fit, compare AIC calues
-AIC(model4_microcebus)
-
-#Plot the best-fitting model 
-plot(model5_microcebus, nc=6)
+#Plot the best-fitting model that also looks the most resasonable 
+plot(model4_microcebus, nc=6)
 
 #Get detection probability
-microcebus_detection_prob <- predict(model4_microcebus$fitted[[1]])
+microcebus_detection_prob <- predict(model4_microcebus)$fitted[[1]]
 
 #Calculate strp width (2 * maximum distance, of the truncated distance data)
 microcebus_strip_width <- microcebus_truncation_dist
@@ -383,77 +297,11 @@ microcebus_dat$Density_km2 <- microcebus_dat$Density*1000000
 
 write.csv(microcebus_dat,"~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/microcebus_dat.csv")
 
-
-#microcebus_dat <- read.csv("~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/micro_reps.csv")
-
-#microcebus_dat <- left_join(microcebus_dat, nrep_nocturnal, by =c("Site_Transect"))
-#microcebus_dat <- left_join(microcebus_dat, #nobs[nobs$Nom_sientifique=="Microcebus_lehilahytsara",], by =c("Site_Transect"))
-#microcebus_dat <- microcebus_dat %>% select(Site_Transect, NObs, NRep)
-#microcebus_dat$NObs[is.na(microcebus_dat$NObs)] <- 0
-
-#Use global detection function to calulate density at each transect
-#microcebus_dat$M_surveyed <- microcebus_dat$NRep *1000*  microcebus_strip_width
-#microcebus_dat$Density <- (microcebus_dat$NObs) / (microcebus_dat$M_surveyed*microcebus_detection_prob) * 1000000
-#microcebus_dat <- microcebus_dat %>% select(Site_Transect, Density)
-
-#Clean transect names
-covs_micro$Site_Transect[covs_micro$Site_Transect=="Ambodivohitra_Kobahina_1"]<- "AmbodivohitraKobahina_1"
-covs_micro$Site_Transect[covs_micro$Site_Transect=="Ambodivohitra_Kobahina_2"]<- "AmbodivohitraKobahina_2"
-covs_micro$Site_Transect[covs_micro$Site_Transect=="Ambodivohitra_Kobahina_3"]<- "AmbodivohitraKobahina_3"
-
-#Join density data to covariate data 
-covs_micro_density <- left_join(microcebus_dat, covs_micro, by="Site_Transect")
-covs_micro_density$Species <- "Microcebus_mittermeiri"
-
-#Linear model of density as explained by combinations of the covariates
-lmer_microcebus <- lmer(data=covs_micro_density , Density~ elevation + log(forest_loss_prop+1) + height + rug +(1|Site))
-lmer_microcebus1 <- lmer(data=covs_micro_density , Density~ elevation +(1|Site))
-lmer_microcebus2 <- lmer(data=covs_micro_density , Density~  log(forest_loss_prop+1) +(1|Site))
-lmer_microcebus3 <- lmer(data=covs_micro_density , Density~  height + (1|Site))
-lmer_microcebus4 <- lmer(data=covs_micro_density , Density~ rug +(1|Site))
-lmer_microcebus5 <- lmer(data=covs_micro_density , Density~ elevation + log(forest_loss_prop+1) + (1|Site))
-lmer_microcebus6 <- lmer(data=covs_micro_density , Density~ elevation + height +(1|Site))
-lmer_microcebus7 <- lmer(data=covs_micro_density , Density~ elevation +  rug +(1|Site))
-lmer_microcebus8 <- lmer(data=covs_micro_density , Density~  log(forest_loss_prop+1) + height +(1|Site))
-lmer_microcebus9 <- lmer(data=covs_micro_density , Density~ log(forest_loss_prop+1) +  rug +(1|Site))
-lmer_microcebus10 <- lmer(data=covs_micro_density , Density~ height + rug +(1|Site))
-lmer_microcebus11 <- lmer(data=covs_micro_density , Density~ elevation + log(forest_loss_prop+1) + height +(1|Site))
-lmer_microcebus12 <- lmer(data=covs_micro_density , Density~ elevation + log(forest_loss_prop+1) +  rug +(1|Site))
-lmer_microcebus13 <- lmer(data=covs_micro_density , Density~  log(forest_loss_prop+1) + height + rug +(1|Site))
-lmer_microcebus14 <- lmer(data=covs_micro_density , Density~  +(1|Site))
-
-#Check for the model with the highest r-squared
-lmer_microcebus_rsq <- rsq.lmm(lmer_microcebus)[[1]]
-lmer_microcebus_rsq1 <- rsq.lmm(lmer_microcebus1)[[1]]
-lmer_microcebus_rsq2 <- rsq.lmm(lmer_microcebus2)[[1]]
-lmer_microcebus_rsq3 <- rsq.lmm(lmer_microcebus3)[[1]]
-lmer_microcebus_rsq4 <- rsq.lmm(lmer_microcebus4)[[1]]
-lmer_microcebus_rsq5 <- rsq.lmm(lmer_microcebus5)[[1]]
-lmer_microcebus_rsq6 <- rsq.lmm(lmer_microcebus6)[[1]]
-lmer_microcebus_rsq7 <- rsq.lmm(lmer_microcebus7)[[1]]
-lmer_microcebus_rsq8 <- rsq.lmm(lmer_microcebus8)[[1]]
-lmer_microcebus_rsq9 <- rsq.lmm(lmer_microcebus9)[[1]]
-lmer_microcebus_rsq10 <- rsq.lmm(lmer_microcebus10)[[1]]
-lmer_microcebus_rsq11<- rsq.lmm(lmer_microcebus11)[[1]]
-lmer_microcebus_rsq12 <- rsq.lmm(lmer_microcebus12)[[1]]
-lmer_microcebus_rsq13 <- rsq.lmm(lmer_microcebus13)[[1]]
-lmer_microcebus_rsq14 <- rsq.lmm(lmer_microcebus14)[[1]]
-max(lmer_microcebus_rsq, lmer_microcebus_rsq1 , lmer_microcebus_rsq2 , lmer_microcebus_rsq3 , lmer_microcebus_rsq4 , lmer_microcebus_rsq5 , lmer_microcebus_rsq6, lmer_microcebus_rsq7 , lmer_microcebus_rsq8 , lmer_microcebus_rsq9 , lmer_microcebus_rsq10, lmer_microcebus_rsq11 , lmer_microcebus_rsq12 , lmer_microcebus_rsq13 , lmer_microcebus_rsq14 )
-
-lmer_microcebus_best <- lmer_microcebus8
-summary(lmer_microcebus_best)
-
 ```
 
-```{r Cheirogaleus density calculations: NOT ALL SITES}
+```{r Cheirogaleus density calculations}
 #Get data frame for just cheirogaleus
 cheirogaleus_df <- survey_cheiro
-
-#cheirogaleus_df <- left_join(cheirogaleus_df, nrep_cheiro, by =c("Site", "Transect"))
-#cheirogaleus_df$Effort <- cheirogaleus_df$Length *cheirogaleus_df$NRep
-
-#Calculate perpendicular distance from angle and distance
-#cheirogaleus_df$distance[is.na(cheirogaleus_df$distance)] <- 0
 
 #Clean data frame
 cheirogaleus_df3 <- cheirogaleus_df
@@ -463,12 +311,8 @@ cheirogaleus_df3$Region.Label <- cheirogaleus_df3$Site_Transect
 cheirogaleus_df3$size <- as.numeric(cheirogaleus_df3$N_total)
 cheirogaleus_df3$Effort <- cheirogaleus_df3$Effort.distance
 
-
 #Detection function models
 cheirogaleus_truncation_dist <- 25
-ds_cheirogaleus <- ds(cheirogaleus_df3, truncation = cheirogaleus_truncation_dist, cutpoints = c(0,5,10,15,20,25))
-gof_ds(ds_cheirogaleus) #significant, poor fit
-plot(ds_cheirogaleus)
 
 model1_cheirogaleus <- ds(cheirogaleus_df3, key="hn", adjustment=NULL, truncation = cheirogaleus_truncation_dist, cutpoints = c(0,5,10,15,20,25))
 model2_cheirogaleus <- ds(cheirogaleus_df3, key="hn", adjustment="cos", truncation = cheirogaleus_truncation_dist, cutpoints = c(0,5,10,15,20,25))
@@ -478,31 +322,29 @@ model5_cheirogaleus <- ds(cheirogaleus_df3, key="hr", adjustment="cos", truncati
 model6_cheirogaleus <- ds(cheirogaleus_df3, key="hr", adjustment="herm", truncation = cheirogaleus_truncation_dist, cutpoints = c(0,5,10,15,20,25))
 model7_cheirogaleus <- ds(cheirogaleus_df3, key="unif", adjustment=NULL, truncation = cheirogaleus_truncation_dist, cutpoints = c(0,5,10,15,20,25))
 model8_cheirogaleus <- ds(cheirogaleus_df3, key="unif", adjustment="cos", truncation = cheirogaleus_truncation_dist, cutpoints = c(0,5,10,15,20,25))
-model9_cheirogaleus <- ds(cheirogaleus_df3, key="unif", adjustment="herm", truncation = cheirogaleus_truncation_dist, cutpoints = c(0,5,10,15,20,25))
+#model9_cheirogaleus <- ds(cheirogaleus_df3, key="unif", adjustment="herm", truncation = cheirogaleus_truncation_dist, cutpoints = c(0,5,10,15,20,25)) #poor fit
 
 #Test goodness of fit for detection functions
 gof_ds(model1_cheirogaleus)#significant
 gof_ds(model2_cheirogaleus)
 gof_ds(model3_cheirogaleus)#significant
-gof_ds(model4_cheirogaleus)#significant
-gof_ds(model5_cheirogaleus)#significant
+gof_ds(model4_cheirogaleus)
+gof_ds(model5_cheirogaleus)
 gof_ds(model6_cheirogaleus)
 gof_ds(model7_cheirogaleus)#significant
 gof_ds(model8_cheirogaleus)#significant
-gof_ds(model9_cheirogaleus)#significant
-
-#all have poor fit :( 
+#gof_ds(model9_cheirogaleus)#significant
 
 #compare AIC calues
-AIC(model2_cheirogaleus, model6_cheirogaleus, model6_cheirogaleus)
+AIC(model2_cheirogaleus, model4_cheirogaleus,model5_cheirogaleus, model6_cheirogaleus)
 
 #Plot the best-fitting model 
 plot(model2_cheirogaleus, nc=4)
 
 #Get detection probability
-cheirogaleus_detection_prob <- predict(ds_cheirogaleus)$fitted[[1]]
+cheirogaleus_detection_prob <- predict(model2_cheirogaleus)$fitted[[1]]
 
-#Calculate strp width (2 * maximum distance, of the truncated distance data)
+#Get strip width
 cheirogaleus_strip_width <- cheirogaleus_truncation_dist
 
 #Upload covariate data 
@@ -532,8 +374,6 @@ write.csv(cheirogaleus_dat,"~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Dat
 #Get data frame for just lepilemur
 lepilemur_df <- survey_nocturnal  %>% filter(Nom_sientifique=="Lepilemur_seali")
 
-#lepilemur_df$distance[is.na(lepilemur_df$distance)] <- 0
-
 #Clean data frame
 lepilemur_df3 <- lepilemur_df
 lepilemur_df3$Area <- 1000000 #For now, assume an area of 1... million 
@@ -544,11 +384,6 @@ lepilemur_df3$Effort <- lepilemur_df3$Effort.distance
 
 #Detection function models
 lepilemur_truncation_dist <- 30
-
-ds_lepilemur <- ds(lepilemur_df3, truncation = lepilemur_truncation_dist)
-gof_ds(ds_lepilemur)
-plot(ds_lepilemur)
-
 
 model1_lepilemur <- ds(lepilemur_df3, key="hn", adjustment=NULL, truncation = lepilemur_truncation_dist)
 model2_lepilemur <- ds(lepilemur_df3, key="hn", adjustment="cos", truncation = lepilemur_truncation_dist)
@@ -579,9 +414,8 @@ plot(model2_lepilemur)
 
 #Get detection probability
 lepilemur_detection_prob <- predict(model2_lepilemur)$fitted[[1]]
-gof_ds(ds_lepilemur)
 
-#Calculate strp width (2 * maximum distance, of the truncated distance data)
+#Get strip width
 lepilemur_strip_width <- lepilemur_truncation_dist
 
 lepilemur_df_old <- survey_all %>% filter(Nom_sientifique=="Lepilemur_seali" & Type=="Nocturnal" & Date < ymd("20220601") & (Dis <1.56*lepilemur_truncation_dist | is.na(Dis)))
@@ -609,8 +443,6 @@ write.csv(lepilemur_dat,"~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/l
 #Get data frame for just avahi
 avahi_df <- survey_nocturnal  %>% filter(Nom_sientifique=="Avahi_laniger")
 
-#avahi_df$distance[is.na(avahi_df$distance)] <- 0
-
 #Clean data frame
 avahi_df3 <- avahi_df
 avahi_df3$Area <- 1000000 #For now, assume an area of 1... million 
@@ -619,13 +451,8 @@ avahi_df3$Region.Label <- avahi_df3$Site_Transect
 avahi_df3$size <- as.numeric(avahi_df3$N_total)
 avahi_df3$Effort <- avahi_df3$Effort.distance
 
-
 #Detection function models
-avahi_truncation_dist <- 20
-ds_avahi <- ds(avahi_df3, truncation = avahi_truncation_dist)
-gof_ds(ds_avahi) #significant, poor fit
-plot(ds_avahi)
-#
+avahi_truncation_dist <- 20 
 
 model1_avahi <- ds(avahi_df3, key="hn", adjustment=NULL, cutpoints = c(0,5,10,15,20))
 model2_avahi <- ds(avahi_df3, key="hn", adjustment="cos", cutpoints = c(0,5,10,15,20))
@@ -648,15 +475,13 @@ gof_ds(model7_avahi)#significant
 gof_ds(model8_avahi)
 gof_ds(model9_avahi)#significant
 
-
 #compare AIC calues
-AIC(model1_avahi,model2_avahi,model3_avahi,model4_avahi,model5_avahi,model6_avahi,model7_avahi,model8_avahi, model9_avahi)
+AIC(model1_avahi,model4_avahi,model5_avahi,model6_avahi,model8_avahi)
 
 plot(model4_avahi, nc=4)
 
-
 #Get detection probability
-avahi_detection_prob <- predict(model8_avahi)$fitted[[1]]
+avahi_detection_prob <- predict(model4_avahi)$fitted[[1]]
 
 #Calculate strp width (2 * maximum distance, of the truncated distance data)
 avahi_strip_width <- allocebus_truncation_dist
@@ -687,11 +512,6 @@ write.csv(avahi_dat,"~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/avahi
 #Get data frame for just rubriventer
 rubriventer_df <- survey_diurnal  %>% filter(Nom_sientifique=="Eulemur_rubriventer") 
 
-#Calculate perpendicular distance from angle and distance
-#rubriventer_df$distance[is.na(rubriventer_df$distance)] <- 0
-
-#ggplot(rubriventer_df, aes(distance,as.numeric(rubriventer_df$N_total)))+geom_point()+geom_smooth(method=lm)
-
 #Clean data frame
 rubriventer_df3 <- rubriventer_df
 rubriventer_df3$Area <- 1000000 #For now, assume an area of 1... million 
@@ -702,9 +522,6 @@ rubriventer_df3$Effort <- rubriventer_df3$Effort.distance
 
 #Detection function models
 rubriventer_truncation_dist <- 30
-ds_rubriventer <- ds(rubriventer_df3, truncation = rubriventer_truncation_dist)
-gof_ds(ds_rubriventer) #significant, poor fit
-plot(ds_rubriventer)
 
 model1_rubriventer <- ds(rubriventer_df3, key="hn", adjustment=NULL, truncation = rubriventer_truncation_dist)
 model2_rubriventer <- ds(rubriventer_df3, key="hn", adjustment="cos", truncation = rubriventer_truncation_dist)
@@ -727,20 +544,16 @@ gof_ds(model7_rubriventer)#significant
 gof_ds(model8_rubriventer)#significant
 gof_ds(model9_rubriventer)#significant
 
-#all significant :(
-
-# compare AIC calues
+# compare AIC values
 AIC(model1_rubriventer, model2_rubriventer, model3_rubriventer,model4_rubriventer, model5_rubriventer, model6_rubriventer, model7_rubriventer,  model8_rubriventer ,model9_rubriventer)
 
-#Plot the best-fitting model 
-plot(model4_rubriventer)
-#4 looks ridiculous, so try 2 
+#Plot the best model
 plot(model2_rubriventer)
 
 #Get detection probability
 rubriventer_detection_prob <- predict(model2_rubriventer)$fitted[[1]]
 
-#Calculate strp width (2 * maximum distance, of the truncated distance data)
+#Get Strip Width
 rubriventer_strip_width <- rubriventer_truncation_dist
 
 #Upload covariate data 
@@ -766,14 +579,8 @@ write.csv(rubriventer_dat,"~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data
 ```
 
 ```{r Albifrons density calculations}
-
 #Get data frame for just albifrons
 albifrons_df <- survey_diurnal  %>% filter(Nom_sientifique=="Eulemur_albifrons") 
-
-#Calculate perpendicular distance from angle and distance
-#albifrons_df$distance[is.na(albifrons_df$distance)] <- 0
-
-#ggplot(albifrons_df, aes(distance,as.numeric(albifrons_df$N_total)))+geom_point()+geom_smooth(method=lm)
 
 #Clean data frame
 albifrons_df3 <- albifrons_df
@@ -784,11 +591,7 @@ albifrons_df3$size <- as.numeric(albifrons_df3$N_total)
 albifrons_df3$Effort <- albifrons_df3$Effort.distance
 
 #Detection function models
-albifrons_truncation_dist <- 25
-ds_albifrons <- ds(albifrons_df3, truncation = albifrons_truncation_dist)
-gof_ds(ds_albifrons)
-plot(ds_albifrons)
-
+albifrons_truncation_dist <- 23
 model1_albifrons <- ds(albifrons_df3, key="hn", adjustment=NULL)
 model2_albifrons <- ds(albifrons_df3, key="hn", adjustment="cos")
 model3_albifrons <- ds(albifrons_df3, key="hn", adjustment="herm")
@@ -819,7 +622,7 @@ plot(model8_albifrons)
 #Get detection probability
 albifrons_detection_prob <- predict(model8_albifrons)$fitted[[1]]
 
-#Calculate strp width (2 * maximum distance, of the truncated distance data)
+#Calculate strip width 
 albifrons_strip_width <- albifrons_truncation_dist
 
 #Upload covariate data 
@@ -842,67 +645,11 @@ albi_dat$Density <- (albi_dat$Nind/albifrons_detection_prob)/(albifrons_truncati
 albi_dat$Density_km2 <- albi_dat$Density*1000000
 
 write.csv(albi_dat,"~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/albi_dat.csv")
-
-covs_albi$Site_Transect[covs_albi$Site_Transect=="Ambodivohitra_Kobahina_1"]<- "AmbodivohitraKobahina_1"
-covs_albi$Site_Transect[covs_albi$Site_Transect=="Ambodivohitra_Kobahina_2"]<- "AmbodivohitraKobahina_2"
-covs_albi$Site_Transect[covs_albi$Site_Transect=="Ambodivohitra_Kobahina_3"]<- "AmbodivohitraKobahina_3"
-
-covs_albi_density <- left_join(albi_dat, covs_albi, by="Site_Transect")
-covs_albi_density$Species <- "Eulemur_albifrons"
-
-albi_ind <- survey_diurnal %>% filter(Nom_sientifique=="Eulemur_albifrons") %>% drop_na(N_ind)
-albi_ind2 <- mean(as.numeric(albi_ind$N_ind))
-
-#covs_albi_density$Density <- covs_albi_density$Density *albi_ind2
-
-#Linear model of density as explained by combinations of the covariates
-lmer_albifrons <- lmer(data=covs_albi_density , Density~ elevation + log(forest_loss_prop+1) + height + rug +(1|Site))
-lmer_albifrons1 <- lmer(data=covs_albi_density , Density~ elevation +(1|Site))
-lmer_albifrons2 <- lmer(data=covs_albi_density , Density~  log(forest_loss_prop+1) +(1|Site))
-lmer_albifrons3 <- lmer(data=covs_albi_density , Density~  height + (1|Site))
-lmer_albifrons4 <- lmer(data=covs_albi_density , Density~ rug +(1|Site))
-lmer_albifrons5 <- lmer(data=covs_albi_density , Density~ elevation + log(forest_loss_prop+1) + (1|Site))
-lmer_albifrons6 <- lmer(data=covs_albi_density , Density~ elevation + height +(1|Site))
-lmer_albifrons7 <- lmer(data=covs_albi_density , Density~ elevation +  rug +(1|Site))
-lmer_albifrons8 <- lmer(data=covs_albi_density , Density~  log(forest_loss_prop+1) + height +(1|Site))
-lmer_albifrons9 <- lmer(data=covs_albi_density , Density~ log(forest_loss_prop+1) +  rug +(1|Site))
-lmer_albifrons10 <- lmer(data=covs_albi_density , Density~ height + rug +(1|Site))
-lmer_albifrons11 <- lmer(data=covs_albi_density , Density~ elevation + log(forest_loss_prop+1) + height +(1|Site))
-lmer_albifrons12 <- lmer(data=covs_albi_density , Density~ elevation + log(forest_loss_prop+1) +  rug +(1|Site))
-lmer_albifrons13 <- lmer(data=covs_albi_density , Density~  log(forest_loss_prop+1) + height + rug +(1|Site))
-lmer_albifrons14 <- lmer(data=covs_albi_density , Density~  +(1|Site))
-
-#Check for the model with the highest r-squared
-lmer_albifrons_rsq <- rsq.lmm(lmer_albifrons)[[1]]
-lmer_albifrons_rsq1 <- rsq.lmm(lmer_albifrons1)[[1]]
-lmer_albifrons_rsq2 <- rsq.lmm(lmer_albifrons2)[[1]]
-lmer_albifrons_rsq3 <- rsq.lmm(lmer_albifrons3)[[1]]
-lmer_albifrons_rsq4 <- rsq.lmm(lmer_albifrons4)[[1]]
-lmer_albifrons_rsq5 <- rsq.lmm(lmer_albifrons5)[[1]]
-lmer_albifrons_rsq6 <- rsq.lmm(lmer_albifrons6)[[1]]
-lmer_albifrons_rsq7 <- rsq.lmm(lmer_albifrons7)[[1]]
-lmer_albifrons_rsq8 <- rsq.lmm(lmer_albifrons8)[[1]]
-lmer_albifrons_rsq9 <- rsq.lmm(lmer_albifrons9)[[1]]
-lmer_albifrons_rsq10 <- rsq.lmm(lmer_albifrons10)[[1]]
-lmer_albifrons_rsq11<- rsq.lmm(lmer_albifrons11)[[1]]
-lmer_albifrons_rsq12 <- rsq.lmm(lmer_albifrons12)[[1]]
-lmer_albifrons_rsq13 <- rsq.lmm(lmer_albifrons13)[[1]]
-lmer_albifrons_rsq14 <- rsq.lmm(lmer_albifrons14)[[1]]
-max(lmer_albifrons_rsq, lmer_albifrons_rsq1 , lmer_albifrons_rsq2 , lmer_albifrons_rsq3 , lmer_albifrons_rsq4 , lmer_albifrons_rsq5 , lmer_albifrons_rsq6, lmer_albifrons_rsq7 , lmer_albifrons_rsq8 , lmer_albifrons_rsq9 , lmer_albifrons_rsq10, lmer_albifrons_rsq11 , lmer_albifrons_rsq12 , lmer_albifrons_rsq13 , lmer_albifrons_rsq14 )
-
-lmer_albifrons_best <-lmer_albifrons6
-summary(lmer_albifrons6)
-
 ```
 
 ```{r Propithecus density calculations}
 #Get data frame for just propithecus
 propithecus_df <- survey_diurnal  %>% filter(Nom_sientifique=="Propithecus_candidus") 
-
-#Calculate perpendicular distance from angle and distance
-#propithecus_df$distance[is.na(propithecus_df$distance)] <- 0
-
-#ggplot(propithecus_df, aes(distance,as.numeric(propithecus_df$N_total)))+geom_point()+geom_smooth(method=lm)
 
 #Clean data frame
 propithecus_df3 <- propithecus_df
@@ -913,10 +660,7 @@ propithecus_df3$size <- as.numeric(propithecus_df3$N_total)
 propithecus_df3$Effort <- propithecus_df3$Effort.distance
 
 #Detection function models
-  propithecus_truncation_dist <- 30
-ds_propithecus <- ds(propithecus_df3, truncation = propithecus_truncation_dist)
-gof_ds(ds_propithecus)
-plot(ds_propithecus)
+propithecus_truncation_dist <- 30
 
 model1_propithecus <- ds(propithecus_df3, key="hn", adjustment=NULL)
 model2_propithecus <- ds(propithecus_df3, key="hn", adjustment="cos")
@@ -943,7 +687,7 @@ gof_ds(model9_propithecus)#significant
 AIC(model2_propithecus,model4_propithecus,model5_propithecus, model6_propithecus, model8_propithecus)
 
 #Plot the best-fitting model 
-plot(model8_propithecus, nc=5)
+plot(model8_propithecus)
 
 #Get detection probability
 propithecus_detection_prob <- predict(model8_propithecus)$fitted[[1]]
@@ -977,9 +721,6 @@ write.csv(prop_dat,"~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/prop_d
 #Get data frame for just hapalemur
 hapalemur_df <- survey_diurnal  %>% filter(Nom_sientifique=="Hapalemur_occidentalis") 
 
-#Calculate perpendicular distance from angle and distance
-#hapalemur_df$distance[is.na(hapalemur_df$distance)] <- 0
-
 #Clean data frame
 hapalemur_df3 <- hapalemur_df
 hapalemur_df3$Area <- 1000000 #For now, assume an area of 1... million 
@@ -988,12 +729,8 @@ hapalemur_df3$Region.Label <- hapalemur_df3$Site_Transect
 hapalemur_df3$size <- as.numeric(hapalemur_df3$N_total)
 hapalemur_df3$Effort <- hapalemur_df3$Effort.distance
 
-
 #Detection function models
-hapalemur_truncation_dist <- 18
-ds_hapalemur <- ds(hapalemur_df3, truncation = hapalemur_truncation_dist)
-gof_ds(ds_hapalemur)
-plot(ds_hapalemur)
+hapalemur_truncation_dist <- max(na.omit(hapalemur_df3$distance))
 
 model1_hapalemur <- ds(hapalemur_df3, key="hn", adjustment=NULL)
 model2_hapalemur <- ds(hapalemur_df3, key="hn", adjustment="cos")
@@ -1025,7 +762,7 @@ plot(model8_hapalemur)
 #Get detection probability
 hapalemur_detection_prob <- predict(model8_hapalemur)$fitted[[1]] #odd that this is 1? Assumed perfect detection but they are so cryptic! 
 
-#Calculate strp width (2 * maximum distance, of the truncated distance data)
+#Get Strip Width
 hapalemur_strip_width <- hapalemur_truncation_dist
 
 #Upload covariate data 
@@ -1049,62 +786,10 @@ hapa_dat$Density_km2 <- hapa_dat$Density*1000000
 
 write.csv(hapa_dat,"~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/prop_dat.csv")
 
-covs_hapa$Site_Transect[covs_hapa$Site_Transect=="Ambodivohitra_Kobahina_1"]<- "AmbodivohitraKobahina_1"
-covs_hapa$Site_Transect[covs_hapa$Site_Transect=="Ambodivohitra_Kobahina_2"]<- "AmbodivohitraKobahina_2"
-covs_hapa$Site_Transect[covs_hapa$Site_Transect=="Ambodivohitra_Kobahina_3"]<- "AmbodivohitraKobahina_3"
-
-covs_hapa_density <- left_join(hapa_dat, covs_hapa, by="Site_Transect")
-covs_hapa_density$Species <- "Hapalemur_occidentalis"
-
-hapa_ind <- survey_diurnal %>% filter(Nom_sientifique=="Hapalemur_occidentalis") %>% drop_na(N_ind)
-hapa_ind2 <- mean(as.numeric(hapa_ind$N_ind))
-
-covs_hapa_density$Density <- covs_hapa_density$Density *hapa_ind2
-
-#Linear model of density as explained by combinations of the covariates
-lmer_hapalemur <- lmer(data=covs_hapa_density , Density~ elevation + log(forest_loss_prop+1) + height + rug +(1|Site))
-lmer_hapalemur1 <- lmer(data=covs_hapa_density , Density~ elevation +(1|Site))
-lmer_hapalemur2 <- lmer(data=covs_hapa_density , Density~  log(forest_loss_prop+1) +(1|Site))
-lmer_hapalemur3 <- lmer(data=covs_hapa_density , Density~  height + (1|Site))
-lmer_hapalemur4 <- lmer(data=covs_hapa_density , Density~ rug +(1|Site))
-lmer_hapalemur5 <- lmer(data=covs_hapa_density , Density~ elevation + log(forest_loss_prop+1) + (1|Site))
-lmer_hapalemur6 <- lmer(data=covs_hapa_density , Density~ elevation + height +(1|Site))
-lmer_hapalemur7 <- lmer(data=covs_hapa_density , Density~ elevation +  rug +(1|Site))
-lmer_hapalemur8 <- lmer(data=covs_hapa_density , Density~  log(forest_loss_prop+1) + height +(1|Site))
-lmer_hapalemur9 <- lmer(data=covs_hapa_density , Density~ log(forest_loss_prop+1) +  rug +(1|Site))
-lmer_hapalemur10 <- lmer(data=covs_hapa_density , Density~ height + rug +(1|Site))
-lmer_hapalemur11 <- lmer(data=covs_hapa_density , Density~ elevation + log(forest_loss_prop+1) + height +(1|Site))
-lmer_hapalemur12 <- lmer(data=covs_hapa_density , Density~ elevation + log(forest_loss_prop+1) +  rug +(1|Site))
-lmer_hapalemur13 <- lmer(data=covs_hapa_density , Density~  log(forest_loss_prop+1) + height + rug +(1|Site))
-lmer_hapalemur14 <- lmer(data=covs_hapa_density , Density~  +(1|Site))
-
-#Check for the model with the highest r-squared
-lmer_hapalemur_rsq <- rsq.lmm(lmer_hapalemur)[[1]]
-lmer_hapalemur_rsq1 <- rsq.lmm(lmer_hapalemur1)[[1]]
-lmer_hapalemur_rsq2 <- rsq.lmm(lmer_hapalemur2)[[1]]
-lmer_hapalemur_rsq3 <- rsq.lmm(lmer_hapalemur3)[[1]]
-lmer_hapalemur_rsq4 <- rsq.lmm(lmer_hapalemur4)[[1]]
-lmer_hapalemur_rsq5 <- rsq.lmm(lmer_hapalemur5)[[1]]
-lmer_hapalemur_rsq6 <- rsq.lmm(lmer_hapalemur6)[[1]]
-lmer_hapalemur_rsq7 <- rsq.lmm(lmer_hapalemur7)[[1]]
-lmer_hapalemur_rsq8 <- rsq.lmm(lmer_hapalemur8)[[1]]
-lmer_hapalemur_rsq9 <- rsq.lmm(lmer_hapalemur9)[[1]]
-lmer_hapalemur_rsq10 <- rsq.lmm(lmer_hapalemur10)[[1]]
-lmer_hapalemur_rsq11<- rsq.lmm(lmer_hapalemur11)[[1]]
-lmer_hapalemur_rsq12 <- rsq.lmm(lmer_hapalemur12)[[1]]
-lmer_hapalemur_rsq13 <- rsq.lmm(lmer_hapalemur13)[[1]]
-lmer_hapalemur_rsq14 <- rsq.lmm(lmer_hapalemur14)[[1]]
-max(lmer_hapalemur_rsq, lmer_hapalemur_rsq1 , lmer_hapalemur_rsq2 , lmer_hapalemur_rsq3 , lmer_hapalemur_rsq4 , lmer_hapalemur_rsq5 , lmer_hapalemur_rsq6, lmer_hapalemur_rsq7 , lmer_hapalemur_rsq8 , lmer_hapalemur_rsq9 , lmer_hapalemur_rsq10, lmer_hapalemur_rsq11 , lmer_hapalemur_rsq12 , lmer_hapalemur_rsq13 , lmer_hapalemur_rsq14 )
-
-lmer_hapalemur_best <- lmer_hapalemur
-summary(lmer_hapalemur_best)
-
 ```
 
 ```{r Co-occurence}
 library(cooccur)
-data(finches)
-finches
 
 cooccur_dat <- survey_all %>% select(Site, Transect, Nom_sientifique) %>% unite("Site_Transect", Site:Transect)%>% distinct()
 cooccur_dat$occur <- 1
@@ -1120,8 +805,6 @@ cooccur_dat <- cooccur_dat[,-1]
 cooccur_lemurs <- cooccur(mat=cooccur_dat, thresh = FALSE, type="spp_site", spp_names = TRUE)
 summary(cooccur_lemurs)
 plot(cooccur_lemurs, plotrand = TRUE)
-
-class(cooccur.finches)
 
 ```
 

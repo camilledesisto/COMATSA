@@ -32,9 +32,9 @@ prop_density$Species <- "Propithecus_candidus"
 lepi_density$Species <- "Lepilemur_saeli"
 micro_density$Species <- "Microcebus_lehilahytsara"
 
-lemur_densities <- rbind(albi_density, allo_density, avahi_density, cheiro_density, hapa_density, rubri_density, prop_density, lepi_density, micro_density) %>% select(Site_Transect, Site, Transect, Density_km2, Species) %>% rename(SiteTransect = Site_Transect)
+lemur_densities <- rbind(albi_density, allo_density, avahi_density, cheiro_density, hapa_density, rubri_density, prop_density, lepi_density, micro_density) %>% dplyr::select(Site_Transect, Site, Transect, Density_km2, Species) %>% rename(SiteTransect = Site_Transect)
 
-habitat2 <- habitat %>% select(MEAN, cov, Species, SiteTransect) %>%pivot_wider(names_from = cov, values_from = MEAN)
+habitat2 <- habitat %>% dplyr::select(MEAN, cov, Species, SiteTransect) %>%pivot_wider(names_from = cov, values_from = MEAN)
 
 densities_habitat <- left_join(lemur_densities, habitat2, by=c("SiteTransect", "Species"))
 
@@ -49,6 +49,12 @@ densities_habitat_allo <- densities_habitat[densities_habitat$Species=="Allocebu
 #densities_habitat_allo$ForestLoss2 <- scale(densities_habitat_allo$ForestLoss)
 
 allo_full <- lmer(data = densities_habitat_allo , Density_km2 ~ Elevation + CanopyHeight+ Ruggedness+ForestLoss +(1|Site), na.action = "na.fail")
+allo_full_nosite <- lm(data = densities_habitat_allo , Density_km2 ~ Elevation + CanopyHeight+ Ruggedness+ForestLoss, na.action = "na.fail")
+allo_full2 <- lm(data = densities_habitat_allo , Density_km2 ~ Elevation + CanopyHeight+ Ruggedness+ForestLoss+Site, na.action = "na.fail")
+r.squaredGLMM(allo_full)
+summary(allo_full2)
+summary(allo_full_nosite)
+summary(allo_full)
 allo_dredge <- dredge(allo_full)
 confset.95p_allo <- get.models(allo_dredge, subset = cumsum(weight) <= .95)
 allo_model_avg <- model.avg(confset.95p_allo)

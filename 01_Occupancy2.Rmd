@@ -405,9 +405,7 @@ allo_loss_detection <- occu(~scale(covars.forest_loss_prop)~1, data=umf_allo)
 allo_full_detection <- occu(~scale(covars.forest_loss_prop)+scale(covars.rug)+scale(covars.elevation)+scale(covars.height)~1, data=umf_allo)
 
 allo_occupancy_model <- allo_elev_detection 
-```
 
-```{r microcebus occupancy model}
 micro_null <-  occu(~1~1, data=umf_micro)
 micro_elev <-  occu(~1~scale(covars.elevation), data=umf_micro)
 micro_rug <-  occu(~1~scale(covars.rug), data=umf_micro)
