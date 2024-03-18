@@ -39,6 +39,18 @@ habitat2 <- habitat %>% dplyr::select(MEAN, cov, Species, SiteTransect) %>%pivot
 densities_habitat <- left_join(lemur_densities, habitat2, by=c("SiteTransect", "Species"))
 
 ```
+```{r Lemur Density Heatmap}
+
+lemur_densities2 <- lemur_densities
+lemur_densities2$Density_km2[lemur_densities2$Density_km2>700]<- NA
+
+ggplot(data= lemur_densities2, aes(x=Species, y=SiteTransect, fill=Density_km2))+
+  geom_tile()+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+  scale_fill_viridis_c(direction = -1,option="magma")
+
+```
+
 
 ```{r Habitat Model: Allocebus}
 
@@ -47,6 +59,11 @@ densities_habitat_allo <- densities_habitat[densities_habitat$Species=="Allocebu
 #densities_habitat_allo$CanopyHeight2 <- scale(densities_habitat_allo$CanopyHeight)
 #densities_habitat_allo$Ruggedness2 <- scale(densities_habitat_allo$Ruggedness)
 #densities_habitat_allo$ForestLoss2 <- scale(densities_habitat_allo$ForestLoss)
+
+ggplot(data=densities_habitat_allo, aes(x=Density_km2))+geom_histogram()
+shapiro.test(densities_habitat_allo$Density_km2)
+shapiro.test(log(densities_habitat_allo$Density_km2+0.00001))
+shapiro.test(sqrt(densities_habitat_allo$Density_km2))
 
 allo_full <- lmer(data = densities_habitat_allo , Density_km2 ~ Elevation + CanopyHeight+ Ruggedness+ForestLoss +(1|Site), na.action = "na.fail")
 allo_full_nosite <- lm(data = densities_habitat_allo , Density_km2 ~ Elevation + CanopyHeight+ Ruggedness+ForestLoss, na.action = "na.fail")
@@ -59,6 +76,7 @@ allo_dredge <- dredge(allo_full)
 confset.95p_allo <- get.models(allo_dredge, subset = cumsum(weight) <= .95)
 allo_model_avg <- model.avg(confset.95p_allo)
 summary(allo_model_avg)
+fixef(allo_model_avg)
 
 allo_full2 <- lm(data = densities_habitat_allo , Density_km2 ~ Elevation + CanopyHeight+ Ruggedness+ForestLoss, na.action = "na.fail")
 allo_dredge2 <- dredge(allo_full2)
