@@ -151,7 +151,7 @@ survey_cheiro <- survey_cheiro %>% rename( Site = Site.x, Transect = Transect.x)
 
 ```{r Allocebus density calculations}
 #Get data frame for just allocebus
-allocebus_df <- survey_nocturnal  %>% filter(Nom_sientifique=="Allocebus_trichotis", Site=="Ambodivoara")
+allocebus_df <- survey_nocturnal  %>% filter(Nom_sientifique=="Allocebus_trichotis")
 
 #clean data data set
 allocebus_df3 <- allocebus_df
@@ -715,6 +715,7 @@ prop_dat$Density <- (prop_dat$Nind/propithecus_detection_prob)/(propithecus_trun
 prop_dat$Density_km2 <- prop_dat$Density*1000000
 
 write.csv(prop_dat,"~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/prop_dat.csv")
+
 ```
 
 ```{r Hapalemur density calculations}

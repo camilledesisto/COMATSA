@@ -13,8 +13,8 @@ buffer <- read_sf("COMATSA_GitHub/Data/covariate_tif/comatsa_buffer_sites.shp")
 buffer <- st_transform(buffer, crs = 4326)
 crs(FL)
 crs(buffer)
-#FP <- raster("./CroppedRasters/EliseData/FocalForest.tif")
-#names(FP) <- "ForestTot"
+FP <- raster("COMATSA_GitHub/Data/covariate_tif/FocalForest.tif")
+names(FP) <- "ForestTot"
 
 bb <- extent(buffer)
 
@@ -22,11 +22,13 @@ FL <- crop(x = FL, y = bb)
 FH <- crop(x = FH, y = bb)
 DEM <- crop(x = DEM, y = bb)
 TRI <- crop(x = TRI, y = bb)
+FP <- crop(x = FP, y = bb)
 
 plot(TRI)
 plot(DEM)
 plot(FL)
 plot(FH)
+plot(FP)
 
 extent(TRI)
 extent(DEM)

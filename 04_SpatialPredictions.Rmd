@@ -78,7 +78,9 @@ FP <- projectRaster(FP,DEM,method = 'bilinear')
 stacked_habitat <- stack(DEM,TRI,FH, FL, FP)
 area(stacked_habitat)
 plot(stacked_habitat)
-
+plot(stacked_habitat$Band.1.1)
+plot(DEM)
+stacked_habitat$ForestLossProp <- stacked_habitat$ForestLoss/ stacked_habitat$ForestTot
 
 ```
 
@@ -97,19 +99,22 @@ colnames(ef)
 ef$ForestTot[is.na(ef$ForestTot)] <- 0
 ef <- ef %>% na.omit
 
-ef <- ef %>%rename(DEM = Band.1.1, FL = ForestLoss, FH = Layer_1, TRI =Band.1.2) %>%mutate(pred = coefficient_data[[5]]*(TRI) + (coefficient_data[[3]]*(DEM)) + (coefficient_data[[2]]*(FH)) + (coefficient_data[[4]]*FL) + coefficient_data[[1]])
+ef <- ef %>%rename(Elevation = Band.1.1, ForestLossProportion = ForestLossProp, CanopyHeight = Layer_1, Ruggedness =Band.1.2) %>% mutate(pred = coefficient_data[[5]]*(Ruggedness) + (coefficient_data[[3]]*(Elevation)) + (coefficient_data[[2]]*(CanopyHeight)) + (coefficient_data[[4]]*ForestLossProportion) + coefficient_data[[1]])
 
 ef$pred[ef$ForestTot==0] <- 0
 
+ef$pred[ef$Band.1.1>1800] <- 0
+
 pred <- rasterFromXYZ(ef,crs = 4326)
 pred$pred@data@values[pred$pred@data@values <0] <- 0
+pred$pred@data@values <- pred$pred@data@values^2
 #pred$pred@data@values[pred$pred@data@values >500] <- NA
 
 pred <- mask(pred, buffer)
-bound_new <- mask(pred, bound)
+#bound_new <- mask(pred, bound)
 
-density_prediction <- pred$pred
-return(density_prediction)
+density_prediction <- pred$pred@data@values
+return(pred)
 
 }
 
@@ -123,120 +128,95 @@ rubri_spatial_predict <- spatial_prediction(rubri_coefficients)
 albi_spatial_predict <- spatial_prediction(albi_coefficients)
 hapa_spatial_predict <- spatial_prediction(hapa_coefficients)
 
+max(na.omit(cheiro_spatial_predict@data@values))
+max(na.omit(micro_spatial_predict@data@values))
+max(na.omit(allo_spatial_predict@data@values))
+max(na.omit(lepi_spatial_predict@data@values))
+max(na.omit(avahi_spatial_predict@data@values))
+max(na.omit(prop_spatial_predict@data@values))
+max(na.omit(rubri_spatial_predict@data@values))
+max(na.omit(albi_spatial_predict@data@values))
+max(na.omit(hapa_spatial_predict@data@values))
 
-cheiro_spatial_predict@data@values[1] <- 1400
+cheiro_spatial_predict
+cheiro_spatial_predict@data
+cheiro_spatial_predict@data@values[3]
+
+#cheiro_spatial_predict@data@values[1] <- 500
 
 plot_cheiro <- ggplot() +
-  layer_spatial(cheiro_spatial_predict)+
+  layer_spatial(cheiro_spatial_predict$pred)+
   theme_void()+
  scale_fill_gradientn(colours = terrain.colors(10), name = expression("Individuals/Km"^2), trans="reverse",na.value="white")+
  layer_spatial(bound, fill=NA, color="black")
 
-micro_spatial_predict$pred@data@values[1] <- 1400
+#micro_spatial_predict$pred@data@values[1] <- 500
 
 plot_micro <- ggplot() +
-  layer_spatial(micro_spatial_predict)+
+  layer_spatial(micro_spatial_predict$pred)+
   theme_void()+
  scale_fill_gradientn(colours = terrain.colors(10), name = expression("Individuals/Km"^2), trans="reverse",na.value="white")+
  layer_spatial(bound, fill=NA, color="black")
 
-allo_spatial_predict$pred@data@values[1] <- 1400
+#allo_spatial_predict$pred@data@values[1] <- 500
 
 plot_allo <- ggplot() +
-  layer_spatial(allo_spatial_predict)+
+  layer_spatial(allo_spatial_predict$pred)+
   theme_void()+
  scale_fill_gradientn(colours = terrain.colors(10), name = expression("Individuals/Km"^2), trans="reverse",na.value="white")+
  layer_spatial(bound, fill=NA, color="black")
 
-lepi_spatial_predict$pred@data@values[1] <- 1400
+#lepi_spatial_predict$pred@data@values[1] <- 500
 
 plot_lepi <- ggplot() +
-  layer_spatial(lepi_spatial_predict)+
+  layer_spatial(lepi_spatial_predict$pred)+
   theme_void()+
  scale_fill_gradientn(colours = terrain.colors(10), name = expression("Individuals/Km"^2), trans="reverse",na.value="white")+
  layer_spatial(bound, fill=NA, color="black")
 
-avahi_spatial_predict$pred@data@values[1] <- 1400
+#avahi_spatial_predict$pred@data@values[1] <- 500
+
+avahi_spatial_predict$pred[avahi_spatial_predict$pred >653] <- 653
 
 plot_avahi <- ggplot() +
-  layer_spatial(avahi_spatial_predict)+
+  layer_spatial(avahi_spatial_predict$pred)+
   theme_void()+
  scale_fill_gradientn(colours = terrain.colors(10), name = expression("Individuals/Km"^2), trans="reverse",na.value="white")+
  layer_spatial(bound, fill=NA, color="black")
 
-prop_spatial_predict$pred@data@values[1] <- 1400
+#prop_spatial_predict$pred@data@values[1] <- 0
 
 plot_prop <- ggplot() +
-  layer_spatial(prop_spatial_predict)+
+  layer_spatial(prop_spatial_predict$pred)+
   theme_void()+
  scale_fill_gradientn(colours = terrain.colors(10), name = expression("Individuals/Km"^2), trans="reverse",na.value="white")+
  layer_spatial(bound, fill=NA, color="black")
 
-rubri_spatial_predict$pred@data@values[1] <- 1400
+#rubri_spatial_predict$pred@data@values[1] <- 500
 
 plot_rubri <- ggplot() +
-  layer_spatial(rubri_spatial_predict)+
+  layer_spatial(rubri_spatial_predict$pred)+
   theme_void()+
  scale_fill_gradientn(colours = terrain.colors(10), name = expression("Individuals/Km"^2), trans="reverse",na.value="white")+
  layer_spatial(bound, fill=NA, color="black")
 
-rubri_spatial_predict$pred@data@values[1] <- 1400
+#rubri_spatial_predict$pred@data@values[1] <- 500
 
 plot_albi <- ggplot() +
-  layer_spatial(albi_spatial_predict)+
+  layer_spatial(albi_spatial_predict$pred)+
   theme_void()+
  scale_fill_gradientn(colours = terrain.colors(10), name = expression("Individuals/Km"^2), trans="reverse",na.value="white")+
  layer_spatial(bound, fill=NA, color="black")
 
-hapa_spatial_predict$pred@data@values[1] <- 1400
+#hapa_spatial_predict$pred@data@values[1] <- 500
 
 plot_hapa <- ggplot() +
-  layer_spatial(hapa_spatial_predict)+
+  layer_spatial(hapa_spatial_predict$pred)+
   theme_void()+
  scale_fill_gradientn(colours = terrain.colors(10), name = expression("Individuals/Km"^2), trans="reverse",na.value="white")+
  layer_spatial(bound, fill=NA, color="black")
 
-plot_density_predict <- ggarrange(plot_cheiro, plot_micro, plot_allo, plot_lepi, plot_avahi, plot_prop, plot_rubri, plot_albi, plot_hapa, common.legend = TRUE, labels = c("C. crossleyi", "M. lehilahytsara", "A. trichotis", "L. saeli", "A. laniger", "P. candidus", "E. rubriventer", "E. albifrons", "H. occidentalis"))
+plot_density_predict <- ggarrange(plot_cheiro, plot_micro, plot_allo, plot_lepi, plot_avahi, plot_prop, plot_rubri, plot_albi, plot_hapa, common.legend = FALSE, labels = c("C. crossleyi", "M. lehilahytsara", "A. trichotis", "L. saeli", "A. laniger", "P. candidus", "E. rubriventer", "E. albifrons", "H. occidentalis"))
 
 
 ```
-
-```{r Spatial Predictions}
-library(ggspatial)
-
-ef <- data.frame(coordinates(stacked_habitat),
-                 values(stacked_habitat))
-
-colnames(ef)
-
-ef$ForestTot[is.na(ef$ForestTot)] <- 0
-ef <- ef %>% na.omit
-
-ef <- ef %>%rename(DEM = Band.1.1, FL = ForestLoss, FH = Layer_1, TRI =Band.1.2) %>%mutate(pred =  0.2976*(TRI) + (-0.2939*(DEM)) + (11.9261*(FH)) + (-0.1255 *FL)
-                    + 162.6222 )
-
-pred <- rasterFromXYZ(ef,crs = 4326)
-pred$pred@data@values[pred$pred@data@values <0] <- 0
-pred$pred@data@values[pred$pred@data@values >500] <- NA
-
-pred <- mask(pred, buffer)
-bound_new <- mask(pred, bound)
-
-density_prediction <- pred$pred@data@values
-return(density_prediction)
-
-plot <- ggplot() +
-  layer_spatial(pred$pred)+
-  theme_void()+
- scale_fill_gradientn(colours = terrain.colors(10), name = expression("Density/Km"^2), trans="reverse",na.value="white")+
- # scale_fill_continuous(type = "viridis",na.value="white")+
-  #guides(fill=guide_legend(title=expression("Density/Km"^2)))+
- layer_spatial(bound, fill=NA, color="black")
-
-return(plot)
-
-
-
-```
-
-
