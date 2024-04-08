@@ -22,12 +22,15 @@ TRI <- raster("Data/covariate_tif/TRI_Nov2023.tif")
 FL <- raster("Data/covariate_tif/Forest_Loss.tif")
 names(FL) <- "ForestLoss"
 FP <- raster("Data/covariate_tif/Forest2022.tif")
+FPred <- raster("Data/clipped_deforestation_2050.img")
+F2020 <- raster("Data/clipped_deforestation_2050.img")
 names(FP) <- "ForestTot"
 bound <- read_sf("Data/covariate_tif/comatsa_sud_boundary.shp")
 buffer <- read_sf("Data/covariate_tif/comatsa_buffer_sites.shp")
 buffer <- st_transform(buffer, crs = 4326)
 bound <- st_transform(bound ,crs = 4326)
 FP <- projectRaster(FP, crs = crs(DEM))
+FPred <- projectRaster(FPred, crs = crs(DEM))
 class(FP)
 class(buffer)
 crs(FL)
@@ -50,12 +53,14 @@ FH <- crop(x = FH, y = bb)
 DEM <- crop(x = DEM, y = bb)
 TRI <- crop(x = TRI, y = bb)
 FP <- crop(x = FP, y = FL)
+#FPred <- crop(x = FPred, y = FL)
 
 plot(TRI)
 plot(DEM)
 plot(FL)
 plot(FH)
 plot(FP)
+plot(FPred)
 
 extent(TRI)
 extent(DEM)
@@ -64,6 +69,7 @@ extent(FH)
 extent(buffer)
 extent(bound)
 extent(FP)
+extent(FPred)
 
 ncol(TRI)
 ncol(DEM)
@@ -74,13 +80,14 @@ ncol(FP)
 FL <- projectRaster(FL,DEM,method = 'bilinear')
 FH <- projectRaster(FH,DEM,method = 'bilinear')
 FP <- projectRaster(FP,DEM,method = 'bilinear')
+FPred <- projectRaster(FPred,DEM,method = 'bilinear')
 
 stacked_habitat <- stack(DEM,TRI,FH, FL, FP)
 area(stacked_habitat)
 plot(stacked_habitat)
 plot(stacked_habitat$Band.1.1)
 plot(DEM)
-stacked_habitat$ForestLossProp <- stacked_habitat$ForestLoss/ stacked_habitat$ForestTot
+stacked_habitat$ForestLossProp <- stacked_habitat$ForestLoss/ stacked_habitat$Forest2022
 
 ```
 
@@ -90,13 +97,13 @@ library(ggspatial)
 
 spatial_prediction <- function(coefficient_data){
   
-  ef <- data.frame(coordinates(stacked_habitat),
+  ef <- data.frame(raster::coordinates(stacked_habitat),
                  values(stacked_habitat))
 
 colnames(ef)
 
 
-ef$ForestTot[is.na(ef$ForestTot)] <- 0
+#ef$ForestTot[is.na(ef$ForestTot)] <- 0
 ef <- ef %>% na.omit
 
 ef <- ef %>%rename(Elevation = Band.1.1, ForestLossProportion = ForestLossProp, CanopyHeight = Layer_1, Ruggedness =Band.1.2) %>% mutate(pred = coefficient_data[[5]]*(Ruggedness) + (coefficient_data[[3]]*(Elevation)) + (coefficient_data[[2]]*(CanopyHeight)) + (coefficient_data[[4]]*ForestLossProportion) + coefficient_data[[1]])
@@ -142,7 +149,6 @@ cheiro_spatial_predict
 cheiro_spatial_predict@data
 cheiro_spatial_predict@data@values[3]
 
-#cheiro_spatial_predict@data@values[1] <- 500
 
 plot_cheiro <- ggplot() +
   layer_spatial(cheiro_spatial_predict$pred)+
@@ -150,15 +156,11 @@ plot_cheiro <- ggplot() +
  scale_fill_gradientn(colours = terrain.colors(10), name = expression("Individuals/Km"^2), trans="reverse",na.value="white")+
  layer_spatial(bound, fill=NA, color="black")
 
-#micro_spatial_predict$pred@data@values[1] <- 500
-
 plot_micro <- ggplot() +
   layer_spatial(micro_spatial_predict$pred)+
   theme_void()+
  scale_fill_gradientn(colours = terrain.colors(10), name = expression("Individuals/Km"^2), trans="reverse",na.value="white")+
  layer_spatial(bound, fill=NA, color="black")
-
-#allo_spatial_predict$pred@data@values[1] <- 500
 
 plot_allo <- ggplot() +
   layer_spatial(allo_spatial_predict$pred)+
@@ -166,17 +168,11 @@ plot_allo <- ggplot() +
  scale_fill_gradientn(colours = terrain.colors(10), name = expression("Individuals/Km"^2), trans="reverse",na.value="white")+
  layer_spatial(bound, fill=NA, color="black")
 
-#lepi_spatial_predict$pred@data@values[1] <- 500
-
 plot_lepi <- ggplot() +
   layer_spatial(lepi_spatial_predict$pred)+
   theme_void()+
  scale_fill_gradientn(colours = terrain.colors(10), name = expression("Individuals/Km"^2), trans="reverse",na.value="white")+
  layer_spatial(bound, fill=NA, color="black")
-
-#avahi_spatial_predict$pred@data@values[1] <- 500
-
-avahi_spatial_predict$pred[avahi_spatial_predict$pred >653] <- 653
 
 plot_avahi <- ggplot() +
   layer_spatial(avahi_spatial_predict$pred)+
@@ -184,31 +180,23 @@ plot_avahi <- ggplot() +
  scale_fill_gradientn(colours = terrain.colors(10), name = expression("Individuals/Km"^2), trans="reverse",na.value="white")+
  layer_spatial(bound, fill=NA, color="black")
 
-#prop_spatial_predict$pred@data@values[1] <- 0
-
 plot_prop <- ggplot() +
-  layer_spatial(prop_spatial_predict$pred)+
+  layer_spatial(sqrt(prop_spatial_predict$pred))+
   theme_void()+
- scale_fill_gradientn(colours = terrain.colors(10), name = expression("Individuals/Km"^2), trans="reverse",na.value="white")+
+ scale_fill_gradientn(colours = terrain.colors(10), name = expression(sqrt("Ind./Km"^2)), trans="reverse",na.value="white")+
  layer_spatial(bound, fill=NA, color="black")
-
-#rubri_spatial_predict$pred@data@values[1] <- 500
 
 plot_rubri <- ggplot() +
-  layer_spatial(rubri_spatial_predict$pred)+
+  layer_spatial(sqrt(rubri_spatial_predict$pred))+
   theme_void()+
- scale_fill_gradientn(colours = terrain.colors(10), name = expression("Individuals/Km"^2), trans="reverse",na.value="white")+
+ scale_fill_gradientn(colours = terrain.colors(10), name = expression(sqrt("Ind./Km"^2)), trans="reverse",na.value="white")+
  layer_spatial(bound, fill=NA, color="black")
-
-#rubri_spatial_predict$pred@data@values[1] <- 500
 
 plot_albi <- ggplot() +
   layer_spatial(albi_spatial_predict$pred)+
   theme_void()+
  scale_fill_gradientn(colours = terrain.colors(10), name = expression("Individuals/Km"^2), trans="reverse",na.value="white")+
  layer_spatial(bound, fill=NA, color="black")
-
-#hapa_spatial_predict$pred@data@values[1] <- 500
 
 plot_hapa <- ggplot() +
   layer_spatial(hapa_spatial_predict$pred)+
@@ -218,5 +206,51 @@ plot_hapa <- ggplot() +
 
 plot_density_predict <- ggarrange(plot_cheiro, plot_micro, plot_allo, plot_lepi, plot_avahi, plot_prop, plot_rubri, plot_albi, plot_hapa, common.legend = FALSE, labels = c("C. crossleyi", "M. lehilahytsara", "A. trichotis", "L. saeli", "A. laniger", "P. candidus", "E. rubriventer", "E. albifrons", "H. occidentalis"))
 
+library(cetcolor)
+
+DEM2 <- mask(DEM, buffer)
+
+elevation_plot <- ggplot() +
+  layer_spatial(DEM2)+
+  theme_void()+
+ scale_fill_gradientn(colours = cet_pal(5, name = "inferno"), name = expression("Elevation (m)"), trans="reverse",na.value="white")+
+ layer_spatial(bound, fill=NA, color="black")
+
+FH2 <- mask(FH, buffer)
+
+height_plot <- ggplot() +
+  layer_spatial(FH2)+
+  theme_void()+
+ scale_fill_gradientn(colours = cet_pal(5, name = "inferno"), name = expression("Canopy Height (m)"), trans="reverse",na.value="white")+
+ layer_spatial(bound, fill=NA, color="black")
+
+TRI2 <- mask(TRI, buffer)
+
+rugedness_plot <- ggplot() +
+  layer_spatial(FL2)+
+  theme_void()+
+ scale_fill_gradientn(colours = cet_pal(5, name = "inferno"), name = expression("Ruggedness"), trans="reverse",na.value="white")+
+ layer_spatial(bound, fill=NA, color="black")
+
+covariate_plot <- ggarrange(elevation_plot, height_plot, rugedness_plot, nrow=1)
+
+example_lemur_plot <- ggarrange(plot_prop, plot_rubri, labels = c("Silky Sifaka", "Red-bellied Lemur"))
+
+poster_plot <- ggarrange(covariate_plot, example_lemur_plot, nrow=2)
 
 ```
+
+```{r Comparison with forest loss}
+origin(FP)
+origin(FPred)
+
+stacked_forest <- stack(FP, FPred)
+
+mergedraster <- raster::merge( FP, FPred , tolerance = 0.25)
+FP-FPred <- raster("Data/covariate_tif/Forest2022.tif")
+FPred <- raster("Data/clipped_deforestation_2050.img")
+plot(mergedraster)
+
+```
+#Snap the raster 
+

@@ -21,6 +21,8 @@ E. albifrons: model 8
 Propithecus: model 8 
 Hapalemur: model 8? Or just not model this? 
 
+* Do group size by number of adults, exclude juveniles
+
 ```{r Import data and libraries}
 #Import relevant libraries
 library(Distance); library(tidyverse); library(lme4); library(lmerTest); library(rsq); library(ggplot2);library(REdaS)
@@ -47,7 +49,7 @@ survey_all$N_ind <- as.numeric(survey_all$N_ind)
 survey_all$N_ind[is.na(survey_all$N_ind)] <- 0
 survey_all$N_ad[is.na(survey_all$N_ad)] <- 0
 survey_all$N_juv[is.na(survey_all$N_juv)] <- 0
-survey_all$N_total <- survey_all$N_ad + survey_all$N_juv
+survey_all$N_total <- survey_all$N_ad
 survey_all <- survey_all %>% mutate(N_total = ifelse(N_total > N_ind, N_total, N_ind))
 
 
@@ -208,7 +210,7 @@ allocebus_df_old <- survey_all %>% filter(Nom_sientifique=="Allocebus_trichotis"
 allocebus_df_new <- survey_all %>% filter(Nom_sientifique=="Allocebus_trichotis" & Type=="Nocturnal"  & Date >= ymd("20220601") & (distance <= allocebus_truncation_dist  | is.na(distance)) )
 allocebus_dat1 <- rbind(allocebus_df_new, allocebus_df_old)
 
-allocebus_dat <- allocebus_dat1  %>% group_by(Site_Transect)%>% summarise(Nind = sum(as.numeric(N_total)))
+allocebus_dat <- allocebus_dat1  %>% group_by(Site_Transect)%>% summarise(Nind = sum(as.numeric(N_ad)))
 allocebus_dat <- left_join(site_transects, allocebus_dat, by =c("Site_Transect"))
 
 nobs_allocebus <- allocebus_dat1  %>% dplyr::select(Site_Transect) %>%group_by(Site_Transect) %>% mutate(NObs =n())%>% distinct()
@@ -219,7 +221,7 @@ allocebus_dat <- left_join(allocebus_dat,nrep_nocturnal, by =c("Site_Transect"))
 allocebus_dat <- allocebus_dat %>% dplyr::select(-Site, -Transect, -Type)
 
 allocebus_dat <- left_join(allocebus_dat,transect_lengths, by =c("Site_Transect"))
-allocebus_dat$Density <- (allocebus_dat$Nind/allocebus_detection_prob)/(allocebus_truncation_dist*allocebus_dat$Length*allocebus_dat$NRep)
+allocebus_dat$Density <- (allocebus_dat$Nind/allocebus_detection_prob)/(allocebus_truncation_dist*allocebus_dat$Length*allocebus_dat$NRep*2)
 allocebus_dat$Density_km2 <- allocebus_dat$Density*1000000
 
 write.csv(allocebus_dat,"~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/allocebus_dat.csv")
@@ -281,7 +283,7 @@ microcebus_df_old <- survey_all %>% filter(Nom_sientifique=="Microcebus_lehilahy
 microcebus_df_new <- survey_all %>% filter(Nom_sientifique=="Microcebus_lehilahytsara" & Type=="Nocturnal"  & Date >= ymd("20220601") & (distance <= microcebus_truncation_dist  | is.na(distance)) )
 microcebus_dat1 <- rbind(microcebus_df_new, microcebus_df_old)
 
-microcebus_dat <- microcebus_dat1  %>% group_by(Site_Transect)%>% summarise(Nind = sum(as.numeric(N_total)))
+microcebus_dat <- microcebus_dat1  %>% group_by(Site_Transect)%>% summarise(Nind = sum(as.numeric(N_ad)))
 microcebus_dat <- left_join(site_transects, microcebus_dat, by =c("Site_Transect"))
 
 nobs_microcebus <- microcebus_dat1  %>% select(Site_Transect) %>%group_by(Site_Transect) %>% mutate(NObs =n())%>% distinct()
@@ -292,7 +294,7 @@ microcebus_dat <- left_join(microcebus_dat,nrep_nocturnal, by =c("Site_Transect"
 microcebus_dat <- microcebus_dat %>% select(-Site, -Transect, -Type)
 
 microcebus_dat <- left_join(microcebus_dat,transect_lengths, by =c("Site_Transect"))
-microcebus_dat$Density <- (microcebus_dat$Nind/microcebus_detection_prob)/(microcebus_truncation_dist*microcebus_dat$Length*microcebus_dat$NRep)
+microcebus_dat$Density <- (microcebus_dat$Nind/microcebus_detection_prob)/(microcebus_truncation_dist*microcebus_dat$Length*microcebus_dat$NRep*2)
 microcebus_dat$Density_km2 <- microcebus_dat$Density*1000000
 
 write.csv(microcebus_dat,"~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/microcebus_dat.csv")
@@ -339,7 +341,7 @@ gof_ds(model8_cheirogaleus)#significant
 AIC(model2_cheirogaleus, model4_cheirogaleus,model5_cheirogaleus, model6_cheirogaleus)
 
 #Plot the best-fitting model 
-plot(model4_cheirogaleus, nc=4)
+plot(model2_cheirogaleus, nc=4)
 
 #Get detection probability
 cheirogaleus_detection_prob <- predict(model2_cheirogaleus)$fitted[[1]]
@@ -352,7 +354,7 @@ cheirogaleus_df_old <- survey_all %>% filter(Nom_sientifique=="Cheirogaleus_cros
 cheirogaleus_df_new <- survey_all %>% filter(Nom_sientifique=="Cheirogaleus_crossleyi" & Type=="Nocturnal"  & Date >= ymd("20220601" )& (Mois >= 11 | Mois <=3 ) & (distance <= cheirogaleus_truncation_dist  | is.na(distance)) )
 cheirogaleus_dat1 <- rbind(cheirogaleus_df_new, cheirogaleus_df_old)
 
-cheirogaleus_dat <- cheirogaleus_dat1  %>% group_by(Site_Transect)%>% summarise(Nind = sum(as.numeric(N_total)))
+cheirogaleus_dat <- cheirogaleus_dat1  %>% group_by(Site_Transect)%>% summarise(Nind = sum(as.numeric(N_ad)))
 cheirogaleus_dat <- left_join(site_transects, cheirogaleus_dat, by =c("Site_Transect"))
 
 nobs_cheirogaleus <- cheirogaleus_dat1  %>% select(Site_Transect) %>%group_by(Site_Transect) %>% mutate(NObs =n())%>% distinct()
@@ -363,7 +365,7 @@ cheirogaleus_dat <- left_join(cheirogaleus_dat,nrep_cheiro, by =c("Site_Transect
 cheirogaleus_dat <- cheirogaleus_dat %>% select(-Site, -Transect)
 
 cheirogaleus_dat <- left_join(cheirogaleus_dat,transect_lengths, by =c("Site_Transect"))
-cheirogaleus_dat$Density <- (cheirogaleus_dat$Nind/cheirogaleus_detection_prob)/(cheirogaleus_truncation_dist*cheirogaleus_dat$Length*cheirogaleus_dat$NRep)
+cheirogaleus_dat$Density <- (cheirogaleus_dat$Nind/cheirogaleus_detection_prob)/(cheirogaleus_truncation_dist*cheirogaleus_dat$Length*cheirogaleus_dat$NRep*2)
 cheirogaleus_dat$Density_km2 <- cheirogaleus_dat$Density*1000000
 
 write.csv(cheirogaleus_dat,"~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/cheirogaleus_dat.csv")
@@ -422,7 +424,7 @@ lepilemur_df_old <- survey_all %>% filter(Nom_sientifique=="Lepilemur_seali" & T
 lepilemur_df_new <- survey_all %>% filter(Nom_sientifique=="Lepilemur_seali" & Type=="Nocturnal"  & Date >= ymd("20220601") & (distance <= lepilemur_truncation_dist  | is.na(distance)) )
 lepilemur_dat1 <- rbind(lepilemur_df_new, lepilemur_df_old)
 
-lepilemur_dat <- lepilemur_dat1  %>% group_by(Site_Transect)%>% summarise(Nind = sum(as.numeric(N_total)))
+lepilemur_dat <- lepilemur_dat1  %>% group_by(Site_Transect)%>% summarise(Nind = sum(as.numeric(N_ad)))
 lepilemur_dat <- left_join(site_transects, lepilemur_dat, by =c("Site_Transect"))
 
 nobs_lepilemur <- lepilemur_dat1  %>% select(Site_Transect) %>%group_by(Site_Transect) %>% mutate(NObs =n())%>% distinct()
@@ -433,7 +435,7 @@ lepilemur_dat <- left_join(lepilemur_dat,nrep_nocturnal, by =c("Site_Transect"))
 lepilemur_dat <- lepilemur_dat %>% select(-Site, -Transect, -Type)
 
 lepilemur_dat <- left_join(lepilemur_dat,transect_lengths, by =c("Site_Transect"))
-lepilemur_dat$Density <- (lepilemur_dat$Nind/lepilemur_detection_prob)/(lepilemur_truncation_dist*lepilemur_dat$Length*lepilemur_dat$NRep)
+lepilemur_dat$Density <- (lepilemur_dat$Nind/lepilemur_detection_prob)/(lepilemur_truncation_dist*lepilemur_dat$Length*lepilemur_dat$NRep*2)
 lepilemur_dat$Density_km2 <- lepilemur_dat$Density*1000000
 
 write.csv(lepilemur_dat,"~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/lepilemur_dat.csv")
@@ -491,7 +493,7 @@ avahi_df_old <- survey_all %>% filter(Nom_sientifique=="Avahi_laniger" & Type=="
 avahi_df_new <- survey_all %>% filter(Nom_sientifique=="Avahi_laniger" & Type=="Nocturnal"  & Date >= ymd("20220601") & (distance <= avahi_truncation_dist  | is.na(distance)) )
 avahi_dat1 <- rbind(avahi_df_new, avahi_df_old)
 
-avahi_dat <- avahi_dat1  %>% group_by(Site_Transect)%>% summarise(Nind = sum(as.numeric(N_total)))
+avahi_dat <- avahi_dat1  %>% group_by(Site_Transect)%>% summarise(Nind = sum(as.numeric(N_ad)))
 avahi_dat <- left_join(site_transects, avahi_dat, by =c("Site_Transect"))
 
 nobs_avahi <- avahi_dat1  %>% select(Site_Transect) %>%group_by(Site_Transect) %>% mutate(NObs =n())%>% distinct()
@@ -502,10 +504,11 @@ avahi_dat <- left_join(avahi_dat,nrep_nocturnal, by =c("Site_Transect"))
 avahi_dat <- avahi_dat %>% select(-Site, -Transect, -Type)
 
 avahi_dat <- left_join(avahi_dat,transect_lengths, by =c("Site_Transect"))
-avahi_dat$Density <- (avahi_dat$Nind/avahi_detection_prob)/(avahi_truncation_dist*avahi_dat$Length*avahi_dat$NRep)
+avahi_dat$Density <- (avahi_dat$Nind/avahi_detection_prob)/(avahi_truncation_dist*avahi_dat$Length*avahi_dat$NRep*2)
 avahi_dat$Density_km2 <- avahi_dat$Density*1000000
 
 write.csv(avahi_dat,"~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/avahi_dat.csv")
+
 ```
 
 ```{r Rubriventer density calculations}
@@ -561,7 +564,7 @@ rubriventer_df_old <- survey_all %>% filter(Nom_sientifique=="Eulemur_rubrivente
 rubriventer_df_new <- survey_all %>% filter(Nom_sientifique=="Eulemur_rubriventer" & Type=="Diurnal"  & Date >= ymd("20220601") & (distance <= rubriventer_truncation_dist  | is.na(distance)) )
 rubriventer_dat1 <- rbind(rubriventer_df_new, rubriventer_df_old)
 
-rubriventer_dat <- rubriventer_dat1  %>% group_by(Site_Transect)%>% summarise(Nind = sum(as.numeric(N_total)))
+rubriventer_dat <- rubriventer_dat1  %>% group_by(Site_Transect)%>% summarise(Nind = sum(as.numeric(N_ad)))
 rubriventer_dat <- left_join(site_transects, rubriventer_dat, by =c("Site_Transect"))
 
 nobs_rubriventer <- rubriventer_dat1  %>% select(Site_Transect) %>%group_by(Site_Transect) %>% mutate(NObs =n())%>% distinct()
@@ -572,7 +575,7 @@ rubriventer_dat <- left_join(rubriventer_dat,nrep_diurnal, by =c("Site_Transect"
 rubriventer_dat <- rubriventer_dat %>% select(-Site, -Transect, -Type)
 
 rubriventer_dat <- left_join(rubriventer_dat,transect_lengths, by =c("Site_Transect"))
-rubriventer_dat$Density <- (rubriventer_dat$Nind/rubriventer_detection_prob)/(rubriventer_truncation_dist*rubriventer_dat$Length*rubriventer_dat$NRep)
+rubriventer_dat$Density <- (rubriventer_dat$Nind/rubriventer_detection_prob)/(rubriventer_truncation_dist*rubriventer_dat$Length*rubriventer_dat$NRep*2)
 rubriventer_dat$Density_km2 <- rubriventer_dat$Density*1000000
 
 write.csv(rubriventer_dat,"~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/rubriventer_dat.csv")
@@ -630,7 +633,7 @@ albifrons_df_old <- survey_all %>% filter(Nom_sientifique=="Eulemur_albifrons" &
 albifrons_df_new <- survey_all %>% filter(Nom_sientifique=="Eulemur_albifrons" & Type=="Diurnal"  & Date >= ymd("20220601") & (distance <= albifrons_truncation_dist  | is.na(distance)) )
 albi_dat1 <- rbind(albifrons_df_new, albifrons_df_old)
 
-albi_dat <- albi_dat1  %>% group_by(Site_Transect)%>% summarise(Nind = sum(as.numeric(N_total)))
+albi_dat <- albi_dat1  %>% group_by(Site_Transect)%>% summarise(Nind = sum(as.numeric(N_ad)))
 albi_dat <- left_join(site_transects, albi_dat, by =c("Site_Transect"))
 
 nobs_albifrons <- albi_dat1  %>% select(Site_Transect) %>%group_by(Site_Transect) %>% mutate(NObs =n())%>% distinct()
@@ -641,7 +644,7 @@ albi_dat <- left_join(albi_dat,nrep_diurnal, by =c("Site_Transect"))
 albi_dat <- albi_dat %>% select(-Site, -Transect, -Type)
 
 albi_dat <- left_join(albi_dat,transect_lengths, by =c("Site_Transect"))
-albi_dat$Density <- (albi_dat$Nind/albifrons_detection_prob)/(albifrons_truncation_dist*albi_dat$Length*albi_dat$NRep)
+albi_dat$Density <- (albi_dat$Nind/albifrons_detection_prob)/(albifrons_truncation_dist*albi_dat$Length*albi_dat$NRep*2)
 albi_dat$Density_km2 <- albi_dat$Density*1000000
 
 write.csv(albi_dat,"~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/albi_dat.csv")
@@ -700,7 +703,7 @@ propithecus_df_old <- survey_all %>% filter(Nom_sientifique=="Propithecus_candid
 propithecus_df_new <- survey_all %>% filter(Nom_sientifique=="Propithecus_candidus" & Type=="Diurnal"  & Date >= ymd("20220601") & (distance <= propithecus_truncation_dist  | is.na(distance)) )
 prop_dat1 <- rbind(propithecus_df_new, propithecus_df_old)
 
-prop_dat <- prop_dat1  %>% group_by(Site_Transect)%>% summarise(Nind = sum(as.numeric(N_total)))
+prop_dat <- prop_dat1  %>% group_by(Site_Transect)%>% summarise(Nind = sum(as.numeric(N_ad)))
 prop_dat <- left_join(site_transects, prop_dat, by =c("Site_Transect"))
 
 nobs_propithecus <- prop_dat1  %>% select(Site_Transect) %>%group_by(Site_Transect) %>% mutate(NObs =n())%>% distinct()
@@ -711,7 +714,9 @@ prop_dat <- left_join(prop_dat,nrep_diurnal, by =c("Site_Transect"))
 prop_dat <- prop_dat %>% select(-Site, -Transect, -Type)
 
 prop_dat <- left_join(prop_dat,transect_lengths, by =c("Site_Transect"))
-prop_dat$Density <- (prop_dat$Nind/propithecus_detection_prob)/(propithecus_truncation_dist*prop_dat$Length*prop_dat$NRep)
+
+prop_dat$Density <- (prop_dat$Nind/propithecus_detection_prob)/(propithecus_truncation_dist*2*prop_dat$Length*prop_dat$NRep*2)
+
 prop_dat$Density_km2 <- prop_dat$Density*1000000
 
 write.csv(prop_dat,"~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/prop_dat.csv")
@@ -771,7 +776,7 @@ hapalemur_df_old <- survey_all %>% filter(Nom_sientifique=="Hapalemur_occidental
 hapalemur_df_new <- survey_all %>% filter(Nom_sientifique=="Hapalemur_occidentalis" & Type=="Diurnal"  & Date >= ymd("20220601") & (distance <= hapalemur_truncation_dist  | is.na(distance)) )
 hapa_dat1 <- rbind(hapalemur_df_new, hapalemur_df_old)
 
-hapa_dat <- hapa_dat1  %>% group_by(Site_Transect)%>% summarise(Nind = sum(as.numeric(N_total)))
+hapa_dat <- hapa_dat1  %>% group_by(Site_Transect)%>% summarise(Nind = sum(as.numeric(N_ad)))
 hapa_dat <- left_join(site_transects, hapa_dat, by =c("Site_Transect"))
 
 nobs_hapalemur <- hapa_dat1  %>% select(Site_Transect) %>%group_by(Site_Transect) %>% mutate(NObs =n())%>% distinct()
@@ -782,7 +787,7 @@ hapa_dat <- left_join(hapa_dat,nrep_diurnal, by =c("Site_Transect"))
 hapa_dat <- hapa_dat %>% select(-Site, -Transect, -Type)
 
 hapa_dat <- left_join(hapa_dat,transect_lengths, by =c("Site_Transect"))
-hapa_dat$Density <- (hapa_dat$Nind/hapalemur_detection_prob)/(hapalemur_truncation_dist*hapa_dat$Length*hapa_dat$NRep)
+hapa_dat$Density <- (hapa_dat$Nind/hapalemur_detection_prob)/(hapalemur_truncation_dist*hapa_dat$Length*hapa_dat$NRep*2)
 hapa_dat$Density_km2 <- hapa_dat$Density*1000000
 
 write.csv(hapa_dat,"~/Documents/GitHub/COMATSA_GitHub/COMATSA_GitHub/Data/prop_dat.csv")
